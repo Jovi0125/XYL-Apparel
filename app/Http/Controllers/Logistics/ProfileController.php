@@ -4,27 +4,29 @@ namespace App\Http\Controllers\Logistics;
 
 use App\Http\Controllers\Controller;
 use App\Models\LogisticsProfile;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
     /**
      * Show the logistics profile edit form.
      */
-    public function edit(): View
+    public function edit(Request $request)
     {
         $profile = Auth::user()->logisticsProfile;
 
-        return view('logistics.profile.edit', compact('profile'));
+        if ($request->expectsJson()) {
+            return response()->json(compact('profile'));
+        }
+
+        return view('welcome');
     }
 
     /**
      * Update or create the logistics profile.
      */
-    public function update(Request $request): RedirectResponse
+    public function update(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
@@ -41,6 +43,10 @@ class ProfileController extends Controller
                 'status' => 'active',
             ]
         );
+
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'message' => 'Profile updated successfully.']);
+        }
 
         return back()->with('success', 'Profile updated successfully.');
     }

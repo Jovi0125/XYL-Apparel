@@ -5,29 +5,31 @@ namespace App\Http\Controllers\Logistics;
 use App\Http\Controllers\Controller;
 use App\Models\ProofOfDelivery;
 use App\Models\Shipment;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\View\View;
 
 class ProofOfDeliveryController extends Controller
 {
     /**
      * Show form to upload proof of delivery.
      */
-    public function create(Shipment $shipment): View
+    public function create(Request $request, Shipment $shipment)
     {
         $profile = Auth::user()->logisticsProfile;
         abort_if(! $profile || $shipment->logistics_profile_id !== $profile->id, 403);
         abort_if($shipment->proofOfDelivery, 400, 'Proof of delivery already submitted.');
 
-        return view('logistics.pod.create', compact('shipment'));
+        if ($request->expectsJson()) {
+            return response()->json(compact('shipment'));
+        }
+
+        return view('welcome');
     }
 
     /**
      * Store the proof of delivery.
      */
-    public function store(Request $request, Shipment $shipment): RedirectResponse
+    public function store(Request $request, Shipment $shipment)
     {
         $profile = Auth::user()->logisticsProfile;
         abort_if(! $profile || $shipment->logistics_profile_id !== $profile->id, 403);
@@ -77,6 +79,10 @@ class ProofOfDeliveryController extends Controller
                 'remarks' => 'Package delivered. Proof of delivery submitted.',
                 'created_by' => Auth::id(),
             ]);
+        }
+
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'message' => 'Proof of delivery submitted successfully.']);
         }
 
         return redirect()->route('logistics.shipments.show', $shipment)

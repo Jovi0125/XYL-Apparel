@@ -4,41 +4,51 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\View\View;
 
 class LoginController extends Controller
 {
-    public function showLoginForm(): View
+    public function showLoginForm()
     {
-        return view('auth.login');
+        return view('welcome');
     }
 
-    public function login(LoginRequest $request): RedirectResponse
+    public function login(LoginRequest $request): JsonResponse|RedirectResponse
     {
         $credentials = $request->only('email', 'password');
 
         if (! Auth::attempt($credentials, $request->boolean('remember'))) {
-            return back()->withErrors([
-                'email' => 'The provided credentials do not match our records.',
-            ])->onlyInput('email');
+            if ($request->expectsJson()) {
+                return response()->json(['errors' => ['email' => ['The provided credentials do not match our records.']]], 422);
+            }
+            return back()->withErrors(['email' => 'The provided credentials do not match our records.'])->onlyInput('email');
         }
 
         $user = Auth::user();
 
         if ($user->is_banned) {
             Auth::logout();
+            if ($request->expectsJson()) {
+                return response()->json(['errors' => ['email' => ['Your account has been suspended.']]], 403);
+            }
             return redirect()->route('login')->with('error', 'Your account has been suspended.');
         }
 
         $request->session()->regenerate();
 
-        return match ($user->role) {
-            'admin' => redirect()->route('admin.dashboard'),
-            'seller' => redirect()->route('seller.dashboard'),
-            'logistics' => redirect()->route('logistics.dashboard'),
-            default => redirect()->route('customer.dashboard'),
+        $redirect = match ($user->role) {
+            'admin' => '/admin/dashboard',
+            'seller' => '/seller/dashboard',
+            'logistics' => '/logistics/dashboard',
+            default => '/dashboard',
         };
+
+        if ($request->expectsJson()) {
+            return response()->json(['redirect' => $redirect, 'user' => $user]);
+        }
+
+        return redirect($redirect);
     }
 }

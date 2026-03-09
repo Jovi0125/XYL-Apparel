@@ -5,30 +5,32 @@ namespace App\Http\Controllers\Logistics;
 use App\Http\Controllers\Controller;
 use App\Models\Shipment;
 use App\Models\ShipmentTrackingEvent;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\View\View;
 
 class TrackingController extends Controller
 {
     /**
      * Show form to add a tracking event to a shipment.
      */
-    public function create(Shipment $shipment): View
+    public function create(Request $request, Shipment $shipment)
     {
         $profile = Auth::user()->logisticsProfile;
         abort_if(! $profile || $shipment->logistics_profile_id !== $profile->id, 403);
 
         $shipment->load('trackingEvents.creator');
 
-        return view('logistics.tracking.create', compact('shipment'));
+        if ($request->expectsJson()) {
+            return response()->json(compact('shipment'));
+        }
+
+        return view('welcome');
     }
 
     /**
      * Store a new tracking event.
      */
-    public function store(Request $request, Shipment $shipment): RedirectResponse
+    public function store(Request $request, Shipment $shipment)
     {
         $profile = Auth::user()->logisticsProfile;
         abort_if(! $profile || $shipment->logistics_profile_id !== $profile->id, 403);
@@ -46,6 +48,10 @@ class TrackingController extends Controller
             'remarks' => $request->remarks,
             'created_by' => Auth::id(),
         ]);
+
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'message' => 'Tracking event added.']);
+        }
 
         return redirect()->route('logistics.shipments.show', $shipment)
             ->with('success', 'Tracking event added.');

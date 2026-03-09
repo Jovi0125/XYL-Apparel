@@ -4,20 +4,22 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\SystemSetting;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
 
 class SettingsController extends Controller
 {
-    public function index(): View
+    public function index(Request $request)
     {
         $settings = SystemSetting::all()->groupBy('group');
 
-        return view('admin.settings.index', compact('settings'));
+        if ($request->expectsJson()) {
+            return response()->json(compact('settings'));
+        }
+
+        return view('welcome');
     }
 
-    public function update(Request $request): RedirectResponse
+    public function update(Request $request)
     {
         $request->validate([
             'settings' => ['required', 'array'],
@@ -26,6 +28,10 @@ class SettingsController extends Controller
 
         foreach ($request->settings as $key => $value) {
             SystemSetting::where('key', $key)->update(['value' => $value]);
+        }
+
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'message' => 'Settings updated successfully.']);
         }
 
         return back()->with('success', 'Settings updated successfully.');

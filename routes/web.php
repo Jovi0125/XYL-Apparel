@@ -62,14 +62,9 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [LogoutController::class, 'logout'])->name('logout');
 
-    // Redirect /dashboard to the correct role dashboard
+    // /dashboard — React renders the correct dashboard based on role from __INITIAL_DATA__
     Route::get('/dashboard', function () {
-        return match (auth()->user()->role) {
-            'admin' => redirect()->route('admin.dashboard'),
-            'seller' => redirect()->route('seller.dashboard'),
-            'logistics' => redirect()->route('logistics.dashboard'),
-            default => redirect()->route('customer.dashboard'),
-        };
+        return view('welcome');
     })->name('dashboard');
 });
 
@@ -222,3 +217,13 @@ Route::middleware(['auth', 'role:logistics'])
         Route::get('/profile', [LogisticsProfileController::class, 'edit'])->name('profile.edit');
         Route::put('/profile', [LogisticsProfileController::class, 'update'])->name('profile.update');
     });
+
+/*
+|--------------------------------------------------------------------------
+| SPA Catch-All — Let React Router handle all remaining GET requests
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/{any}', function () {
+    return view('welcome');
+})->where('any', '.*')->name('spa');

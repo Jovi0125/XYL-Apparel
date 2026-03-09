@@ -8,12 +8,10 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\ProductVariant;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use Illuminate\View\View;
 
 class ProductController extends Controller
 {
@@ -22,7 +20,7 @@ class ProductController extends Controller
         return Auth::user()->sellerProfile;
     }
 
-    public function index(Request $request): View
+    public function index(Request $request)
     {
         $seller = $this->seller();
 
@@ -36,17 +34,25 @@ class ProductController extends Controller
             ->paginate(15)
             ->withQueryString();
 
-        return view('seller.products.index', compact('products'));
+        if ($request->expectsJson()) {
+            return response()->json(compact('products'));
+        }
+
+        return view('welcome');
     }
 
-    public function create(): View
+    public function create(Request $request)
     {
         $categories = Category::where('is_active', true)->orderBy('name')->get();
 
-        return view('seller.products.create', compact('categories'));
+        if ($request->expectsJson()) {
+            return response()->json(compact('categories'));
+        }
+
+        return view('welcome');
     }
 
-    public function store(ProductRequest $request): RedirectResponse
+    public function store(ProductRequest $request)
     {
         $seller = $this->seller();
 
@@ -96,21 +102,29 @@ class ProductController extends Controller
             }
         });
 
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'message' => 'Product created successfully.']);
+        }
+
         return redirect()->route('seller.products.index')
             ->with('success', 'Product created successfully.');
     }
 
-    public function show(Product $product): View
+    public function show(Request $request, Product $product)
     {
         $seller = $this->seller();
         abort_if($product->seller_profile_id !== $seller->id, 403);
 
         $product->load('category', 'images', 'variants');
 
-        return view('seller.products.show', compact('product'));
+        if ($request->expectsJson()) {
+            return response()->json(compact('product'));
+        }
+
+        return view('welcome');
     }
 
-    public function edit(Product $product): View
+    public function edit(Request $request, Product $product)
     {
         $seller = $this->seller();
         abort_if($product->seller_profile_id !== $seller->id, 403);
@@ -118,10 +132,14 @@ class ProductController extends Controller
         $product->load('images', 'variants');
         $categories = Category::where('is_active', true)->orderBy('name')->get();
 
-        return view('seller.products.edit', compact('product', 'categories'));
+        if ($request->expectsJson()) {
+            return response()->json(compact('product', 'categories'));
+        }
+
+        return view('welcome');
     }
 
-    public function update(ProductRequest $request, Product $product): RedirectResponse
+    public function update(ProductRequest $request, Product $product)
     {
         $seller = $this->seller();
         abort_if($product->seller_profile_id !== $seller->id, 403);
@@ -199,16 +217,24 @@ class ProductController extends Controller
             }
         });
 
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'message' => 'Product updated successfully.']);
+        }
+
         return redirect()->route('seller.products.index')
             ->with('success', 'Product updated successfully.');
     }
 
-    public function destroy(Product $product): RedirectResponse
+    public function destroy(Request $request, Product $product)
     {
         $seller = $this->seller();
         abort_if($product->seller_profile_id !== $seller->id, 403);
 
         $product->delete();
+
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'message' => 'Product deleted successfully.']);
+        }
 
         return redirect()->route('seller.products.index')
             ->with('success', 'Product deleted successfully.');

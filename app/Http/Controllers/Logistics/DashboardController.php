@@ -4,12 +4,12 @@ namespace App\Http\Controllers\Logistics;
 
 use App\Http\Controllers\Controller;
 use App\Models\Shipment;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
-    public function index(): View
+    public function index(Request $request)
     {
         $profile = Auth::user()->logisticsProfile;
 
@@ -42,6 +42,10 @@ class DashboardController extends Controller
                 ->get();
         }
 
-        return view('logistics.dashboard', compact('stats', 'shipments', 'profile'));
+        if ($request->expectsJson()) {
+            return response()->json(compact('stats', 'shipments', 'profile'));
+        }
+
+        return view('welcome');
     }
 }

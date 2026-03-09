@@ -19,6 +19,9 @@ class ReportController extends Controller
         $seller = auth()->user()->sellerProfile;
 
         if (! $seller) {
+            if ($request->expectsJson()) {
+                return response()->json(['error' => 'Please set up your shop first.'], 422);
+            }
             return redirect()->route('seller.shop.edit')
                 ->with('error', 'Please set up your shop first.');
         }
@@ -133,7 +136,7 @@ class ReportController extends Controller
             ->take(5)
             ->get();
 
-        return view('seller.reports.index', compact(
+        return response()->json(compact(
             'period',
             'totalRevenue',
             'totalOrders',
@@ -160,6 +163,9 @@ class ReportController extends Controller
         $seller = auth()->user()->sellerProfile;
 
         if (! $seller) {
+            if ($request->expectsJson()) {
+                return response()->json(['error' => 'Shop not set up.'], 422);
+            }
             return redirect()->route('seller.shop.edit');
         }
 
@@ -181,6 +187,6 @@ class ReportController extends Controller
             ->orderByDesc('total_revenue')
             ->paginate(20);
 
-        return view('seller.reports.products', compact('products', 'period'));
+        return response()->json(compact('products', 'period'));
     }
 }
