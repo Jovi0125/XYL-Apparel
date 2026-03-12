@@ -60,13 +60,32 @@ export default function SellersIndex() {
                                             {seller.status}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4 text-right space-x-2">
-                                        <Link to={`/admin/sellers/${seller.id}`} className="text-sm text-blue-600 hover:text-blue-800">View</Link>
-                                        {seller.status === 'pending' && <button onClick={() => handleApprove(seller.id)} className="text-sm text-green-600 hover:text-green-800">Approve</button>}
+                                    <td className="px-6 py-4 text-right space-x-3">
+                                        <Link to={`/admin/sellers/${seller.id}`} className="inline-flex items-center text-blue-600 hover:text-blue-800" title="View">
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                            </svg>
+                                        </Link>
+                                        {seller.status === 'pending' && (
+                                            <button onClick={() => handleApprove(seller.id)} className="inline-flex items-center text-green-600 hover:text-green-800" title="Approve">
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                </svg>
+                                            </button>
+                                        )}
                                         {seller.status === 'banned' ? (
-                                            <button onClick={() => handleUnban(seller.id)} className="text-sm text-green-600 hover:text-green-800">Unban</button>
+                                            <button onClick={() => handleUnban(seller.id)} className="inline-flex items-center text-green-600 hover:text-green-800" title="Unban">
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                </svg>
+                                            </button>
                                         ) : (
-                                            <button onClick={() => handleBan(seller.id)} className="text-sm text-red-600 hover:text-red-800">Ban</button>
+                                            <button onClick={() => handleBan(seller.id)} className="inline-flex items-center text-red-600 hover:text-red-800" title="Ban">
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                                                </svg>
+                                            </button>
                                         )}
                                     </td>
                                 </tr>
