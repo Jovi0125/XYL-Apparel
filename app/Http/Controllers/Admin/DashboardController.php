@@ -7,11 +7,11 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\SellerProfile;
 use App\Models\User;
-use Illuminate\View\View;
+use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    public function index(): View
+    public function index(Request $request)
     {
         $stats = [
             'total_users' => User::where('role', 'customer')->count(),
@@ -28,6 +28,10 @@ class DashboardController extends Controller
             ->take(10)
             ->get();
 
-        return view('admin.dashboard', compact('stats', 'recentOrders'));
+        if ($request->expectsJson()) {
+            return response()->json(compact('stats', 'recentOrders'));
+        }
+
+        return view('welcome');
     }
 }

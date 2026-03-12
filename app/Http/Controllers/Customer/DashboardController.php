@@ -4,12 +4,12 @@ namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
-    public function index(): View
+    public function index(Request $request)
     {
         $user = Auth::user();
 
@@ -28,6 +28,10 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
-        return view('customer.dashboard', compact('stats', 'recentOrders'));
+        if ($request->expectsJson()) {
+            return response()->json(compact('stats', 'recentOrders'));
+        }
+
+        return view('welcome');
     }
 }

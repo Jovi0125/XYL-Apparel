@@ -134,7 +134,7 @@ class ReportController extends Controller
             ->groupBy('payment_method')
             ->get();
 
-        return view('admin.reports.index', compact(
+        return response()->json(compact(
             'period',
             'totalRevenue',
             'totalOrders',
@@ -185,7 +185,7 @@ class ReportController extends Controller
             ->where('created_at', '>=', $startDate)
             ->sum('platform_fee');
 
-        return view('admin.reports.sellers', compact(
+        return response()->json(compact(
             'sellers',
             'period',
             'totalPlatformRevenue',
@@ -218,6 +218,6 @@ class ReportController extends Controller
             ->orderByDesc('total_revenue')
             ->paginate(20);
 
-        return view('admin.reports.products', compact('products', 'period'));
+        return response()->json(compact('products', 'period'));
     }
 }

@@ -4,22 +4,24 @@ namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
 use App\Models\SellerProfile;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
-use Illuminate\View\View;
 
 class ShopController extends Controller
 {
-    public function edit(): View
+    public function edit(Request $request)
     {
         $seller = Auth::user()->sellerProfile;
 
-        return view('seller.shop.edit', compact('seller'));
+        if ($request->expectsJson()) {
+            return response()->json(compact('seller'));
+        }
+
+        return view('welcome');
     }
 
-    public function update(Request $request): RedirectResponse
+    public function update(Request $request)
     {
         $data = $request->validate([
             'shop_name' => ['required', 'string', 'max:255'],
@@ -49,6 +51,10 @@ class ShopController extends Controller
 
             SellerProfile::create($data);
 
+            if ($request->expectsJson()) {
+                return response()->json(['success' => true, 'message' => 'Shop profile created! Waiting for admin approval.']);
+            }
+
             return redirect()->route('seller.shop.edit')
                 ->with('success', 'Shop profile created! Waiting for admin approval.');
         }
@@ -69,6 +75,10 @@ class ShopController extends Controller
         }
 
         $seller->update($data);
+
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'message' => 'Shop profile updated successfully.']);
+        }
 
         return redirect()->route('seller.shop.edit')
             ->with('success', 'Shop profile updated successfully.');

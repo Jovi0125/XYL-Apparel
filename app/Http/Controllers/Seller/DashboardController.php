@@ -5,12 +5,12 @@ namespace App\Http\Controllers\Seller;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\Product;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
-    public function index(): View
+    public function index(Request $request)
     {
         $seller = Auth::user()->sellerProfile;
 
@@ -32,6 +32,10 @@ class DashboardController extends Controller
             ];
         }
 
-        return view('seller.dashboard', compact('stats', 'seller'));
+        if ($request->expectsJson()) {
+            return response()->json(compact('stats', 'seller'));
+        }
+
+        return view('welcome');
     }
 }

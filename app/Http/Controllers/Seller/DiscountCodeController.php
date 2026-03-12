@@ -5,10 +5,8 @@ namespace App\Http\Controllers\Seller;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Seller\DiscountCodeRequest;
 use App\Models\DiscountCode;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\View\View;
 
 class DiscountCodeController extends Controller
 {
@@ -17,7 +15,7 @@ class DiscountCodeController extends Controller
         return Auth::user()->sellerProfile;
     }
 
-    public function index(Request $request): View
+    public function index(Request $request)
     {
         $seller = $this->seller();
 
@@ -27,15 +25,23 @@ class DiscountCodeController extends Controller
             ->paginate(15)
             ->withQueryString();
 
-        return view('seller.discounts.index', compact('discounts'));
+        if ($request->expectsJson()) {
+            return response()->json(compact('discounts'));
+        }
+
+        return view('welcome');
     }
 
-    public function create(): View
+    public function create(Request $request)
     {
-        return view('seller.discounts.create');
+        if ($request->expectsJson()) {
+            return response()->json([]);
+        }
+
+        return view('welcome');
     }
 
-    public function store(DiscountCodeRequest $request): RedirectResponse
+    public function store(DiscountCodeRequest $request)
     {
         $seller = $this->seller();
 
@@ -51,19 +57,27 @@ class DiscountCodeController extends Controller
             'is_active' => $request->boolean('is_active', true),
         ]);
 
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'message' => 'Discount code created successfully.']);
+        }
+
         return redirect()->route('seller.discounts.index')
             ->with('success', 'Discount code created successfully.');
     }
 
-    public function edit(DiscountCode $discount): View
+    public function edit(Request $request, DiscountCode $discount)
     {
         $seller = $this->seller();
         abort_if($discount->seller_profile_id !== $seller->id, 403);
 
-        return view('seller.discounts.edit', compact('discount'));
+        if ($request->expectsJson()) {
+            return response()->json(compact('discount'));
+        }
+
+        return view('welcome');
     }
 
-    public function update(DiscountCodeRequest $request, DiscountCode $discount): RedirectResponse
+    public function update(DiscountCodeRequest $request, DiscountCode $discount)
     {
         $seller = $this->seller();
         abort_if($discount->seller_profile_id !== $seller->id, 403);
@@ -79,16 +93,24 @@ class DiscountCodeController extends Controller
             'is_active' => $request->boolean('is_active', true),
         ]);
 
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'message' => 'Discount code updated successfully.']);
+        }
+
         return redirect()->route('seller.discounts.index')
             ->with('success', 'Discount code updated successfully.');
     }
 
-    public function destroy(DiscountCode $discount): RedirectResponse
+    public function destroy(Request $request, DiscountCode $discount)
     {
         $seller = $this->seller();
         abort_if($discount->seller_profile_id !== $seller->id, 403);
 
         $discount->delete();
+
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'message' => 'Discount code deleted successfully.']);
+        }
 
         return redirect()->route('seller.discounts.index')
             ->with('success', 'Discount code deleted successfully.');

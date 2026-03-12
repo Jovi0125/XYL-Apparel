@@ -6,17 +6,15 @@ use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use App\Models\Product;
 use App\Models\ProductVariant;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\View\View;
 
 class CartController extends Controller
 {
     /**
      * Show the cart page.
      */
-    public function index(): View
+    public function index(Request $request)
     {
         $cartItems = Cart::where('user_id', Auth::id())
             ->with(['product.primaryImage', 'product.sellerProfile', 'variant'])
@@ -29,13 +27,17 @@ class CartController extends Controller
             return $price * $item->quantity;
         });
 
-        return view('customer.cart.index', compact('cartItems', 'subtotal'));
+        if ($request->expectsJson()) {
+            return response()->json(compact('cartItems', 'subtotal'));
+        }
+
+        return view('welcome');
     }
 
     /**
      * Add a product to the cart.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
         $request->validate([
             'product_id' => 'required|exists:products,id',
@@ -55,6 +57,9 @@ class CartController extends Controller
 
             // Check stock
             if ($variant->stock < $request->quantity) {
+                if ($request->expectsJson()) {
+                    return response()->json(['success' => false, 'message' => 'Not enough stock available for this variant.'], 422);
+                }
                 return back()->with('error', 'Not enough stock available for this variant.');
             }
         }
@@ -76,13 +81,17 @@ class CartController extends Controller
             ]);
         }
 
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'message' => 'Item added to cart.']);
+        }
+
         return back()->with('success', 'Item added to cart.');
     }
 
     /**
      * Update cart item quantity.
      */
-    public function update(Request $request, Cart $cart): RedirectResponse
+    public function update(Request $request, Cart $cart)
     {
         abort_if($cart->user_id !== Auth::id(), 403);
 
@@ -94,11 +103,18 @@ class CartController extends Controller
         if ($cart->product_variant_id) {
             $variant = ProductVariant::find($cart->product_variant_id);
             if ($variant && $variant->stock < $request->quantity) {
+                if ($request->expectsJson()) {
+                    return response()->json(['success' => false, 'message' => 'Not enough stock available.'], 422);
+                }
                 return back()->with('error', 'Not enough stock available.');
             }
         }
 
         $cart->update(['quantity' => $request->quantity]);
+
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'message' => 'Cart updated.']);
+        }
 
         return back()->with('success', 'Cart updated.');
     }
@@ -106,11 +122,15 @@ class CartController extends Controller
     /**
      * Remove an item from the cart.
      */
-    public function destroy(Cart $cart): RedirectResponse
+    public function destroy(Request $request, Cart $cart)
     {
         abort_if($cart->user_id !== Auth::id(), 403);
 
         $cart->delete();
+
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'message' => 'Item removed from cart.']);
+        }
 
         return back()->with('success', 'Item removed from cart.');
     }
@@ -118,9 +138,13 @@ class CartController extends Controller
     /**
      * Clear the entire cart.
      */
-    public function clear(): RedirectResponse
+    public function clear(Request $request)
     {
         Cart::where('user_id', Auth::id())->delete();
+
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'message' => 'Cart cleared.']);
+        }
 
         return back()->with('success', 'Cart cleared.');
     }

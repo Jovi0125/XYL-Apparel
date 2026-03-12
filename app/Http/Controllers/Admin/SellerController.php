@@ -4,13 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\SellerProfile;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
 
 class SellerController extends Controller
 {
-    public function index(Request $request): View
+    public function index(Request $request)
     {
         $sellers = SellerProfile::with('user')
             ->when($request->search, fn ($q, $s) => $q->where('shop_name', 'like', "%{$s}%"))
@@ -19,10 +17,14 @@ class SellerController extends Controller
             ->paginate(20)
             ->withQueryString();
 
-        return view('admin.sellers.index', compact('sellers'));
+        if ($request->expectsJson()) {
+            return response()->json(compact('sellers'));
+        }
+
+        return view('welcome');
     }
 
-    public function show(SellerProfile $seller): View
+    public function show(Request $request, SellerProfile $seller)
     {
         $seller->load(['user', 'products', 'orders']);
 
@@ -33,26 +35,42 @@ class SellerController extends Controller
             'platform_fees' => $seller->orders()->where('order_status', 'completed')->sum('platform_fee'),
         ];
 
-        return view('admin.sellers.show', compact('seller', 'stats'));
+        if ($request->expectsJson()) {
+            return response()->json(compact('seller', 'stats'));
+        }
+
+        return view('welcome');
     }
 
-    public function approve(SellerProfile $seller): RedirectResponse
+    public function approve(Request $request, SellerProfile $seller)
     {
         $seller->update(['status' => 'approved']);
+
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'message' => "{$seller->shop_name} has been approved."]);
+        }
 
         return back()->with('success', "{$seller->shop_name} has been approved.");
     }
 
-    public function ban(SellerProfile $seller): RedirectResponse
+    public function ban(Request $request, SellerProfile $seller)
     {
         $seller->update(['status' => 'banned']);
+
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'message' => "{$seller->shop_name} has been banned."]);
+        }
 
         return back()->with('success', "{$seller->shop_name} has been banned.");
     }
 
-    public function unban(SellerProfile $seller): RedirectResponse
+    public function unban(Request $request, SellerProfile $seller)
     {
         $seller->update(['status' => 'approved']);
+
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'message' => "{$seller->shop_name} has been unbanned."]);
+        }
 
         return back()->with('success', "{$seller->shop_name} has been unbanned.");
     }

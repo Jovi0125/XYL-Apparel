@@ -5,11 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
 
 class OrderController extends Controller
 {
-    public function index(Request $request): View
+    public function index(Request $request)
     {
         $orders = Order::with(['customer', 'sellerProfile'])
             ->when($request->search, fn ($q, $s) => $q->where('order_number', 'like', "%{$s}%"))
@@ -18,13 +17,21 @@ class OrderController extends Controller
             ->paginate(20)
             ->withQueryString();
 
-        return view('admin.orders.index', compact('orders'));
+        if ($request->expectsJson()) {
+            return response()->json(compact('orders'));
+        }
+
+        return view('welcome');
     }
 
-    public function show(Order $order): View
+    public function show(Request $request, Order $order)
     {
         $order->load(['customer', 'sellerProfile', 'items.product', 'shipment.logisticsProfile', 'shipment.trackingEvents']);
 
-        return view('admin.orders.show', compact('order'));
+        if ($request->expectsJson()) {
+            return response()->json(compact('order'));
+        }
+
+        return view('welcome');
     }
 }

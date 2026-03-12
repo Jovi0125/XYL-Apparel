@@ -6,14 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Models\Shipment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\View\View;
 
 class ShipmentController extends Controller
 {
     /**
      * List all shipments assigned to this rider.
      */
-    public function index(Request $request): View
+    public function index(Request $request)
     {
         $profile = Auth::user()->logisticsProfile;
         abort_if(! $profile, 403, 'Logistics profile not set up.');
@@ -38,13 +37,17 @@ class ShipmentController extends Controller
             ->paginate(15)
             ->withQueryString();
 
-        return view('logistics.shipments.index', compact('shipments'));
+        if ($request->expectsJson()) {
+            return response()->json(compact('shipments'));
+        }
+
+        return view('welcome');
     }
 
     /**
      * Show shipment details.
      */
-    public function show(Shipment $shipment): View
+    public function show(Request $request, Shipment $shipment)
     {
         $profile = Auth::user()->logisticsProfile;
         abort_if(! $profile || $shipment->logistics_profile_id !== $profile->id, 403);
@@ -57,7 +60,11 @@ class ShipmentController extends Controller
             'proofOfDelivery',
         ]);
 
-        return view('logistics.shipments.show', compact('shipment'));
+        if ($request->expectsJson()) {
+            return response()->json(compact('shipment'));
+        }
+
+        return view('welcome');
     }
 
     /**
@@ -97,6 +104,12 @@ class ShipmentController extends Controller
             'created_by' => Auth::id(),
         ]);
 
-        return back()->with('success', 'Shipment status updated to ' . str_replace('_', ' ', $newStatus) . '.');
+        $message = 'Shipment status updated to ' . str_replace('_', ' ', $newStatus) . '.';
+
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'message' => $message]);
+        }
+
+        return back()->with('success', $message);
     }
 }

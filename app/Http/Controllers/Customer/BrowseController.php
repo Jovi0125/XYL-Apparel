@@ -7,14 +7,13 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\SellerProfile;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
 
 class BrowseController extends Controller
 {
     /**
      * Browse / search products.
      */
-    public function index(Request $request): View
+    public function index(Request $request)
     {
         $query = Product::query()
             ->where('is_active', true)
@@ -61,13 +60,17 @@ class BrowseController extends Controller
 
         $categories = Category::where('is_active', true)->orderBy('sort_order')->get();
 
-        return view('customer.browse.index', compact('products', 'categories'));
+        if ($request->expectsJson()) {
+            return response()->json(compact('products', 'categories'));
+        }
+
+        return view('welcome');
     }
 
     /**
      * Show a single product with details.
      */
-    public function show(Product $product): View
+    public function show(Request $request, Product $product)
     {
         abort_if(! $product->is_active, 404);
 
@@ -89,13 +92,17 @@ class BrowseController extends Controller
             ->take(4)
             ->get();
 
-        return view('customer.browse.show', compact('product', 'isWishlisted', 'relatedProducts'));
+        if ($request->expectsJson()) {
+            return response()->json(compact('product', 'isWishlisted', 'relatedProducts'));
+        }
+
+        return view('welcome');
     }
 
     /**
      * Show a seller's shop page.
      */
-    public function shop(SellerProfile $sellerProfile): View
+    public function shop(Request $request, SellerProfile $sellerProfile)
     {
         abort_if($sellerProfile->status !== 'approved', 404);
 
@@ -105,6 +112,10 @@ class BrowseController extends Controller
             ->latest()
             ->paginate(12);
 
-        return view('customer.browse.shop', compact('sellerProfile', 'products'));
+        if ($request->expectsJson()) {
+            return response()->json(compact('sellerProfile', 'products'));
+        }
+
+        return view('welcome');
     }
 }

@@ -6,15 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
 
 class OrderController extends Controller
 {
     /**
      * List the customer's orders.
      */
-    public function index(Request $request): View
+    public function index(Request $request)
     {
         $query = Order::where('customer_id', Auth::id());
 
@@ -33,13 +31,17 @@ class OrderController extends Controller
             ->paginate(10)
             ->withQueryString();
 
-        return view('customer.orders.index', compact('orders'));
+        if ($request->expectsJson()) {
+            return response()->json(compact('orders'));
+        }
+
+        return view('welcome');
     }
 
     /**
      * Show a single order detail with tracking.
      */
-    public function show(Order $order): View
+    public function show(Request $request, Order $order)
     {
         abort_if($order->customer_id !== Auth::id(), 403);
 
@@ -51,17 +53,24 @@ class OrderController extends Controller
             'shipment.proofOfDelivery',
         ]);
 
-        return view('customer.orders.show', compact('order'));
+        if ($request->expectsJson()) {
+            return response()->json(compact('order'));
+        }
+
+        return view('welcome');
     }
 
     /**
      * Cancel an order (only if still pending).
      */
-    public function cancel(Order $order): RedirectResponse
+    public function cancel(Request $request, Order $order)
     {
         abort_if($order->customer_id !== Auth::id(), 403);
 
         if ($order->order_status !== 'pending') {
+            if ($request->expectsJson()) {
+                return response()->json(['success' => false, 'message' => 'Only pending orders can be cancelled.'], 422);
+            }
             return back()->with('error', 'Only pending orders can be cancelled.');
         }
 
@@ -73,6 +82,10 @@ class OrderController extends Controller
                 \App\Models\ProductVariant::where('id', $item->product_variant_id)
                     ->increment('stock', $item->quantity);
             }
+        }
+
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'message' => 'Order cancelled successfully.']);
         }
 
         return back()->with('success', 'Order cancelled successfully.');

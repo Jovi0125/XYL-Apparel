@@ -5,18 +5,18 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\View\View;
 
 class RegisterController extends Controller
 {
-    public function showRegistrationForm(): View
+    public function showRegistrationForm()
     {
-        return view('auth.register');
+        return view('welcome');
     }
 
-    public function register(RegisterRequest $request): RedirectResponse
+    public function register(RegisterRequest $request): JsonResponse|RedirectResponse
     {
         $user = User::create([
             'name' => $request->name,
@@ -28,9 +28,15 @@ class RegisterController extends Controller
 
         Auth::login($user);
 
-        return match ($user->role) {
-            'seller' => redirect()->route('seller.dashboard'),
-            default => redirect()->route('customer.dashboard'),
+        $redirect = match ($user->role) {
+            'seller' => '/seller/dashboard',
+            default => '/dashboard',
         };
+
+        if ($request->expectsJson()) {
+            return response()->json(['redirect' => $redirect, 'user' => $user]);
+        }
+
+        return redirect($redirect);
     }
 }

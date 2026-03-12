@@ -10,24 +10,25 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\ProductVariant;
 use App\Models\SystemSetting;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\View\View;
 
 class CheckoutController extends Controller
 {
     /**
      * Show the checkout page.
      */
-    public function index(): View
+    public function index(Request $request)
     {
         $cartItems = Cart::where('user_id', Auth::id())
             ->with(['product.primaryImage', 'product.sellerProfile', 'variant'])
             ->get();
 
         if ($cartItems->isEmpty()) {
+            if ($request->expectsJson()) {
+                return response()->json(['error' => 'Your cart is empty.'], 422);
+            }
             return redirect()->route('customer.cart.index')
                 ->with('error', 'Your cart is empty.');
         }
@@ -44,7 +45,11 @@ class CheckoutController extends Controller
             return $price * $item->quantity;
         });
 
-        return view('customer.checkout.index', compact('cartItems', 'grouped', 'subtotal', 'shippingFee'));
+        if ($request->expectsJson()) {
+            return response()->json(compact('cartItems', 'grouped', 'subtotal', 'shippingFee'));
+        }
+
+        return view('welcome');
     }
 
     /**
@@ -57,11 +62,18 @@ class CheckoutController extends Controller
         $discount = DiscountCode::where('code', $request->code)->first();
 
         if (! $discount || ! $discount->isValid()) {
+            if ($request->expectsJson()) {
+                return response()->json(['success' => false, 'message' => 'Invalid or expired discount code.'], 422);
+            }
             return back()->with('error', 'Invalid or expired discount code.');
         }
 
         // Store in session
         session(['discount_code_id' => $discount->id, 'discount_code' => $discount->code]);
+
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'message' => "Discount code \"{$discount->code}\" applied!", 'discount' => $discount]);
+        }
 
         return back()->with('success', "Discount code \"{$discount->code}\" applied!");
     }
@@ -69,9 +81,13 @@ class CheckoutController extends Controller
     /**
      * Remove applied discount.
      */
-    public function removeDiscount(): RedirectResponse
+    public function removeDiscount(Request $request)
     {
         session()->forget(['discount_code_id', 'discount_code']);
+
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'message' => 'Discount code removed.']);
+        }
 
         return back()->with('success', 'Discount code removed.');
     }
@@ -79,7 +95,7 @@ class CheckoutController extends Controller
     /**
      * Place the order.
      */
-    public function store(CheckoutRequest $request): RedirectResponse
+    public function store(CheckoutRequest $request)
     {
         $user = Auth::user();
 
@@ -88,6 +104,9 @@ class CheckoutController extends Controller
             ->get();
 
         if ($cartItems->isEmpty()) {
+            if ($request->expectsJson()) {
+                return response()->json(['error' => 'Your cart is empty.'], 422);
+            }
             return redirect()->route('customer.cart.index')
                 ->with('error', 'Your cart is empty.');
         }
@@ -187,6 +206,10 @@ class CheckoutController extends Controller
             // Clear discount session
             session()->forget(['discount_code_id', 'discount_code']);
         });
+
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'message' => 'Order placed successfully! Seller will process your order.']);
+        }
 
         return redirect()->route('customer.orders.index')
             ->with('success', 'Order placed successfully! Seller will process your order.');
