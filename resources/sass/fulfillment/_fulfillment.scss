@@ -1,0 +1,18 @@
+// Fulfillment Staff Styles
+.fulfillment-layout {
+    .pipeline-card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+    }
+
+    .status-badge {
+        &--pending { background: #fef3c7; color: #92400e; }
+        &--picking { background: #dbeafe; color: #1e40af; }
+        &--packing { background: #e0e7ff; color: #3730a3; }
+        &--shipped { background: #d1fae5; color: #065f46; }
+        &--delivered { background: #a7f3d0; color: #064e3b; }
+    }
+}

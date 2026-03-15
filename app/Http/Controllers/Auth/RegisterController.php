@@ -23,14 +23,17 @@ class RegisterController extends Controller
             'email' => $request->email,
             'phone' => $request->phone,
             'password' => $request->password,
-            'role' => $request->role,
+            'role' => $request->role ?? 'customer',
         ]);
 
         Auth::login($user);
 
         $redirect = match ($user->role) {
-            'seller' => '/seller/dashboard',
-            default => '/dashboard',
+            'admin'             => '/admin/dashboard',
+            'inventory_staff'   => '/inventory/dashboard',
+            'fulfillment_staff' => '/fulfillment/dashboard',
+            'support_staff'     => '/support/dashboard',
+            default             => '/customer/dashboard',
         };
 
         if ($request->expectsJson()) {

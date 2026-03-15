@@ -39,10 +39,11 @@ class LoginController extends Controller
         $request->session()->regenerate();
 
         $redirect = match ($user->role) {
-            'admin' => '/admin/dashboard',
-            'seller' => '/seller/dashboard',
-            'logistics' => '/logistics/dashboard',
-            default => '/dashboard',
+            'admin'            => '/admin/dashboard',
+            'inventory_staff'  => '/inventory/dashboard',
+            'fulfillment_staff' => '/fulfillment/dashboard',
+            'support_staff'    => '/support/dashboard',
+            default            => '/customer/dashboard',
         };
 
         if ($request->expectsJson()) {

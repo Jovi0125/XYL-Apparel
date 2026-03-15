@@ -1,0 +1,21 @@
+// Inventory Staff Styles
+.inventory-layout {
+    .stat-card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+    }
+
+    .stock-status {
+        &--low {
+            color: #dc2626;
+            font-weight: 600;
+        }
+        &--ok {
+            color: #16a34a;
+            font-weight: 600;
+        }
+    }
+}

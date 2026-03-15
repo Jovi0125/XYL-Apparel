@@ -41,19 +41,24 @@ class User extends Authenticatable
         return $this->role === 'admin';
     }
 
-    public function isSeller(): bool
-    {
-        return $this->role === 'seller';
-    }
-
     public function isCustomer(): bool
     {
         return $this->role === 'customer';
     }
 
-    public function isLogistics(): bool
+    public function isInventoryStaff(): bool
     {
-        return $this->role === 'logistics';
+        return $this->role === 'inventory_staff';
+    }
+
+    public function isFulfillmentStaff(): bool
+    {
+        return $this->role === 'fulfillment_staff';
+    }
+
+    public function isSupportStaff(): bool
+    {
+        return $this->role === 'support_staff';
     }
 
     public function hasRole(string $role): bool
@@ -62,16 +67,6 @@ class User extends Authenticatable
     }
 
     // ── Relationships ──
-
-    public function sellerProfile()
-    {
-        return $this->hasOne(SellerProfile::class);
-    }
-
-    public function logisticsProfile()
-    {
-        return $this->hasOne(LogisticsProfile::class);
-    }
 
     public function orders()
     {
@@ -86,5 +81,25 @@ class User extends Authenticatable
     public function carts()
     {
         return $this->hasMany(Cart::class);
+    }
+
+    public function supportTickets()
+    {
+        return $this->hasMany(SupportTicket::class);
+    }
+
+    public function assignedTickets()
+    {
+        return $this->hasMany(SupportTicket::class, 'assigned_to');
+    }
+
+    public function assignedFulfillments()
+    {
+        return $this->hasMany(Fulfillment::class, 'assigned_to');
+    }
+
+    public function inventoryTransactions()
+    {
+        return $this->hasMany(InventoryTransaction::class);
     }
 }

@@ -11,6 +11,7 @@
 
 // Components
 @import "auth/auth";
-@import "seller/seller";
 @import "customer/store";
-@import 'logistics/logistics';
+@import "inventory/inventory";
+@import "fulfillment/fulfillment";
+@import "support/support";
