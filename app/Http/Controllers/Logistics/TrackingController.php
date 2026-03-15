@@ -17,7 +17,7 @@ class TrackingController extends Controller
     {
         $profile = Auth::user()->logisticsProfile;
         abort_if(! $profile || $shipment->logistics_profile_id !== $profile->id, 403);
-
+        
         $shipment->load('trackingEvents.creator');
 
         if ($request->expectsJson()) {
@@ -34,14 +34,18 @@ class TrackingController extends Controller
     {
         $profile = Auth::user()->logisticsProfile;
         abort_if(! $profile || $shipment->logistics_profile_id !== $profile->id, 403);
-
+        
         $request->validate([
             'status' => 'required|string|max:255',
             'location_text' => 'nullable|string|max:255',
             'remarks' => 'nullable|string|max:1000',
         ]);
 
-        ShipmentTrackingEvent::create([
+        $shipment->update([
+            'delivery_status' => $request->status,
+        ]);
+
+        $event = ShipmentTrackingEvent::create([
             'shipment_id' => $shipment->id,
             'status' => $request->status,
             'location_text' => $request->location_text,
@@ -50,7 +54,12 @@ class TrackingController extends Controller
         ]);
 
         if ($request->expectsJson()) {
-            return response()->json(['success' => true, 'message' => 'Tracking event added.']);
+            return response()->json([
+                'success' => true, 
+                'message' => 'Tracking event added.',
+                'event' => $event,
+                'status' => $request->status
+            ]);
         }
 
         return redirect()->route('logistics.shipments.show', $shipment)

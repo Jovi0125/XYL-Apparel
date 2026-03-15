@@ -20,7 +20,7 @@ export default function LogisticsDashboard() {
 
     return (
         <DashboardLayout sidebar={<LogisticsSidebar />} pageTitle="Logistics Dashboard">
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+            <div className="dashboard-stats-grid">
                 <StatCard title="Pending Pickup" value={stats.pending.toLocaleString()} />
                 <StatCard title="In Transit" value={stats.in_transit.toLocaleString()} />
                 <StatCard title="Delivered" value={stats.delivered.toLocaleString()} />

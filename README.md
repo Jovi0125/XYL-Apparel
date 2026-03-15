@@ -22,123 +22,42 @@ A full-featured multi-vendor fashion e-commerce marketplace built with **Laravel
 14. [Screenshots Roadmap](#screenshots-roadmap)
 15. [License](#license)
 
----
+## Project Structure
 
-## Project Overview
-
-**XYLO APPAREL** is a curated multi-vendor fashion marketplace inspired by minimalist e-commerce platforms like UNIQLO. It connects independent fashion sellers with customers in a single platform, with built-in logistics and delivery tracking.
-
-### How It Works
-
-1. **Sellers** register, set up their shop profile, and list products with variants (sizes, colors, stock, SKU).
-2. **Customers** browse products across all sellers, add to cart, apply discount codes, and checkout.
-3. **Logistics** couriers receive shipment assignments, update delivery status, and upload proof of delivery.
-4. **Admins** oversee the entire platform — manage users, approve sellers, view orders, configure settings, and generate reports.
-
----
-
-## Features
-
-### Admin Module
-- Dashboard with platform-wide statistics (revenue, users, orders, sellers)
-- Category management (CRUD with parent/child hierarchy)
-- User management with ban/unban functionality
-- Seller approvals with approve/ban/unban controls
-- Order monitoring across all sellers
-- Platform settings (commission rate, shipping fee, currency)
-- Reports & analytics (seller performance, product performance, revenue by period)
-
-### Seller Module
-- Dashboard with sales stats, recent orders, low stock alerts
-- Shop profile management (name, bio, logo, banner, address, hours)
-- Product management (CRUD with variants, images, specifications)
-- Order management with status updates (pending → processing → ready → completed)
-- Discount code management (percentage or fixed, min order, expiry dates)
-- Sales reports and product analytics
-
-### Customer Module
-- Public landing page with collections, features, and call-to-action sections
-- Browse products with category filtering and seller shop pages
-- Product detail pages with variant selection
-- Shopping cart with quantity management
-- Checkout with discount code application and multiple payment methods
-- Wishlist functionality (add/remove toggle)
-- Order history with cancellation option
-- Profile and password management
-
-### Logistics Module
-- Dashboard with shipment statistics and pending deliveries
-- Shipment listing with status filters
-- Delivery status updates (unassigned → assigned → picked up → in transit → out for delivery → delivered → failed)
-- Tracking event creation with location and remarks
-- Proof of delivery upload (photo + signature + receiver name)
-- Profile management
-
-### Platform-Wide
-- Role-based authentication (admin, seller, customer, logistics)
-- Role middleware protecting all route groups
-- Responsive UI with Tailwind CSS v4 and Alpine.js interactivity
-- Dashboard layout with collapsible sidebar navigation
-- Polished landing page with hero, stats, collections grid, features, and footer
-
----
-
-## Tech Stack & Dependencies
-
-### Backend (PHP / Composer)
-
-| Package | Version | Purpose |
-|---------|---------|---------|
-| PHP | ^8.2 | Runtime |
-| Laravel Framework | ^12.0 | Core MVC framework |
-| Laravel Tinker | ^2.10.1 | REPL for debugging and testing |
-| Faker PHP | ^1.23 | Test data generation (dev) |
-| Laravel Pail | ^1.2.2 | Real-time log viewer (dev) |
-| Laravel Pint | ^1.24 | Code style fixer (dev) |
-| Laravel Sail | ^1.41 | Docker dev environment (dev) |
-| Mockery | ^1.6 | Mocking framework for tests (dev) |
-| Nunomaduro Collision | ^8.6 | Pretty error reporting (dev) |
-| PHPUnit | ^11.5.3 | Unit & feature testing (dev) |
-
-### Frontend (Node.js / npm)
-
-| Package | Version | Purpose |
-|---------|---------|---------|
-| Vite | ^7.0.7 | Build tool and dev server |
-| Laravel Vite Plugin | ^2.0.0 | Laravel integration for Vite |
-| Tailwind CSS | ^4.0.0 | Utility-first CSS framework |
-| @tailwindcss/vite | ^4.0.0 | Tailwind CSS Vite plugin |
-| Alpine.js | ^3.15.8 | Lightweight JS framework for interactivity |
-| Axios | ^1.11.0 | HTTP client for API requests |
-| Concurrently | ^9.0.1 | Run multiple commands in parallel (dev) |
-
-### Infrastructure
-
-| Tool | Purpose |
-|------|---------|
-| XAMPP | Local PHP + MySQL server |
-| MySQL | Database engine |
-| Node.js | JavaScript runtime for build tools |
-| Composer | PHP dependency manager |
-| npm | Node.js package manager |
-| Git | Version control |
-
----
-
-## Prerequisites
-
-Before setting up this project, make sure you have the following installed on your machine:
-
-1. **XAMPP** (or any local server with PHP ^8.2 and MySQL)
-   - Download: https://www.apachefriends.org/
-   - Make sure Apache and MySQL services are running
-
-2. **Composer** (PHP dependency manager)
-   - Download: https://getcomposer.org/download/
-   - Verify: `composer --version`
-
-3. **Node.js** (v18 or higher recommended) and **npm**
-   - Download: https://nodejs.org/
+```
+XYLO_APPAREL/
+├── artisan
+├── composer.json
+├── package.json
+├── README.md
+├── vite.config.js
+├── .env
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   ├── Middleware/
+│   │   └── Requests/
+│   ├── Models/
+│   └── Providers/
+├── bootstrap/
+│   ├── app.php
+│   └── providers.php
+├── config/
+├── database/
+│   ├── factories/
+│   ├── migrations/
+│   └── seeders/
+├── public/
+│   ├── index.php
+│   └── build/
+├── resources/
+│   ├── css/
+│   ├── js/
+│   └── views/
+├── routes/
+├── storage/
+└── vendor/
+```
    - Verify: `node -v` and `npm -v`
 
 4. **Git**
@@ -437,8 +356,100 @@ XYLO_APPAREL/
 │   ├── css/
 │   │   └── app.css                        # Tailwind CSS v4 imports + Inter font
 │   ├── js/
-│   │   ├── app.js                         # Alpine.js + Axios bootstrap
-│   │   └── bootstrap.js                   # Axios defaults
+│   │   ├── app.js                         # Entry (imports components/App)
+│   │   ├── bootstrap.js                   # Axios defaults
+│   │   └── components/                    # React/JSX UI components
+│   │       ├── App.jsx
+│   │       ├── Welcome.jsx
+│   │       ├── admin/
+│   │       │   ├── Dashboard.jsx
+│   │       │   ├── categories/
+│   │       │   │   ├── Create.jsx
+│   │       │   │   ├── Edit.jsx
+│   │       │   │   └── Index.jsx
+│   │       │   ├── orders/
+│   │       │   │   ├── Index.jsx
+│   │       │   │   └── Show.jsx
+│   │       │   ├── partials/
+│   │       │   │   └── Sidebar.jsx
+│   │       │   ├── reports/
+│   │       │   │   ├── Index.jsx
+│   │       │   │   ├── Products.jsx
+│   │       │   │   └── Sellers.jsx
+│   │       │   ├── sellers/
+│   │       │   │   ├── Index.jsx
+│   │       │   │   └── Show.jsx
+│   │       │   ├── settings/
+│   │       │   │   └── Index.jsx
+│   │       │   └── users/
+│   │       │       ├── Index.jsx
+│   │       │       └── Show.jsx
+│   │       ├── auth/
+│   │       │   ├── Login.jsx
+│   │       │   └── Register.jsx
+│   │       ├── dashboard/
+│   │       │   ├── Dashboard.jsx
+│   │       │   ├── Dashboard.module.scss
+│   │       │   └── DashboardWidget.jsx
+│   │       ├── layouts/
+│   │       │   ├── DashboardLayout.jsx
+│   │       │   └── GuestLayout.jsx
+│   │       ├── logistics/
+│   │       │   ├── Dashboard.jsx
+│   │       │   ├── partials/
+│   │       │   │   └── Sidebar.jsx
+│   │       │   ├── pod/
+│   │       │   │   └── Create.jsx
+│   │       │   ├── profile/
+│   │       │   │   └── Edit.jsx
+│   │       │   ├── shipments/
+│   │       │   │   ├── Index.jsx
+│   │       │   │   └── Show.jsx
+│   │       │   └── tracking/
+│   │       │       └── Create.jsx
+│   │       ├── partials/
+│   │       │   ├── Sidebar.jsx
+│   │       │   ├── SidebarLink.jsx
+│   │       │   └── StatCard.jsx
+│   │       ├── seller/
+│   │       │   ├── Dashboard.jsx
+│   │       │   ├── discounts/
+│   │       │   │   ├── Create.jsx
+│   │       │   │   ├── Edit.jsx
+│   │       │   │   └── Index.jsx
+│   │       │   ├── orders/
+│   │       │   │   ├── Index.jsx
+│   │       │   │   └── Show.jsx
+│   │       │   ├── partials/
+│   │       │   │   └── Sidebar.jsx
+│   │       │   ├── products/
+│   │       │   │   ├── Create.jsx
+│   │       │   │   ├── Edit.jsx
+│   │       │   │   ├── Index.jsx
+│   │       │   │   └── Show.jsx
+│   │       │   ├── reports/
+│   │       │   │   ├── Index.jsx
+│   │       │   │   └── Products.jsx
+│   │       │   └── shop/
+│   │       │       └── Edit.jsx
+│   │       └── user/
+│   │           ├── browse/
+│   │           │   ├── Index.jsx
+│   │           │   ├── Shop.jsx
+│   │           │   └── Show.jsx
+│   │           ├── cart/
+│   │           │   └── Index.jsx
+│   │           ├── checkout/
+│   │           │   └── Index.jsx
+│   │           ├── orders/
+│   │           │   ├── Index.jsx
+│   │           │   └── Show.jsx
+│   │           ├── partials/
+│   │           │   └── Sidebar.jsx
+│   │           ├── profile/
+│   │           │   └── Edit.jsx
+│   │           └── wishlist/
+│   │               └── Index.jsx
 │   └── views/                             # 56+ Blade templates
 │       ├── welcome.blade.php              # Public landing page
 │       ├── layouts/

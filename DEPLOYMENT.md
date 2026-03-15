@@ -196,7 +196,7 @@ Your S3-compatible credentials will be:
 
 ### 4.1 Install the S3 Flysystem adapter
 
-```bash
+```bashhheh
 composer require league/flysystem-aws-s3-v3 "^3.0"
 ```
 

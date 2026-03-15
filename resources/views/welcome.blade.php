@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:300,400,500,600,700" rel="stylesheet" />
     @viteReactRefresh
-    @vite(['resources/css/app.css', 'resources/js/app.jsx'])
+    @vite(['resources/sass/app.scss', 'resources/css/app.css', 'resources/js/app.jsx'])
 </head>
 <body class="bg-white text-gray-900 font-sans antialiased min-h-screen">
     <script>

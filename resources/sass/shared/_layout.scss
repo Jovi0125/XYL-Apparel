@@ -1,0 +1,85 @@
+@import '../base/variables';
+
+.dashboard-wrapper {
+  min-height: 100vh;
+  background-color: $color-bg;
+}
+
+// Mobile Header
+.mobile-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  background-color: $color-white;
+  border-bottom: 1px solid $color-border-light;
+  padding: 0 $spacing-md;
+  height: 3.5rem; // h-14
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  @media (min-width: 1024px) {
+    display: none;
+  }
+
+  .brand-logo {
+    font-size: 1.125rem; // text-lg
+    font-weight: bold;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: $color-black;
+  }
+
+  .menu-toggle {
+    padding: $spacing-sm;
+    color: $color-gray;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+}
+
+// Main Content Area
+.main-content {
+  padding-top: 3.5rem; // pt-14 for mobile header
+
+  @media (min-width: 1024px) {
+    margin-left: 16rem; // ml-64
+    padding-top: 0;
+  }
+}
+
+.content-container {
+  padding: $spacing-xl $spacing-md; // py-8 px-4
+
+  @media (min-width: 640px) {
+    padding-left: $spacing-lg;
+    padding-right: $spacing-lg;
+  }
+  
+  @media (min-width: 1024px) {
+    padding-left: $spacing-xl;
+    padding-right: $spacing-xl;
+  }
+}
+
+.page-title {
+  font-size: 1.5rem; // text-2xl
+  font-weight: bold;
+  color: $color-black;
+  margin-bottom: $spacing-lg;
+}
+
+// Mobile Overlay
+.mobile-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background-color: rgba(0, 0, 0, 0.2);
+  
+  @media (min-width: 1024px) {
+    display: none;
+  }
+}
