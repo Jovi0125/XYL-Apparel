@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Customer\CheckoutRequest;
 use App\Models\Cart;
 use App\Models\DiscountCode;
+use App\Models\LogisticsProfile;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\ProductVariant;
+use App\Models\Shipment;
 use App\Models\SystemSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -126,8 +128,9 @@ class CheckoutController extends Controller
 
         // Group cart items by seller
         $grouped = $cartItems->groupBy(fn ($item) => $item->product->seller_profile_id);
+        $activeLogisticsProfile = LogisticsProfile::where('status', 'active')->orderBy('id')->first();
 
-        DB::transaction(function () use ($grouped, $request, $user, $shippingFee, $commissionRate, $discount) {
+        DB::transaction(function () use ($grouped, $request, $user, $shippingFee, $commissionRate, $discount, $activeLogisticsProfile) {
             foreach ($grouped as $sellerProfileId => $items) {
                 $subtotal = $items->sum(function ($item) {
                     $price = $item->variant && $item->variant->price_override
@@ -169,6 +172,18 @@ class CheckoutController extends Controller
                     'payment_method' => 'cod',
                     'payment_status' => 'unpaid',
                     'notes' => $request->notes,
+                ]);
+
+                $sellerAddress = optional($items->first()->product->sellerProfile)->address;
+
+                Shipment::create([
+                    'order_id' => $order->id,
+                    'tracking_number' => Shipment::generateTrackingNumber(),
+                    'logistics_profile_id' => $activeLogisticsProfile?->id,
+                    'delivery_status' => $activeLogisticsProfile ? 'assigned' : 'unassigned',
+                    'pickup_address' => $sellerAddress ?: 'Seller address not available',
+                    'delivery_address' => trim(($request->shipping_address ?? '') . ', ' . ($request->shipping_city ?? ''), ', '),
+                    'assigned_at' => $activeLogisticsProfile ? now() : null,
                 ]);
 
                 foreach ($items as $item) {

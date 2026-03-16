@@ -75,7 +75,7 @@ export default function ShipmentsIndex() {
 
             <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
                 <div className="border-b border-gray-200 px-6 py-4">
-                    <h3 className="text-xl font-semibold text-gray-900">Recent Shipments</h3>
+                    <h3 className="text-lg font-semibold text-gray-900">Recent Shipments</h3>
                 </div>
 
                 <div className="overflow-x-auto">

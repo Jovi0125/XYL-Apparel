@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Logistics;
 
 use App\Http\Controllers\Controller;
+use App\Models\Order;
 use App\Models\Shipment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,6 +17,24 @@ class ShipmentController extends Controller
     {
         $profile = Auth::user()->logisticsProfile;
         abort_if(! $profile, 403, 'Logistics profile not set up.');
+
+        // Backfill missing shipment rows for orders created before shipment auto-creation existed.
+        Order::doesntHave('shipment')
+            ->where('order_status', '!=', 'cancelled')
+            ->with('sellerProfile')
+            ->chunkById(200, function ($orders) use ($profile) {
+                foreach ($orders as $order) {
+                    Shipment::create([
+                        'order_id' => $order->id,
+                        'tracking_number' => Shipment::generateTrackingNumber(),
+                        'logistics_profile_id' => $profile->id,
+                        'delivery_status' => 'assigned',
+                        'pickup_address' => $order->sellerProfile?->address ?: 'Seller address not available',
+                        'delivery_address' => trim(($order->shipping_address ?? '') . ', ' . ($order->shipping_city ?? ''), ', '),
+                        'assigned_at' => now(),
+                    ]);
+                }
+            });
 
         $query = Shipment::where('logistics_profile_id', $profile->id);
 
