@@ -22,6 +22,8 @@ export default function ProductsIndex() {
         }).catch(err => alert(err.response?.data?.message || 'Failed to delete.'));
     };
 
+    const iconButtonBase = 'inline-flex items-center justify-center p-1.5 rounded-md transition focus:outline-none focus:ring-2 focus:ring-offset-1';
+
     return (
         <DashboardLayout sidebar={<SellerSidebar />} pageTitle="My Products">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
@@ -63,10 +65,43 @@ export default function ProductsIndex() {
                                             {p.is_active ? 'Active' : 'Inactive'}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4 text-right space-x-2">
-                                        <Link to={`/seller/products/${p.id}`} className="text-sm text-blue-600 hover:text-blue-800">View</Link>
-                                        <Link to={`/seller/products/${p.id}/edit`} className="text-sm text-gray-600 hover:text-gray-800">Edit</Link>
-                                        <button onClick={() => handleDelete(p.id)} className="text-sm text-red-600 hover:text-red-800">Delete</button>
+                                    <td className="px-6 py-4 text-right">
+                                        <div className="inline-flex items-center gap-1.5">
+                                            <Link
+                                                to={`/seller/products/${p.id}`}
+                                                className={`${iconButtonBase} text-blue-600 hover:text-blue-800 hover:bg-blue-50 focus:ring-blue-400`}
+                                                title="View product"
+                                                aria-label="View product"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z" />
+                                                    <circle cx="12" cy="12" r="3" />
+                                                </svg>
+                                            </Link>
+                                            <Link
+                                                to={`/seller/products/${p.id}/edit`}
+                                                className={`${iconButtonBase} text-gray-600 hover:text-gray-800 hover:bg-gray-100 focus:ring-gray-400`}
+                                                title="Edit product"
+                                                aria-label="Edit product"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 3.487a2.1 2.1 0 1 1 2.97 2.97L8.25 18.04 4 19l.96-4.25 11.902-11.263Z" />
+                                                </svg>
+                                            </Link>
+                                            <button
+                                                onClick={() => handleDelete(p.id)}
+                                                className={`${iconButtonBase} text-red-600 hover:text-red-800 hover:bg-red-50 focus:ring-red-400`}
+                                                title="Delete product"
+                                                aria-label="Delete product"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 6h18" />
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M8 6V4h8v2" />
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 6l-1 14H6L5 6" />
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M10 10v6M14 10v6" />
+                                                </svg>
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             )) : (

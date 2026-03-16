@@ -18,6 +18,7 @@ export default function UsersIndex() {
 
     const handleBan = (id) => { axios.patch(`/admin/users/${id}/ban`).then(() => setUsers(users.map(u => u.id === id ? { ...u, is_banned: true } : u))).catch(err => alert(err.response?.data?.message || 'Failed.')); };
     const handleUnban = (id) => { axios.patch(`/admin/users/${id}/unban`).then(() => setUsers(users.map(u => u.id === id ? { ...u, is_banned: false } : u))).catch(err => alert(err.response?.data?.message || 'Failed.')); };
+    const iconButtonBase = 'inline-flex items-center justify-center p-1.5 rounded-md transition focus:outline-none focus:ring-2 focus:ring-offset-1';
 
     return (
         <DashboardLayout sidebar={<AdminSidebar />} pageTitle="Users">
@@ -61,13 +62,45 @@ export default function UsersIndex() {
                                         </span>
                                     </td>
                                     <td className="px-6 py-4 text-gray-500">{user.created_at ? new Date(user.created_at).toLocaleDateString() : ''}</td>
-                                    <td className="px-6 py-4 text-right space-x-2">
-                                        <Link to={`/admin/users/${user.id}`} className="text-sm text-blue-600 hover:text-blue-800">View</Link>
+                                    <td className="px-6 py-4 text-right">
+                                        <div className="inline-flex items-center gap-1.5">
+                                        <Link
+                                            to={`/admin/users/${user.id}`}
+                                            className={`${iconButtonBase} text-blue-600 hover:text-blue-800 hover:bg-blue-50 focus:ring-blue-400`}
+                                            title="View user"
+                                            aria-label="View user"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z" />
+                                                <circle cx="12" cy="12" r="3" />
+                                            </svg>
+                                        </Link>
                                         {user.is_banned ? (
-                                            <button onClick={() => handleUnban(user.id)} className="text-sm text-green-600 hover:text-green-800">Unban</button>
+                                            <button
+                                                onClick={() => handleUnban(user.id)}
+                                                className={`${iconButtonBase} text-green-600 hover:text-green-800 hover:bg-green-50 focus:ring-green-400`}
+                                                title="Unban user"
+                                                aria-label="Unban user"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="m7 12 3 3 7-7" />
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 1 1-3.4-7" />
+                                                </svg>
+                                            </button>
                                         ) : (
-                                            <button onClick={() => handleBan(user.id)} className="text-sm text-red-600 hover:text-red-800">Ban</button>
+                                            <button
+                                                onClick={() => handleBan(user.id)}
+                                                className={`${iconButtonBase} text-red-600 hover:text-red-800 hover:bg-red-50 focus:ring-red-400`}
+                                                title="Ban user"
+                                                aria-label="Ban user"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
+                                                    <circle cx="12" cy="12" r="9" />
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="m6 6 12 12" />
+                                                </svg>
+                                            </button>
                                         )}
+                                        </div>
                                     </td>
                                 </tr>
                             )) : (

@@ -28,6 +28,16 @@ export default function AdminDashboard() {
         return colors[status] || "status-default";
     };
 
+    const formatCurrency = (value) => (
+        new Intl.NumberFormat("en-PH", {
+            style: "currency",
+            currency: "PHP",
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+            currencyDisplay: "narrowSymbol",
+        }).format(Number(value || 0))
+    );
+
     return (
         <DashboardLayout sidebar={<AdminSidebar />} pageTitle="Admin Dashboard">
             {/* KPI Cards */}
@@ -40,8 +50,8 @@ export default function AdminDashboard() {
 
             <div className="kpi-grid kpi-grid-3">
                 <StatCard title="Pending Seller Approvals" value={stats.pending_sellers.toLocaleString()} />
-                <StatCard title="Total Revenue" value={`? ${stats.total_revenue.toLocaleString(undefined, { minimumFractionDigits: 2 })}`} />
-                <StatCard title="Platform Fees Earned" value={`? ${stats.platform_fees.toLocaleString(undefined, { minimumFractionDigits: 2 })}`} />
+                <StatCard title="Total Revenue" value={formatCurrency(stats.total_revenue)} />
+                <StatCard title="Platform Fees Earned" value={formatCurrency(stats.platform_fees)} />
             </div>
 
             {/* Recent Orders */}
@@ -65,14 +75,14 @@ export default function AdminDashboard() {
                             {recentOrders.length > 0 ? recentOrders.map((order) => (
                                 <tr key={order.id}>
                                     <td className="text-left"><strong>{order.order_number}</strong></td>
-                                    <td className="text-left">{order.customer?.name || "—"}</td>
-                                    <td className="text-left">{order.seller_profile?.shop_name || "—"}</td>
+                                    <td className="text-left">{order.customer?.name || "ï¿½"}</td>
+                                    <td className="text-left">{order.seller_profile?.shop_name || "ï¿½"}</td>
                                     <td className="text-left">
                                         <span className={`badge ${statusColor(order.order_status)}`}>
                                             {order.order_status?.replace("_", " ").replace(/^\w/, c => c.toUpperCase())}
                                         </span>
                                     </td>
-                                    <td className="text-right font-medium">?{Number(order.total).toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
+                                    <td className="text-right font-medium">{formatCurrency(order.total)}</td>
                                     <td className="text-left">{order.created_at ? new Date(order.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : ""}</td>
                                 </tr>
                             )) : (

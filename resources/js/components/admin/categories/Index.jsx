@@ -28,6 +28,8 @@ export default function CategoriesIndex() {
         });
     };
 
+    const iconButtonBase = 'inline-flex items-center justify-center p-1.5 rounded-md transition focus:outline-none focus:ring-2 focus:ring-offset-1';
+
     return (
         <DashboardLayout sidebar={<AdminSidebar />} pageTitle="Categories">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
@@ -74,9 +76,32 @@ export default function CategoriesIndex() {
                                             {cat.is_active ? 'Active' : 'Inactive'}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4 text-right space-x-2">
-                                        <Link to={`/admin/categories/${cat.id}/edit`} className="text-sm text-blue-600 hover:text-blue-800">Edit</Link>
-                                        <button onClick={() => handleDelete(cat.id)} className="text-sm text-red-600 hover:text-red-800">Delete</button>
+                                    <td className="px-6 py-4 text-right">
+                                        <div className="inline-flex items-center gap-1.5">
+                                            <Link
+                                                to={`/admin/categories/${cat.id}/edit`}
+                                                className={`${iconButtonBase} text-blue-600 hover:text-blue-800 hover:bg-blue-50 focus:ring-blue-400`}
+                                                title="Edit category"
+                                                aria-label="Edit category"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 3.487a2.1 2.1 0 1 1 2.97 2.97L8.25 18.04 4 19l.96-4.25 11.902-11.263Z" />
+                                                </svg>
+                                            </Link>
+                                            <button
+                                                onClick={() => handleDelete(cat.id)}
+                                                className={`${iconButtonBase} text-red-600 hover:text-red-800 hover:bg-red-50 focus:ring-red-400`}
+                                                title="Delete category"
+                                                aria-label="Delete category"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 6h18" />
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M8 6V4h8v2" />
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 6l-1 14H6L5 6" />
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M10 10v6M14 10v6" />
+                                                </svg>
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             )) : (

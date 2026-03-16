@@ -18,6 +18,16 @@ export default function SellerDashboard() {
         }).catch(() => {});
     }, []);
 
+    const formatCurrency = (value) => (
+        new Intl.NumberFormat("en-PH", {
+            style: "currency",
+            currency: "PHP",
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+            currencyDisplay: "narrowSymbol",
+        }).format(Number(value || 0))
+    );
+
     return (
         <DashboardLayout sidebar={<SellerSidebar />} pageTitle="Seller Dashboard">
             <div className="alerts">
@@ -36,7 +46,7 @@ export default function SellerDashboard() {
             <div className="kpi-grid">
                 <StatCard title="Total Products" value={stats.total_products.toLocaleString()} />
                 <StatCard title="Total Orders" value={stats.total_orders.toLocaleString()} />
-                <StatCard title="Total Revenue" value={`? ${stats.total_revenue.toLocaleString(undefined, { minimumFractionDigits: 2 })}`} />
+                <StatCard title="Total Revenue" value={formatCurrency(stats.total_revenue)} />
                 <StatCard title="Pending Orders" value={stats.pending_orders.toLocaleString()} />
             </div>
 

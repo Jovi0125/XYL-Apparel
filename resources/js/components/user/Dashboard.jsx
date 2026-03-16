@@ -8,6 +8,21 @@ import StatCard from "../partials/StatCard";
 export default function UserDashboard() {
     const [stats, setStats] = useState({ total_orders: 0, pending: 0, completed: 0, wishlist: 0 });
     const [recentOrders, setRecentOrders] = useState([]);
+    const phpFormatter = new Intl.NumberFormat("en-PH", {
+        style: "currency",
+        currency: "PHP",
+        minimumFractionDigits: 2,
+    });
+    const statusColor = (status) => {
+        const map = {
+            completed: "status-completed",
+            pending: "status-pending",
+            processing: "status-processing",
+            cancelled: "status-cancelled",
+        };
+
+        return map[status] || "status-default";
+    };
 
     useEffect(() => {
         axios.get("/customer/dashboard").then(res => {
@@ -65,11 +80,11 @@ export default function UserDashboard() {
                                         </Link>
                                     </td>
                                     <td className="text-left">
-                                        <span className="badge status-default">
+                                        <span className={`badge ${statusColor(order.order_status)}`}>
                                             {order.order_status?.replace("_", " ")}
                                         </span>
                                     </td>
-                                    <td className="text-right font-medium">?{Number(order.total).toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
+                                    <td className="text-right font-medium">{phpFormatter.format(Number(order.total) || 0)}</td>
                                     <td className="text-left">{order.created_at ? new Date(order.created_at).toLocaleDateString() : ""}</td>
                                 </tr>
                             )) : (

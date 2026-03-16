@@ -21,6 +21,8 @@ export default function DiscountsIndex() {
         }).catch(err => alert(err.response?.data?.message || 'Failed to delete.'));
     };
 
+    const iconButtonBase = 'inline-flex items-center justify-center p-1.5 rounded-md transition focus:outline-none focus:ring-2 focus:ring-offset-1';
+
     return (
         <DashboardLayout sidebar={<SellerSidebar />} pageTitle="Discount Codes">
             <div className="flex justify-end mb-6">
@@ -48,9 +50,32 @@ export default function DiscountsIndex() {
                                     <td className="px-6 py-4 text-right text-gray-900">{d.type === 'percentage' ? `${d.value}%` : `₱${Number(d.value).toLocaleString()}`}</td>
                                     <td className="px-6 py-4 text-right text-gray-600">{d.times_used || 0} / {d.max_uses || '∞'}</td>
                                     <td className="px-6 py-4 text-gray-500 text-xs">{d.starts_at ? new Date(d.starts_at).toLocaleDateString() : '—'} — {d.expires_at ? new Date(d.expires_at).toLocaleDateString() : '—'}</td>
-                                    <td className="px-6 py-4 text-right space-x-2">
-                                        <Link to={`/seller/discounts/${d.id}/edit`} className="text-sm text-blue-600 hover:text-blue-800">Edit</Link>
-                                        <button onClick={() => handleDelete(d.id)} className="text-sm text-red-600 hover:text-red-800">Delete</button>
+                                    <td className="px-6 py-4 text-right">
+                                        <div className="inline-flex items-center gap-1.5">
+                                            <Link
+                                                to={`/seller/discounts/${d.id}/edit`}
+                                                className={`${iconButtonBase} text-blue-600 hover:text-blue-800 hover:bg-blue-50 focus:ring-blue-400`}
+                                                title="Edit discount"
+                                                aria-label="Edit discount"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 3.487a2.1 2.1 0 1 1 2.97 2.97L8.25 18.04 4 19l.96-4.25 11.902-11.263Z" />
+                                                </svg>
+                                            </Link>
+                                            <button
+                                                onClick={() => handleDelete(d.id)}
+                                                className={`${iconButtonBase} text-red-600 hover:text-red-800 hover:bg-red-50 focus:ring-red-400`}
+                                                title="Delete discount"
+                                                aria-label="Delete discount"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 6h18" />
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M8 6V4h8v2" />
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 6l-1 14H6L5 6" />
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M10 10v6M14 10v6" />
+                                                </svg>
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             )) : (
