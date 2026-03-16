@@ -9,9 +9,6 @@ use Illuminate\Support\Facades\Auth;
 
 class ShipmentController extends Controller
 {
-    /**
-     * List all shipments assigned to this rider.
-     */
     public function index(Request $request)
     {
         $profile = Auth::user()->logisticsProfile;
@@ -19,12 +16,10 @@ class ShipmentController extends Controller
 
         $query = Shipment::where('logistics_profile_id', $profile->id);
 
-        // Filter by status
         if ($status = $request->input('status')) {
             $query->where('delivery_status', $status);
         }
 
-        // Search by tracking # or order details
         if ($search = $request->input('search')) {
             $query->where(function ($q) use ($search) {
                 $q->where('tracking_number', 'like', "%{$search}%")
@@ -44,9 +39,6 @@ class ShipmentController extends Controller
         return view('welcome');
     }
 
-    /**
-     * Show shipment details.
-     */
     public function show(Request $request, Shipment $shipment)
     {
         $profile = Auth::user()->logisticsProfile;
@@ -67,9 +59,6 @@ class ShipmentController extends Controller
         return view('welcome');
     }
 
-    /**
-     * Update shipment delivery status.
-     */
     public function updateStatus(Request $request, Shipment $shipment)
     {
         $profile = Auth::user()->logisticsProfile;
@@ -77,26 +66,31 @@ class ShipmentController extends Controller
 
         $request->validate([
             'delivery_status' => 'required|in:picked_up,in_transit,out_for_delivery,delivered,failed',
+            'location_text' => 'nullable|string|max:255',
+            'remarks' => 'nullable|string|max:500',
+            'failed_reason' => 'nullable|string|max:255',
+            'receiver_name' => 'nullable|string|max:255',
         ]);
 
         $newStatus = $request->delivery_status;
-
-        // Update shipment status and timestamps
         $data = ['delivery_status' => $newStatus];
 
-        if ($newStatus === 'picked_up' && ! $shipment->picked_up_at) {
+        if ($newStatus === 'picked_up' && !$shipment->picked_up_at) {
             $data['picked_up_at'] = now();
         }
 
-        if ($newStatus === 'delivered' && ! $shipment->delivered_at) {
+        if ($newStatus === 'delivered' && !$shipment->delivered_at) {
             $data['delivered_at'] = now();
-            // Also update the order status to completed
             $shipment->order->update(['order_status' => 'completed', 'payment_status' => 'paid']);
+        }
+
+        if ($newStatus === 'failed') {
+            $data['failed_reason'] = $request->failed_reason;
+            $data['delivery_attempts'] = $shipment->delivery_attempts + 1;
         }
 
         $shipment->update($data);
 
-        // Auto-create a tracking event
         $shipment->trackingEvents()->create([
             'status' => ucfirst(str_replace('_', ' ', $newStatus)),
             'location_text' => $request->input('location_text'),
@@ -104,12 +98,34 @@ class ShipmentController extends Controller
             'created_by' => Auth::id(),
         ]);
 
-        $message = 'Shipment status updated to ' . str_replace('_', ' ', $newStatus) . '.';
-
         if ($request->expectsJson()) {
-            return response()->json(['success' => true, 'message' => $message]);
+            return response()->json(['success' => true, 'message' => 'Status updated to ' . str_replace('_', ' ', $newStatus)]);
         }
 
-        return back()->with('success', $message);
+        return back()->with('success', 'Status updated.');
+    }
+
+    public function history(Request $request)
+    {
+        $profile = Auth::user()->logisticsProfile;
+        abort_if(! $profile, 403);
+
+        $query = Shipment::where('logistics_profile_id', $profile->id)
+            ->whereIn('delivery_status', ['delivered', 'failed']);
+
+        if ($status = $request->input('status')) {
+            $query->where('delivery_status', $status);
+        }
+
+        $shipments = $query->with(['order.customer', 'proofOfDelivery'])
+            ->latest('delivered_at')
+            ->paginate(20)
+            ->withQueryString();
+
+        if ($request->expectsJson()) {
+            return response()->json(compact('shipments'));
+        }
+
+        return view('welcome');
     }
 }

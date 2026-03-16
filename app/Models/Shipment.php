@@ -17,6 +17,8 @@ class Shipment extends Model
         'picked_up_at',
         'delivered_at',
         'notes',
+        'failed_reason',
+        'delivery_attempts',
     ];
 
     protected function casts(): array

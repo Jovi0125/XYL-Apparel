@@ -48,10 +48,10 @@ export default function BrowseIndex() {
                 {products.length > 0 ? products.map((p) => (
                     <Link key={p.id} to={`/browse/product/${p.id}`} className="group bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition">
                         <div className="aspect-square bg-gray-100">
-                            {p.images?.[0] && <img src={`/storage/${p.images[0].path}`} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />}
+                            {p.primary_image && <img src={`/storage/${p.primary_image.path}`} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />}
                         </div>
                         <div className="p-4">
-                            <p className="text-xs text-gray-400 mb-1">{p.seller?.shop_name}</p>
+                            <p className="text-xs text-gray-400 mb-1">{p.seller_profile?.shop_name || 'Shop'}</p>
                             <h3 className="text-sm font-medium text-gray-900 line-clamp-2">{p.name}</h3>
                             <p className="text-sm font-semibold text-gray-900 mt-2">₱{Number(p.price).toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
                         </div>

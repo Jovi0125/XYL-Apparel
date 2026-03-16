@@ -10,23 +10,30 @@ class ProductVariant extends Model
         'product_id',
         'size',
         'color',
-        'price_override',
-        'stock',
         'sku',
-        'is_active',
+        'stock_quantity',
+        'regular_price',
+        'sale_price',
+        'status',
     ];
 
     protected function casts(): array
     {
         return [
-            'price_override' => 'decimal:2',
-            'is_active' => 'boolean',
+            'regular_price' => 'decimal:2',
+            'sale_price' => 'decimal:2',
+            'stock_quantity' => 'integer',
         ];
     }
 
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function inventoryLogs()
+    {
+        return $this->hasMany(InventoryLog::class);
     }
 
     public function getLabelAttribute(): string

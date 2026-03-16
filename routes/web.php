@@ -10,12 +10,14 @@ use App\Http\Controllers\Admin\SellerController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\ReportController as AdminReportController;
+use App\Http\Controllers\Admin\InventoryController as AdminInventoryController;
 use App\Http\Controllers\Seller\DashboardController as SellerDashboardController;
 use App\Http\Controllers\Seller\ShopController;
 use App\Http\Controllers\Seller\ProductController;
 use App\Http\Controllers\Seller\OrderController as SellerOrderController;
 use App\Http\Controllers\Seller\DiscountCodeController;
 use App\Http\Controllers\Seller\ReportController as SellerReportController;
+use App\Http\Controllers\Seller\InventoryController as SellerInventoryController;
 use App\Http\Controllers\Customer\DashboardController as CustomerDashboardController;
 use App\Http\Controllers\Customer\BrowseController;
 use App\Http\Controllers\Customer\CartController;
@@ -108,6 +110,11 @@ Route::middleware(['auth', 'role:admin'])
         Route::get('/reports', [AdminReportController::class, 'index'])->name('reports.index');
         Route::get('/reports/sellers', [AdminReportController::class, 'sellers'])->name('reports.sellers');
         Route::get('/reports/products', [AdminReportController::class, 'products'])->name('reports.products');
+
+        // Inventory
+        Route::get('/inventory', [AdminInventoryController::class, 'index'])->name('inventory.index');
+        Route::get('/inventory/logs', [AdminInventoryController::class, 'logs'])->name('inventory.logs');
+        Route::put('/inventory/{variant}', [AdminInventoryController::class, 'update'])->name('inventory.update');
     });
 
 /*
@@ -140,6 +147,12 @@ Route::middleware(['auth', 'role:seller'])
         // Reports & Analytics
         Route::get('/reports', [SellerReportController::class, 'index'])->name('reports.index');
         Route::get('/reports/products', [SellerReportController::class, 'products'])->name('reports.products');
+
+        // Inventory
+        Route::get('/inventory', [SellerInventoryController::class, 'index'])->name('inventory.index');
+        Route::get('/inventory/logs', [SellerInventoryController::class, 'logs'])->name('inventory.logs');
+        Route::put('/inventory/{variant}', [SellerInventoryController::class, 'update'])->name('inventory.update');
+        Route::patch('/inventory/{variant}/toggle-status', [SellerInventoryController::class, 'toggleStatus'])->name('inventory.toggle');
     });
 
 /*
@@ -216,6 +229,9 @@ Route::middleware(['auth', 'role:logistics'])
         // Profile
         Route::get('/profile', [LogisticsProfileController::class, 'edit'])->name('profile.edit');
         Route::put('/profile', [LogisticsProfileController::class, 'update'])->name('profile.update');
+
+        // Delivery History
+        Route::get('/history', [ShipmentController::class, 'history'])->name('history');
     });
 
 /*

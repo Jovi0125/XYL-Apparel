@@ -9,7 +9,11 @@ class SystemSetting extends Model
     protected $fillable = [
         'key',
         'value',
+        'type',
         'group',
+        'label',
+        'description',
+        'is_public',
     ];
 
     public static function get(string $key, mixed $default = null): mixed

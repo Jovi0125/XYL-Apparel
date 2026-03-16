@@ -13,6 +13,8 @@ import AdminSellersIndex from './admin/sellers/Index';
 import AdminSellersShow from './admin/sellers/Show';
 import AdminOrdersIndex from './admin/orders/Index';
 import AdminOrdersShow from './admin/orders/Show';
+import AdminInventoryIndex from './admin/inventory/Index';
+import AdminInventoryLogs from './admin/inventory/Logs';
 import AdminReportsIndex from './admin/reports/Index';
 import AdminReportsProducts from './admin/reports/Products';
 import AdminReportsSellers from './admin/reports/Sellers';
@@ -26,6 +28,8 @@ import SellerProductsEdit from './seller/products/Edit';
 import SellerProductsShow from './seller/products/Show';
 import SellerOrdersIndex from './seller/orders/Index';
 import SellerOrdersShow from './seller/orders/Show';
+import SellerInventoryIndex from './seller/inventory/Index';
+import SellerInventoryEdit from './seller/inventory/Edit';
 import SellerDiscountsIndex from './seller/discounts/Index';
 import SellerDiscountsCreate from './seller/discounts/Create';
 import SellerDiscountsEdit from './seller/discounts/Edit';
@@ -51,6 +55,9 @@ import Register from './auth/Register';
 
 // Logistics
 import LogisticsDashboard from './logistics/Dashboard';
+import LogisticsDeliveries from './logistics/Deliveries';
+import LogisticsShipmentDetails from './logistics/ShipmentDetails';
+import LogisticsDeliveryHistory from './logistics/DeliveryHistory';
 import LogisticsShipmentsIndex from './logistics/shipments/Index';
 import LogisticsShipmentsShow from './logistics/shipments/Show';
 import LogisticsTrackingCreate from './logistics/tracking/Create';
@@ -80,6 +87,8 @@ export default function App({ auth, user }) {
             <Route path="/admin/reports/products" element={<AdminReportsProducts />} />
             <Route path="/admin/reports/sellers" element={<AdminReportsSellers />} />
             <Route path="/admin/settings" element={<AdminSettingsIndex />} />
+            <Route path="/admin/inventory" element={<AdminInventoryIndex />} />
+            <Route path="/admin/inventory/logs" element={<AdminInventoryLogs />} />
 
             {/* Seller */}
             <Route path="/seller/dashboard" element={<SellerDashboard />} />
@@ -89,6 +98,8 @@ export default function App({ auth, user }) {
             <Route path="/seller/products/:id" element={<SellerProductsShow />} />
             <Route path="/seller/orders" element={<SellerOrdersIndex />} />
             <Route path="/seller/orders/:id" element={<SellerOrdersShow />} />
+            <Route path="/seller/inventory" element={<SellerInventoryIndex />} />
+            <Route path="/seller/inventory/:id/edit" element={<SellerInventoryEdit />} />
             <Route path="/seller/discounts" element={<SellerDiscountsIndex />} />
             <Route path="/seller/discounts/create" element={<SellerDiscountsCreate />} />
             <Route path="/seller/discounts/:id/edit" element={<SellerDiscountsEdit />} />
@@ -110,6 +121,9 @@ export default function App({ auth, user }) {
 
             {/* Logistics */}
             <Route path="/logistics/dashboard" element={<LogisticsDashboard />} />
+            <Route path="/logistics/deliveries" element={<LogisticsDeliveries />} />
+            <Route path="/logistics/deliveries/:id" element={<LogisticsShipmentDetails />} />
+            <Route path="/logistics/history" element={<LogisticsDeliveryHistory />} />
             <Route path="/logistics/shipments" element={<LogisticsShipmentsIndex />} />
             <Route path="/logistics/shipments/:id" element={<LogisticsShipmentsShow />} />
             <Route path="/logistics/tracking/create/:shipmentId" element={<LogisticsTrackingCreate />} />

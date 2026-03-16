@@ -3,90 +3,107 @@ import axios from 'axios';
 import DashboardLayout from '../../layouts/DashboardLayout';
 import AdminSidebar from '../partials/Sidebar';
 
+const GROUP_ORDER = ['general', 'branding', 'marketplace', 'orders', 'delivery', 'inventory', 'notifications', 'security', 'seller', 'customer'];
+
 export default function SettingsIndex() {
-    const [settings, setSettings] = useState({});
+    const [allSettings, setAllSettings] = useState({});
     const [groups, setGroups] = useState([]);
+    const [activeGroup, setActiveGroup] = useState('general');
+    const [values, setValues] = useState({});
+    const [saving, setSaving] = useState(false);
+    const [feedback, setFeedback] = useState('');
 
     useEffect(() => {
         axios.get('/admin/settings').then(res => {
             const grouped = res.data.settings || {};
             const settingsMap = {};
-            const groupList = Object.keys(grouped).map(name => {
-                const items = grouped[name] || [];
-                items.forEach(s => { settingsMap[s.key] = s.value || ''; });
-                return { name, settings: items.map(s => ({ key: s.key, label: s.label || s.key, type: s.type || 'text' })) };
-            });
-            setSettings(settingsMap);
-            setGroups(groupList);
+            const gList = GROUP_ORDER.filter(g => grouped[g]);
+            Object.values(grouped).flat().forEach(s => { settingsMap[s.key] = s.value || ''; });
+            setAllSettings(grouped);
+            setGroups(gList);
+            setValues(settingsMap);
         }).catch(() => {});
     }, []);
 
-    const handleChange = (key, value) => {
-        setSettings((prev) => ({ ...prev, [key]: value }));
+    const handleChange = (key, val) => { setValues(prev => ({ ...prev, [key]: val })); setFeedback(''); };
+
+    const handleSave = async () => {
+        setSaving(true);
+        try {
+            await axios.put('/admin/settings', { settings: values });
+            setFeedback('Settings saved!');
+        } catch (err) {
+            setFeedback('Failed to save.');
+        }
+        setSaving(false);
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            await axios.put('/admin/settings', { settings });
-            alert('Settings saved successfully.');
-        } catch (err) {
-            alert(err.response?.data?.message || 'Failed to save settings.');
+    const currentSettings = allSettings[activeGroup] || [];
+
+    const renderField = (setting) => {
+        const val = values[setting.key] ?? '';
+        const type = setting.type || 'string';
+
+        if (type === 'boolean') {
+            const isOn = val === '1' || val === 'true' || val === true;
+            return (
+                <div className="toggle-switch">
+                    <div className={`switch ${isOn ? 'on' : ''}`} onClick={() => handleChange(setting.key, isOn ? '0' : '1')}>
+                        <div className="switch-knob"></div>
+                    </div>
+                    <span className="switch-label">{isOn ? 'Enabled' : 'Disabled'}</span>
+                </div>
+            );
         }
+        if (type === 'number') {
+            return <input type="number" value={val} onChange={e => handleChange(setting.key, e.target.value)} />;
+        }
+        if (type === 'text') {
+            return <textarea value={val} onChange={e => handleChange(setting.key, e.target.value)} />;
+        }
+        if (type === 'image') {
+            return (
+                <div>
+                    {val && <img src={val.startsWith('/') ? val : `/storage/${val}`} alt={setting.label} style={{ maxWidth: 120, marginBottom: 8, display: 'block', border: '1px solid #eee' }} />}
+                    <input type="file" accept="image/*" onChange={e => {
+                        // For now, just show the file name. Full upload can be wired later.
+                        const file = e.target.files[0];
+                        if (file) handleChange(setting.key, file.name);
+                    }} />
+                </div>
+            );
+        }
+        return <input type="text" value={val} onChange={e => handleChange(setting.key, e.target.value)} />;
     };
 
     return (
         <DashboardLayout sidebar={<AdminSidebar />} pageTitle="System Settings">
-            <form onSubmit={handleSubmit} className="max-w-3xl space-y-8">
-                {groups.map((group) => (
-                    <div key={group.name} className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
-                        <h3 className="text-base font-semibold text-gray-900 mb-4 capitalize">{group.name}</h3>
-                        <div className="space-y-4">
-                            {(group.settings || []).map((setting) => (
-                                <div key={setting.key}>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">{setting.label}</label>
-                                    {setting.type === 'boolean' ? (
-                                        <label className="flex items-center gap-2">
-                                            <input
-                                                type="checkbox"
-                                                checked={!!settings[setting.key]}
-                                                onChange={(e) => handleChange(setting.key, e.target.checked)}
-                                                className="rounded border-gray-300"
-                                            />
-                                            <span className="text-sm text-gray-600">Enabled</span>
-                                        </label>
-                                    ) : setting.type === 'textarea' ? (
-                                        <textarea
-                                            value={settings[setting.key] || ''}
-                                            onChange={(e) => handleChange(setting.key, e.target.value)}
-                                            rows="3"
-                                            className="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900"
-                                        />
-                                    ) : setting.type === 'number' ? (
-                                        <input
-                                            type="number"
-                                            value={settings[setting.key] || ''}
-                                            onChange={(e) => handleChange(setting.key, e.target.value)}
-                                            className="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900"
-                                        />
-                                    ) : (
-                                        <input
-                                            type="text"
-                                            value={settings[setting.key] || ''}
-                                            onChange={(e) => handleChange(setting.key, e.target.value)}
-                                            className="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900"
-                                        />
-                                    )}
-                                </div>
-                            ))}
+            <div className="settings-module">
+                <div className="settings-sidebar">
+                    <ul className="settings-nav">
+                        {groups.map(g => (
+                            <li key={g} className={activeGroup === g ? 'active' : ''} onClick={() => { setActiveGroup(g); setFeedback(''); }}>
+                                {g}
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+                <div className="settings-content">
+                    <div className="settings-group-title">{activeGroup} Settings</div>
+                    <div className="settings-group-desc">Manage {activeGroup} configuration for the platform.</div>
+                    {currentSettings.map(s => (
+                        <div key={s.key} className="setting-field">
+                            <label>{s.label || s.key}</label>
+                            {s.description && <div className="setting-help">{s.description}</div>}
+                            {renderField(s)}
                         </div>
-                    </div>
-                ))}
-
-                <button type="submit" className="px-6 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition">
-                    Save Settings
-                </button>
-            </form>
+                    ))}
+                    <button className="save-btn" onClick={handleSave} disabled={saving}>
+                        {saving ? 'Saving...' : 'Save Changes'}
+                    </button>
+                    {feedback && <span className="save-feedback">{feedback}</span>}
+                </div>
+            </div>
         </DashboardLayout>
     );
 }

@@ -1,126 +1,187 @@
-@import '../base/variables';
+// Logistics Module — Uniqlo-inspired courier dashboard
+// ===================================================
 
-.logistics-wrapper {
-  // Add specific logistics styles here if needed beyond shared ones
-}
-
-.logistics-tracking-card {
-  @extend .stat-card;
-  margin-bottom: $spacing-lg;
-}
-
-.tracking-timeline {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-md;
-  padding: $spacing-md;
-  border-left: 2px solid $color-border-light;
-  margin-left: $spacing-md;
-
-  .tracking-event {
-    position: relative;
-    padding-left: $spacing-lg;
-
-    &::before {
-      content: '';
-      position: absolute;
-      left: calc(-1 * $spacing-md - 7px);
-      top: 5px;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background-color: $color-black;
+// KPI Cards Grid
+.logistics-dashboard {
+    .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
     }
 
-    .event-status {
-      font-weight: bold;
-      color: $color-black;
+    .kpi-card {
+        background: #ffffff;
+        border: 1px solid #e5e5e5;
+        padding: 1.25rem;
+        text-align: center;
+
+        .kpi-value { font-size: 2rem; font-weight: 700; color: #111; }
+        .kpi-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #888; margin-top: 0.25rem; }
+
+        &.accent .kpi-value { color: #2563eb; }
+        &.info .kpi-value { color: #0284c7; }
+        &.warning .kpi-value { color: #d97706; }
+        &.success .kpi-value { color: #16a34a; }
+        &.danger .kpi-value { color: #dc2626; }
     }
 
-    .event-location {
-      color: $color-gray;
-      font-size: 0.875rem;
+    .dashboard-sections { display: flex; flex-direction: column; gap: 1.5rem; }
+
+    .bottom-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        @media (max-width: 768px) { grid-template-columns: 1fr; }
     }
 
-    .event-time {
-      color: $color-gray-light;
-      font-size: 0.75rem;
-      margin-top: $spacing-xs;
+    .perf-stats {
+        display: flex; gap: 2rem; padding: 1rem 0;
+        .perf-item { text-align: center; flex: 1; }
+        .perf-num { font-size: 1.75rem; font-weight: 700; color: #111; }
+        .perf-label { font-size: 0.75rem; color: #888; text-transform: uppercase; }
     }
-  }
+
+    .tracking-feed {
+        list-style: none; padding: 0; margin: 0;
+        .feed-item { padding: 0.75rem 0; border-bottom: 1px solid #f0f0f0; }
+        .feed-status { font-weight: 600; color: #111; display: block; }
+        .feed-meta { font-size: 0.8rem; color: #999; }
+        .feed-remark { font-size: 0.8rem; color: #666; display: block; }
+    }
 }
 
-
-
-.shipping-details-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: $spacing-lg;
-  
-  @media (min-width: 1024px) {
-    grid-template-columns: repeat(3, 1fr);
-  }
+// Shared section card
+.section-card {
+    background: #fff; border: 1px solid #e5e5e5; padding: 1.5rem;
+    .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+    .section-header h3 { font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; }
+    .view-all { font-size: 0.85rem; color: #111; text-decoration: underline; font-weight: 600; }
+    h3 { font-size: 1rem; font-weight: 700; margin-bottom: 1rem; }
 }
 
-.shipping-main-column {
-  @media (min-width: 1024px) {
-    grid-column: span 2 / span 2;
-  }
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-lg;
+// Deliveries table page
+.logistics-deliveries {
+    .controls-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
+
+    .filter-tabs { display: flex; gap: 0; }
+    .filter-btn {
+        background: #f5f5f5; border: 1px solid #e5e5e5; padding: 0.5rem 1rem;
+        font-size: 0.8rem; text-transform: capitalize; cursor: pointer; color: #666;
+        &:first-child { border-radius: 2px 0 0 2px; }
+        &:last-child { border-radius: 0 2px 2px 0; }
+        &.active { background: #111; color: #fff; border-color: #111; }
+    }
+
+    .search-box {
+        display: flex;
+        input { border: 1px solid #ccc; padding: 0.5rem; font-size: 0.85rem; width: 220px; border-right: 0; &:focus { outline: none; border-color: #111; } }
+        button { background: #111; color: #fff; border: none; padding: 0.5rem 1rem; font-size: 0.85rem; cursor: pointer; }
+    }
 }
 
-.shipping-sidebar-column {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-md;
-
-  .w-full {
-    width: 100%;
-  }
-  .text-center {
-    text-align: center;
-  }
-  .mb-4 {
-    margin-bottom: $spacing-md;
-  }
+// Shared table
+.log-table {
+    width: 100%; border-collapse: collapse; font-size: 0.85rem;
+    th, td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid #e8e8e8; }
+    th { font-weight: 600; color: #888; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.04em; }
+    tbody tr:hover { background: #fafafa; }
+    .mono { font-family: 'Courier New', monospace; font-size: 0.8rem; }
+    .truncate-cell { max-width: 180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .empty-cell { text-align: center; color: #bbb; padding: 2rem !important; }
+    .action-link { color: #111; text-decoration: underline; font-weight: 600; &:hover { color: #555; } }
 }
 
-.info-list {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: $spacing-md;
-  font-size: 0.875rem;
-
-  dt {
-    color: $color-gray;
-  }
-  dd {
-    font-weight: 500;
-  }
-  .full-width {
-    grid-column: span 2 / span 2;
-  }
-}
-
-.inline-update-form {
-  background-color: $color-bg;
-  border-radius: 0.5rem;
-  border: 1px solid $color-border-light;
-  padding: $spacing-md;
-  margin-bottom: $spacing-lg;
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-sm;
-
-  h4 {
-    font-size: 0.875rem;
-    font-weight: 600;
-    margin: 0;
-  }
-}
-
+// Status badges
 .status-badge {
-  text-transform: capitalize;
+    display: inline-block; padding: 0.2rem 0.6rem; font-size: 0.7rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.03em; border-radius: 2px; background: #e5e5e5; color: #555;
+    &.assigned { background: #e0e7ff; color: #3730a3; }
+    &.picked_up { background: #dbeafe; color: #1e40af; }
+    &.in_transit { background: #fef3c7; color: #92400e; }
+    &.out_for_delivery { background: #fed7aa; color: #9a3412; }
+    &.delivered, &.success { background: #dcfce7; color: #166534; }
+    &.failed { background: #fee2e2; color: #991b1b; }
+    &.lg { font-size: 0.85rem; padding: 0.4rem 1rem; }
+}
+
+.danger-text { color: #dc2626; }
+
+// Buttons
+.btn-primary {
+    background: #111; color: #fff; border: none; padding: 0.6rem 1.5rem;
+    font-size: 0.85rem; font-weight: 600; text-transform: uppercase; cursor: pointer;
+    &:hover { background: #333; }
+    &:disabled { background: #ccc; cursor: not-allowed; }
+    &.full-width { width: 100%; margin-top: 1rem; }
+}
+.btn-outline {
+    background: transparent; color: #111; border: 1px solid #111; padding: 0.6rem 1.5rem;
+    font-size: 0.85rem; font-weight: 600; text-decoration: none; cursor: pointer;
+    &:hover { background: #f5f5f5; }
+}
+
+// Shipment details
+.shipment-details {
+    .detail-header {
+        display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;
+        .tracking-num { font-size: 1.5rem; font-weight: 700; font-family: monospace; margin-bottom: 0.5rem; }
+        .header-actions { display: flex; gap: 0.75rem; }
+    }
+
+    .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; @media(max-width:768px) { grid-template-columns: 1fr; } }
+
+    .info-card {
+        background: #fff; border: 1px solid #e5e5e5; padding: 1.5rem;
+        h4 { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 1rem; border-bottom: 1px solid #eee; padding-bottom: 0.75rem; }
+        .info-row { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #f5f5f5; font-size: 0.85rem; span:first-child { color: #888; } span:last-child { font-weight: 500; color: #111; } }
+    }
+
+    .pod-image { max-width: 200px; margin-top: 1rem; border: 1px solid #eee; }
+}
+
+// Timeline
+.timeline {
+    position: relative; padding-left: 1.5rem;
+    &::before { content: ''; position: absolute; left: 6px; top: 0; bottom: 0; width: 2px; background: #e5e5e5; }
+    .timeline-item { position: relative; padding-bottom: 1.25rem; padding-left: 1rem; }
+    .timeline-dot { position: absolute; left: -1.5rem; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: #ccc; border: 2px solid #fff; }
+    .timeline-item.active .timeline-dot { background: #111; }
+    .timeline-status { font-weight: 700; font-size: 0.85rem; color: #111; }
+    .timeline-location { font-size: 0.8rem; color: #666; }
+    .timeline-remarks { font-size: 0.8rem; color: #999; font-style: italic; }
+    .timeline-date { font-size: 0.75rem; color: #bbb; margin-top: 0.25rem; }
+}
+
+// Modal
+.modal-overlay {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;
+}
+.modal-content {
+    background: #fff; width: 100%; max-width: 480px; padding: 2rem; max-height: 90vh; overflow-y: auto;
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; h3 { font-size: 1rem; font-weight: 700; text-transform: uppercase; } }
+    .modal-close { background: none; border: none; font-size: 1.25rem; cursor: pointer; color: #999; &:hover { color: #111; } }
+    .modal-tracking { font-size: 0.85rem; color: #888; margin-bottom: 1.5rem; }
+}
+
+.form-group {
+    margin-bottom: 1rem;
+    label { display: block; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; color: #555; margin-bottom: 0.4rem; }
+    input, textarea, select { width: 100%; padding: 0.6rem; border: 1px solid #ddd; font-size: 0.85rem; box-sizing: border-box; &:focus { outline: none; border-color: #111; } }
+    textarea { resize: vertical; }
+    select { background: #fff; }
+}
+
+.status-btn-group {
+    display: flex; flex-wrap: wrap; gap: 0.5rem;
+    .status-option {
+        padding: 0.5rem 1rem; border: 1px solid #ddd; background: #f9f9f9; font-size: 0.8rem; cursor: pointer; text-transform: capitalize;
+        &.selected { background: #111; color: #fff; border-color: #111; }
+    }
+}
+
+// POD form
+.pod-form-card {
+    background: #fff; border: 1px solid #e5e5e5; padding: 1.5rem; margin-top: 1.5rem;
+    h4 { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; margin-bottom: 1rem; }
 }

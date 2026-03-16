@@ -12,5 +12,8 @@
 // Components
 @import "auth/auth";
 @import "seller/seller";
+@import "seller/inventory";
+@import "admin/inventory";
+@import "admin/settings";
 @import "customer/store";
 @import 'logistics/logistics';
