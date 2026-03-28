@@ -144,6 +144,11 @@ export default function Welcome({ auth, user }) {
                 style={heroBackgroundStyle}
             >
                 <div className="absolute left-8 sm:left-16 lg:left-24 top-[62%] -translate-y-1/2 z-10">
+                    <img
+                        src="/images/xy.png"
+                        alt="XYLO mark"
+                        className="-ml-8 sm:-ml-9 mb-4 h-12 w-auto sm:h-14 object-contain"
+                    />
                     <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold tracking-tight text-black leading-tight">
                         DRIP x Arist Series Tee
                     </h2>
