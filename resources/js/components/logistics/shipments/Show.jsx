@@ -7,9 +7,7 @@ import LogisticsSidebar from "../partials/Sidebar";
 export default function ShipmentsShow() {
     const { id } = useParams();
     const [shipment, setShipment] = useState(null);
-    const [isUpdating, setIsUpdating] = useState(false);
-    const [updateForm, setUpdateForm] = useState({ status: "", location_text: "", remarks: "" });
-    const [submitting, setSubmitting] = useState(false);
+    const [updating, setUpdating] = useState(false);
 
     useEffect(() => {
         axios.get('/logistics/shipments/' + id).then(res => {
@@ -17,111 +15,102 @@ export default function ShipmentsShow() {
         }).catch(() => {});
     }, [id]);
 
-    const handleUpdateSubmit = (e) => {
-        e.preventDefault();
-        setSubmitting(true);
-        axios.post('/logistics/shipments/' + id + '/tracking', updateForm)
+    const handleStatusUpdate = (status) => {
+        setUpdating(true);
+        axios.patch(`/logistics/shipments/${id}/status`, { delivery_status: status })
             .then(res => {
                 if (res.data.success) {
-                    // Update state dynamically
                     setShipment(prev => ({
                         ...prev,
-                        delivery_status: res.data.status,
-                        status: res.data.status,
-                        tracking_events: [res.data.event, ...(prev.tracking_events || [])]
+                        delivery_status: status,
                     }));
-                    setUpdateForm({ status: "", location_text: "", remarks: "" });
-                    setIsUpdating(false);
                 }
             })
             .catch(err => {
-                alert("Failed to update status. Please check your inputs.");
+                alert(err.response?.data?.message || "Failed to update status.");
             })
             .finally(() => {
-                setSubmitting(false);
+                setUpdating(false);
             });
     };
 
-    if (!shipment) return <DashboardLayout sidebar={<LogisticsSidebar />} pageTitle="Shipment"><p>Loading...</p></DashboardLayout>;   
+    if (!shipment) return <DashboardLayout sidebar={<LogisticsSidebar />} pageTitle="Shipment Details"><p className="text-gray-400">Loading...</p></DashboardLayout>;
+
+    const currentStatus = shipment.delivery_status || shipment.status || 'assigned';
 
     return (
-        <DashboardLayout sidebar={<LogisticsSidebar />} pageTitle={"Shipment #" + shipment.tracking_number}>
-            <div className="shipping-details-grid">
-                <div className="shipping-main-column">
-                    {/* Shipment Details */}
-                    <div className="stat-card">
-                        <h3 className="card-title">Details</h3>
-                        <dl className="info-list">
-                            <div><dt>Order</dt><dd>#{shipment.order?.order_number}</dd></div>
-                            <div><dt>Status</dt><dd className="status-badge">{(shipment.delivery_status || shipment.status || "Unknown").replace("_", " ")}</dd></div>
-                            <div><dt>Customer</dt><dd>{shipment.order?.shipping_name}</dd></div>
-                            <div><dt>Phone</dt><dd>{shipment.order?.shipping_phone}</dd></div>
-                            <div className="full-width"><dt>Address</dt><dd>{shipment.order?.shipping_address}, {shipment.order?.shipping_city}</dd></div>
-                        </dl>
+        <DashboardLayout sidebar={<LogisticsSidebar />} pageTitle={`Shipment #${shipment.tracking_number}`}>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2 space-y-6">
+                    {/* Status Actions */}
+                    <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
+                        <h3 className="text-base font-semibold text-gray-900 mb-4">Update Status</h3>
+                        <div className="flex flex-wrap gap-2">
+                            {['assigned', 'pending_pickup', 'picked_up'].includes(currentStatus) && (
+                                <button
+                                    onClick={() => handleStatusUpdate('in_transit')}
+                                    disabled={updating}
+                                    className="px-4 py-2 bg-amber-600 text-white text-sm rounded-lg hover:bg-amber-700 transition disabled:opacity-50"
+                                >
+                                    {updating ? 'Updating...' : 'Mark as Shipped'}
+                                </button>
+                            )}
+                            {['in_transit', 'out_for_delivery'].includes(currentStatus) && (
+                                <button
+                                    onClick={() => handleStatusUpdate('delivered')}
+                                    disabled={updating}
+                                    className="px-4 py-2 bg-emerald-600 text-white text-sm rounded-lg hover:bg-emerald-700 transition disabled:opacity-50"
+                                >
+                                    {updating ? 'Updating...' : 'Mark as Delivered'}
+                                </button>
+                            )}
+                            {currentStatus === 'delivered' && (
+                                <p className="text-sm text-emerald-600 font-medium">✅ This shipment has been delivered.</p>
+                            )}
+                        </div>
                     </div>
 
-                    {/* Tracking Timeline */}
-                    <div className="stat-card">
-                        <div className="flex items-center justify-between mb-4">
-                            <h3 className="card-title">Tracking Events</h3>
-                            <button onClick={() => setIsUpdating(!isUpdating)} className="btn-link">
-                                {isUpdating ? "Cancel Update" : "+ Inline Update"}
-                            </button>
-                        </div>
-                        
-                        {/* Dynamic Update Form */}
-                        {isUpdating && (
-                            <form onSubmit={handleUpdateSubmit} className="inline-update-form">
-                                <h4>Post a new update</h4>
-                                <div className="form-group-row">
-                                    <select required value={updateForm.status} onChange={e => setUpdateForm({...updateForm, status: e.target.value})} className="form-input">
-                                        <option value="">Select Status</option>
-                                        <option value="in_transit">In Transit</option>
-                                        <option value="out_for_delivery">Out for Delivery</option>
-                                        <option value="delayed">Delayed</option>
-                                        <option value="delivered">Delivered</option>
-                                    </select>
-                                    <input type="text" placeholder="Location" value={updateForm.location_text} onChange={e => setUpdateForm({...updateForm, location_text: e.target.value})} className="form-input" />
-                                </div>
-                                <textarea placeholder="Remarks (optional)" value={updateForm.remarks} onChange={e => setUpdateForm({...updateForm, remarks: e.target.value})} className="form-input" rows="2"></textarea>
-                                <button type="submit" disabled={submitting} className="btn-primary">
-                                    {submitting ? "Updating..." : "Save Status"}
-                                </button>
-                            </form>
-                        )}
-
-                        <div className="tracking-timeline">
-                            {(shipment.tracking_events || []).map((event, i) => (
-                                <div key={i} className="tracking-event">
-                                    <div>
-                                        <p className="event-status">{event.status?.replace("_", " ")}</p>
-                                        <p className="event-location">{(event.location_text || event.location)} &middot; {event.remarks}</p>
-                                        <p className="event-time">{event.created_at ? new Date(event.created_at).toLocaleString() : "Just now"}</p>
+                    {/* Order Items */}
+                    <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
+                        <h3 className="text-base font-semibold text-gray-900 mb-4">Order Items</h3>
+                        <div className="space-y-3">
+                            {(shipment.order?.items || []).map((item) => (
+                                <div key={item.id} className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
+                                    <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+                                        {item.product?.primary_image && <img src={`/storage/${item.product.primary_image.path}`} alt="" className="w-full h-full object-cover" />}
                                     </div>
+                                    <div className="flex-1">
+                                        <p className="text-sm font-medium text-gray-900">{item.product?.name}</p>
+                                        <p className="text-xs text-gray-500">× {item.quantity}</p>
+                                    </div>
+                                    <p className="text-sm font-medium text-gray-900">₱{Number(item.subtotal || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
                                 </div>
                             ))}
-                            {(!shipment.tracking_events || shipment.tracking_events.length === 0) && (
-                                <p>No tracking events yet.</p>
+                            {(!shipment.order?.items || shipment.order.items.length === 0) && (
+                                <p className="text-sm text-gray-400">No items found.</p>
                             )}
                         </div>
                     </div>
                 </div>
 
-                {/* Actions */}
-                <div className="shipping-sidebar-column">
-                    <Link to={'/logistics/tracking/create/' + shipment.id} className="btn-primary w-full text-center mb-4">
-                        Go to Dedicated Update Page
-                    </Link>
-                    {shipment.status !== "delivered" && (
-                        <Link to={'/logistics/pod/create/' + shipment.id} className="btn-secondary w-full text-center">
-                            Record Delivery (POD)
-                        </Link>
-                    )}
+                {/* Sidebar Info */}
+                <div className="space-y-6">
+                    <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
+                        <h3 className="text-base font-semibold text-gray-900 mb-3">Customer</h3>
+                        <p className="text-sm text-gray-600">{shipment.order?.shipping_name || shipment.order?.customer?.name || '—'}</p>
+                        <p className="text-sm text-gray-500">{shipment.order?.customer?.email || '—'}</p>
+                    </div>
+                    <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
+                        <h3 className="text-base font-semibold text-gray-900 mb-3">Payment</h3>
+                        <div className="text-sm space-y-1">
+                            <div className="flex justify-between"><span className="text-gray-500">Total</span><span className="font-medium">₱{Number(shipment.order?.total || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span></div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div style={{ marginTop: '1rem' }}>
-                <Link to="/logistics/shipments" className="btn-link">&larr; Back to Shipments</Link>
+            <div className="mt-4">
+                <Link to="/logistics/shipments" className="text-sm text-gray-600 hover:text-gray-900">&larr; Back to Shipments</Link>
             </div>
         </DashboardLayout>
     );

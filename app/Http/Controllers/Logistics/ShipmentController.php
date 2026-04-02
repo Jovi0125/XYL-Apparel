@@ -107,10 +107,15 @@ class ShipmentController extends Controller
             $data['picked_up_at'] = now();
         }
 
+        if (in_array($newStatus, ['in_transit', 'out_for_delivery'])) {
+            // Update order status to 'shipped' so the customer dashboard shows step 4
+            $shipment->order->update(['order_status' => 'shipped']);
+        }
+
         if ($newStatus === 'delivered' && ! $shipment->delivered_at) {
             $data['delivered_at'] = now();
-            // Also update the order status to completed
-            $shipment->order->update(['order_status' => 'completed', 'payment_status' => 'paid']);
+            // Update order status to 'delivered' so the customer dashboard shows step 5
+            $shipment->order->update(['order_status' => 'delivered', 'payment_status' => 'paid']);
         }
 
         $shipment->update($data);
