@@ -9,7 +9,7 @@ export default function OrdersShow() {
     const [order, setOrder] = useState(null);
 
     useEffect(() => {
-        axios.get(`/seller/orders/${id}`).then(res => setOrder(res.data.order)).catch(() => {});
+        axios.get(`/seller/orders/${id}`).then(res => setOrder(res.data.order)).catch(() => { });
     }, [id]);
 
     const handleStatusUpdate = (status) => {
@@ -50,7 +50,7 @@ export default function OrdersShow() {
                                         <p className="text-sm font-medium text-gray-900">{item.product?.name}</p>
                                         <p className="text-xs text-gray-500">{item.variant?.name} × {item.quantity}</p>
                                     </div>
-                                    <p className="text-sm font-medium text-gray-900">₱{Number(item.subtotal).toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
+                                    <p className="text-sm font-medium text-gray-900">₱{Number(item.total_price || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
                                 </div>
                             ))}
                         </div>

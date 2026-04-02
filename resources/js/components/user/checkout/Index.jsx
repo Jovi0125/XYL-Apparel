@@ -44,7 +44,14 @@ export default function CheckoutIndex() {
         }
     };
 
-    const subtotal = cartItems.reduce((sum, item) => sum + (Number(item.price) * item.quantity), 0);
+    const getItemPrice = (item) => {
+        if (item.variant && item.variant.price_override) return Number(item.variant.price_override);
+        if (item.product?.sale_price && Number(item.product.sale_price) > 0) return Number(item.product.sale_price);
+        return Number(item.product?.price || 0);
+    };
+
+    const subtotal = cartItems.reduce((sum, item) => sum + (getItemPrice(item) * item.quantity), 0);
+    const shippingFee = 50;
 
     return (
         <DashboardLayout sidebar={<UserSidebar />} pageTitle="Checkout">
@@ -95,7 +102,7 @@ export default function CheckoutIndex() {
                                             <p className="text-sm font-medium text-gray-900">{item.product?.name}</p>
                                             <p className="text-xs text-gray-500">{item.variant?.name} × {item.quantity}</p>
                                         </div>
-                                        <p className="text-sm font-medium">₱{(Number(item.price) * item.quantity).toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
+                                        <p className="text-sm font-medium">₱{(getItemPrice(item) * item.quantity).toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
                                     </div>
                                 ))}
                             </div>
@@ -131,8 +138,9 @@ export default function CheckoutIndex() {
                             <h3 className="text-base font-semibold text-gray-900 mb-4">Summary</h3>
                             <div className="space-y-2 text-sm">
                                 <div className="flex justify-between"><span className="text-gray-500">Subtotal</span><span>₱{subtotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span></div>
+                                <div className="flex justify-between"><span className="text-gray-500">Shipping</span><span>₱{shippingFee.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span></div>
                                 {discountApplied && <div className="flex justify-between text-green-600"><span>Discount</span><span>-₱{discountApplied.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span></div>}
-                                <div className="flex justify-between font-semibold border-t border-gray-100 pt-2"><span>Total</span><span>₱{(subtotal - (discountApplied || 0)).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span></div>
+                                <div className="flex justify-between font-semibold border-t border-gray-100 pt-2"><span>Total</span><span>₱{(subtotal + shippingFee - (discountApplied || 0)).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span></div>
                             </div>
                             <button type="submit" className="w-full mt-4 px-6 py-3 bg-gray-900 text-white text-sm font-medium rounded-xl hover:bg-gray-800 transition">Place Order</button>
                         </div>

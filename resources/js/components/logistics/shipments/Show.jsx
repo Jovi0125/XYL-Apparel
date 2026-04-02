@@ -12,7 +12,7 @@ export default function ShipmentsShow() {
     useEffect(() => {
         axios.get('/logistics/shipments/' + id).then(res => {
             setShipment(res.data.shipment);
-        }).catch(() => {});
+        }).catch(() => { });
     }, [id]);
 
     const handleStatusUpdate = (status) => {
@@ -83,7 +83,7 @@ export default function ShipmentsShow() {
                                         <p className="text-sm font-medium text-gray-900">{item.product?.name}</p>
                                         <p className="text-xs text-gray-500">× {item.quantity}</p>
                                     </div>
-                                    <p className="text-sm font-medium text-gray-900">₱{Number(item.subtotal || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
+                                    <p className="text-sm font-medium text-gray-900">₱{Number(item.total_price || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
                                 </div>
                             ))}
                             {(!shipment.order?.items || shipment.order.items.length === 0) && (

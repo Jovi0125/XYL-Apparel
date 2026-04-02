@@ -51,9 +51,9 @@ export default function ProductsShow() {
                                 <tbody className="divide-y divide-gray-50">
                                     {product.variants.map((v) => (
                                         <tr key={v.id}>
-                                            <td className="py-2 text-gray-900">{v.name}</td>
+                                            <td className="py-2 text-gray-900">{v.size || v.color || v.name || '—'}</td>
                                             <td className="py-2 text-gray-500">{v.sku}</td>
-                                            <td className="py-2 text-right text-gray-900">₱{Number(v.price).toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
+                                            <td className="py-2 text-right text-gray-900">₱{Number(v.price_override || product.price).toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
                                             <td className="py-2 text-right text-gray-600">{v.stock}</td>
                                         </tr>
                                     ))}
@@ -76,8 +76,8 @@ export default function ProductsShow() {
                         </span>
                     </div>
                     <div className="flex gap-2">
-                        <Link to={`/seller/products/${id}/edit`} className="flex-1 px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition text-center">Edit</Link>
-                        <Link to="/seller/products" className="flex-1 px-4 py-2 border border-gray-200 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition text-center">Back</Link>
+                        <Link to={`/seller/products/${id}/edit`} className="flex-1 px-4 py-2 bg-gray-900 text-sm font-medium rounded-lg hover:bg-gray-800 transition text-center" style={{ color: '#ffffff' }}>Edit</Link>
+                        <Link to="/seller/products" className="flex-1 px-4 py-2 border border-gray-200 text-sm font-medium rounded-lg hover:bg-gray-50 transition text-center" style={{ color: '#374151' }}>Back</Link>
                     </div>
                 </div>
             </div>

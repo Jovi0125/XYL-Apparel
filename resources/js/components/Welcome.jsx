@@ -125,65 +125,65 @@ export default function Welcome({ auth, user }) {
                 onWheel={handleWheel}
                 className="h-screen overflow-y-auto snap-y snap-mandatory scroll-smooth hide-scrollbar"
             >
-            <div className="fixed right-5 sm:right-8 top-1/2 -translate-y-1/2 z-20 flex flex-col items-center gap-2.5 pointer-events-none">
-                {[0, 1].map((index) => (
-                    <span
-                        key={index}
-                        className={activeSection === index
-                            ? 'h-8 w-1 rounded-full bg-gray-900/90 transition-all duration-300'
-                            : 'h-1.5 w-1.5 rounded-full bg-gray-500/40 transition-all duration-300'}
-                    />
-                ))}
-            </div>
-            <section
-                ref={(el) => {
-                    sectionRefs.current[0] = el;
-                }}
-                data-section-index="0"
-                className={`relative h-screen snap-start [scroll-snap-stop:always] transition-opacity duration-700 ease-out ${activeSection === 0 ? 'opacity-100' : 'opacity-95'}`}
-                style={heroBackgroundStyle}
-            >
-                <div className="absolute left-8 sm:left-16 lg:left-24 top-[62%] -translate-y-1/2 z-10">
-                    <img
-                        src="/images/xy.png"
-                        alt="XYLO mark"
-                        className="-ml-8 sm:-ml-9 mb-4 h-12 w-auto sm:h-14 object-contain"
-                    />
-                    <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold tracking-tight text-black leading-tight">
-                        DRIP x Arist Series Tee
-                    </h2>
-                    <p className="mt-3 max-w-sm text-sm sm:text-base text-black/85 leading-relaxed">
-                        Bold art. Clean drip.
-                        <br />
-                        Elevate your everyday fit with a statement piece built for style and comfort.
-                    </p>
-                    <p className="mt-4 text-2xl sm:text-3xl font-bold tracking-tight text-black">
-                        P1999
-                    </p>
+                <div className="fixed right-5 sm:right-8 top-1/2 -translate-y-1/2 z-20 flex flex-col items-center gap-2.5 pointer-events-none">
+                    {[0, 1].map((index) => (
+                        <span
+                            key={index}
+                            className={activeSection === index
+                                ? 'h-8 w-1 rounded-full bg-gray-900/90 transition-all duration-300'
+                                : 'h-1.5 w-1.5 rounded-full bg-gray-500/40 transition-all duration-300'}
+                        />
+                    ))}
                 </div>
-            </section>
-            <section
-                ref={(el) => {
-                    sectionRefs.current[1] = el;
-                }}
-                data-section-index="1"
-                className={`relative h-screen snap-start [scroll-snap-stop:always] transition-opacity duration-700 ease-out ${activeSection === 1 ? 'opacity-100' : 'opacity-95'}`}
-                style={secondBackgroundStyle}
-            >
-                <div className="absolute left-8 sm:left-16 lg:left-24 top-[62%] -translate-y-1/2 z-10">
-                    <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold tracking-tight text-white leading-tight">
-                        Distressed Denim Trucker
-                    </h2>
-                    <p className="mt-3 max-w-sm text-sm sm:text-base text-white/90 leading-relaxed">
-                        Rugged denim. Timeless edge.
-                        <br />
-                        Elevate your street fit with a bold, distressed look built for everyday wear.
-                    </p>
-                    <p className="mt-4 text-2xl sm:text-3xl font-bold tracking-tight text-white">
-                        P3499
-                    </p>
-                </div>
-            </section>
+                <section
+                    ref={(el) => {
+                        sectionRefs.current[0] = el;
+                    }}
+                    data-section-index="0"
+                    className={`relative h-screen snap-start [scroll-snap-stop:always] transition-opacity duration-700 ease-out ${activeSection === 0 ? 'opacity-100' : 'opacity-95'}`}
+                    style={heroBackgroundStyle}
+                >
+                    <div className="absolute left-8 sm:left-16 lg:left-24 top-[62%] -translate-y-1/2 z-10">
+                        <img
+                            src="/images/xy.png"
+                            alt="XYLO mark"
+                            className="-ml-8 sm:-ml-9 mb-4 h-12 w-auto sm:h-14 object-contain"
+                        />
+                        <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold tracking-tight text-black leading-tight">
+                            DRIP x Arist Series Tee
+                        </h2>
+                        <p className="mt-3 max-w-sm text-sm sm:text-base text-black/85 leading-relaxed">
+                            Bold art. Clean drip.
+                            <br />
+                            Elevate your everyday fit with a statement piece built for style and comfort.
+                        </p>
+                        <p className="mt-4 text-2xl sm:text-3xl font-bold tracking-tight text-black">
+                            P1999
+                        </p>
+                    </div>
+                </section>
+                <section
+                    ref={(el) => {
+                        sectionRefs.current[1] = el;
+                    }}
+                    data-section-index="1"
+                    className={`relative h-screen snap-start [scroll-snap-stop:always] transition-opacity duration-700 ease-out ${activeSection === 1 ? 'opacity-100' : 'opacity-95'}`}
+                    style={secondBackgroundStyle}
+                >
+                    <div className="absolute left-8 sm:left-16 lg:left-24 top-[62%] -translate-y-1/2 z-10">
+                        <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold tracking-tight text-white leading-tight">
+                            Distressed Denim Trucker
+                        </h2>
+                        <p className="mt-3 max-w-sm text-sm sm:text-base text-white/90 leading-relaxed">
+                            Rugged denim. Timeless edge.
+                            <br />
+                            Elevate your street fit with a bold, distressed look built for everyday wear.
+                        </p>
+                        <p className="mt-4 text-2xl sm:text-3xl font-bold tracking-tight text-white">
+                            P3499
+                        </p>
+                    </div>
+                </section>
             </div>
         </>
     );

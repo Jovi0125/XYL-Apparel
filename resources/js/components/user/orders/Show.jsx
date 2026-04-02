@@ -11,7 +11,7 @@ export default function OrdersShow() {
     useEffect(() => {
         axios.get(`/customer/orders/${id}`).then(res => {
             setOrder(res.data.order);
-        }).catch(() => {});
+        }).catch(() => { });
     }, [id]);
 
     const handleCancel = () => {
@@ -60,7 +60,7 @@ export default function OrdersShow() {
                                         <p className="text-sm font-medium text-gray-900">{item.product?.name}</p>
                                         <p className="text-xs text-gray-500">{item.variant?.name} × {item.quantity}</p>
                                     </div>
-                                    <p className="text-sm font-medium">₱{Number(item.subtotal).toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
+                                    <p className="text-sm font-medium">₱{Number(item.total_price || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
                                 </div>
                             ))}
                         </div>

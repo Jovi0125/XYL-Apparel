@@ -25,7 +25,13 @@ export default function CartIndex() {
         }).catch(err => alert(err.response?.data?.message || 'Failed to remove item.'));
     };
 
-    const subtotal = cartItems.reduce((sum, item) => sum + (Number(item.price) * item.quantity), 0);
+    const getItemPrice = (item) => {
+        if (item.variant && item.variant.price_override) return Number(item.variant.price_override);
+        if (item.product?.sale_price && Number(item.product.sale_price) > 0) return Number(item.product.sale_price);
+        return Number(item.product?.price || 0);
+    };
+
+    const subtotal = cartItems.reduce((sum, item) => sum + (getItemPrice(item) * item.quantity), 0);
 
     return (
         <DashboardLayout sidebar={<UserSidebar />} pageTitle="Shopping Cart">
@@ -41,7 +47,7 @@ export default function CartIndex() {
                                 <div className="flex-1 min-w-0">
                                     <h3 className="text-sm font-medium text-gray-900 truncate">{item.product?.name}</h3>
                                     <p className="text-xs text-gray-500">{item.variant?.name}</p>
-                                    <p className="text-sm font-semibold text-gray-900 mt-1">₱{Number(item.price).toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
+                                    <p className="text-sm font-semibold text-gray-900 mt-1">₱{getItemPrice(item).toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <button onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))} className="w-8 h-8 border border-gray-200 rounded flex items-center justify-center text-sm">-</button>
@@ -62,7 +68,7 @@ export default function CartIndex() {
                             <div className="flex justify-between"><span className="text-gray-500">Subtotal ({cartItems.length} items)</span><span className="font-medium text-gray-900">₱{subtotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span></div>
                             <div className="flex justify-between"><span className="text-gray-500">Shipping</span><span className="text-gray-500">Calculated at checkout</span></div>
                         </div>
-                        <Link to="/checkout" className="block w-full px-6 py-3 bg-gray-900 text-white text-sm font-medium rounded-xl hover:bg-gray-800 transition text-center">
+                        <Link to="/checkout" className="block w-full px-6 py-3 bg-gray-900 text-sm font-medium rounded-xl hover:bg-gray-800 transition text-center" style={{ color: '#ffffff' }}>
                             Proceed to Checkout
                         </Link>
                     </div>

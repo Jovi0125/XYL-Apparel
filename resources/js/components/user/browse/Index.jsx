@@ -53,7 +53,16 @@ export default function BrowseIndex() {
                         <div className="p-4">
                             <p className="text-xs text-gray-400 mb-1">{p.seller?.shop_name}</p>
                             <h3 className="text-sm font-medium text-gray-900 line-clamp-2">{p.name}</h3>
-                            <p className="text-sm font-semibold text-gray-900 mt-2">₱{Number(p.price).toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
+                            <div className="flex items-center gap-2 mt-2">
+                                {p.sale_price && Number(p.sale_price) < Number(p.price) ? (
+                                    <>
+                                        <p className="text-sm font-semibold text-red-600">₱{Number(p.sale_price).toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
+                                        <p className="text-xs text-gray-400 line-through">₱{Number(p.price).toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
+                                    </>
+                                ) : (
+                                    <p className="text-sm font-semibold text-gray-900">₱{Number(p.price).toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
+                                )}
+                            </div>
                         </div>
                     </Link>
                 )) : (

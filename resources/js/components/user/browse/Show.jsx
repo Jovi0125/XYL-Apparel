@@ -65,9 +65,25 @@ export default function BrowseShow() {
                 <div>
                     <Link to={`/browse/shop/${product.seller_profile_id}`} className="text-sm text-gray-400 hover:text-gray-600">{product.seller?.shop_name}</Link>
                     <h1 className="text-2xl font-bold text-gray-900 mt-1">{product.name}</h1>
-                    <p className="text-2xl font-bold text-gray-900 mt-4">
-                        ₱{Number(selectedVariant?.price || product.price).toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                    </p>
+                    <div className="mt-4">
+                        {product.sale_price && Number(product.sale_price) < Number(product.price) ? (
+                            <div className="flex items-center gap-3">
+                                <p className="text-2xl font-bold text-red-600">
+                                    ₱{Number(selectedVariant?.price_override || product.sale_price).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                </p>
+                                <p className="text-lg text-gray-400 line-through">
+                                    ₱{Number(product.price).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                </p>
+                                <span className="px-2 py-0.5 bg-red-100 text-red-700 text-xs font-semibold rounded-full">
+                                    {Math.round((1 - Number(product.sale_price) / Number(product.price)) * 100)}% OFF
+                                </span>
+                            </div>
+                        ) : (
+                            <p className="text-2xl font-bold text-gray-900">
+                                ₱{Number(selectedVariant?.price_override || product.price).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                            </p>
+                        )}
+                    </div>
 
                     {/* Variant Picker */}
                     {product.variants?.length > 0 && (
@@ -123,7 +139,16 @@ export default function BrowseShow() {
                                 </div>
                                 <div className="p-4">
                                     <h4 className="text-sm font-medium text-gray-900 line-clamp-2">{rp.name}</h4>
-                                    <p className="text-sm font-semibold text-gray-900 mt-2">₱{Number(rp.price).toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
+                                    <div className="flex items-center gap-2 mt-2">
+                                        {rp.sale_price && Number(rp.sale_price) < Number(rp.price) ? (
+                                            <>
+                                                <p className="text-sm font-semibold text-red-600">₱{Number(rp.sale_price).toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
+                                                <p className="text-xs text-gray-400 line-through">₱{Number(rp.price).toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
+                                            </>
+                                        ) : (
+                                            <p className="text-sm font-semibold text-gray-900">₱{Number(rp.price).toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
+                                        )}
+                                    </div>
                                 </div>
                             </Link>
                         ))}
