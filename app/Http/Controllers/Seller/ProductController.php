@@ -24,7 +24,8 @@ class ProductController extends Controller
     {
         $seller = $this->seller();
 
-        $products = Product::with('category', 'primaryImage', 'variants')
+        $products = Product::with('category', 'images', 'variants')
+            ->withSum('variants as total_stock', 'stock')
             ->where('seller_profile_id', $seller->id)
             ->when($request->search, fn ($q, $s) => $q->where('name', 'like', "%{$s}%"))
             ->when($request->status !== null && $request->status !== '', function ($q) use ($request) {

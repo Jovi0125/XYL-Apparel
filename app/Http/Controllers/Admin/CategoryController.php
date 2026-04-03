@@ -13,6 +13,7 @@ class CategoryController extends Controller
     public function index(Request $request)
     {
         $categories = Category::with('parent', 'children')
+            ->withCount('products')
             ->when($request->search, fn ($q, $s) => $q->where('name', 'like', "%{$s}%"))
             ->orderBy('sort_order')
             ->orderBy('name')
