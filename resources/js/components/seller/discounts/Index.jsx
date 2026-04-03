@@ -48,7 +48,7 @@ export default function DiscountsIndex() {
                                     <td className="px-6 py-4 font-mono font-medium text-gray-900">{d.code}</td>
                                     <td className="px-6 py-4 text-gray-600 capitalize">{d.type}</td>
                                     <td className="px-6 py-4 text-right text-gray-900">{d.type === 'percentage' ? `${d.value}%` : `₱${Number(d.value).toLocaleString()}`}</td>
-                                    <td className="px-6 py-4 text-right text-gray-600">{d.times_used || 0} / {d.max_uses || '∞'}</td>
+                                    <td className="px-6 py-4 text-right text-gray-600">{d.used_count || 0} / {d.max_uses || '∞'}</td>
                                     <td className="px-6 py-4 text-gray-500 text-xs">{d.starts_at ? new Date(d.starts_at).toLocaleDateString() : '—'} — {d.expires_at ? new Date(d.expires_at).toLocaleDateString() : '—'}</td>
                                     <td className="px-6 py-4 text-right">
                                         <div className="inline-flex items-center gap-1.5">
