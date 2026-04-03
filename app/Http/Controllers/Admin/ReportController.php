@@ -201,21 +201,23 @@ class ReportController extends Controller
         $period = $request->get('period', '30');
         $startDate = now()->subDays((int) $period)->startOfDay();
 
-        $products = DB::table('order_items')
-            ->join('orders', 'orders.id', '=', 'order_items.order_id')
-            ->leftJoin('products', 'products.id', '=', 'order_items.product_id')
-            ->leftJoin('seller_profiles', 'products.seller_profile_id', '=', 'seller_profiles.id')
-            ->where('orders.created_at', '>=', $startDate)
+        // Start from products so ALL products appear, even those with no orders.
+        $products = DB::table('products')
+            ->leftJoin('seller_profiles', 'seller_profiles.id', '=', 'products.seller_profile_id')
+            ->leftJoin('order_items', 'order_items.product_id', '=', 'products.id')
+            ->leftJoin('orders', function ($join) use ($startDate) {
+                $join->on('orders.id', '=', 'order_items.order_id')
+                     ->where('orders.created_at', '>=', $startDate);
+            })
             ->select(
-                'order_items.product_id',
-                'order_items.product_name',
+                'products.id',
+                'products.name',
                 DB::raw('COALESCE(seller_profiles.shop_name, "Unknown") as shop_name'),
-                DB::raw('SUM(order_items.quantity) as total_sold'),
-                DB::raw('SUM(order_items.total_price) as total_revenue'),
-                DB::raw('COUNT(DISTINCT orders.id) as order_count')
+                DB::raw('COALESCE(SUM(CASE WHEN orders.id IS NOT NULL THEN order_items.quantity ELSE 0 END), 0) as units_sold'),
+                DB::raw('COALESCE(SUM(CASE WHEN orders.id IS NOT NULL THEN order_items.total_price ELSE 0 END), 0) as revenue')
             )
-            ->groupBy('order_items.product_id', 'order_items.product_name', 'seller_profiles.shop_name')
-            ->orderByDesc('total_revenue')
+            ->groupBy('products.id', 'products.name', 'seller_profiles.shop_name')
+            ->orderByDesc('revenue')
             ->paginate(20);
 
         return response()->json(compact('products', 'period'));

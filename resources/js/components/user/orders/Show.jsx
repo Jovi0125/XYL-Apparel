@@ -96,7 +96,7 @@ export default function OrdersShow() {
                         <div className="space-y-2 text-sm">
                             <div className="flex justify-between"><span className="text-gray-500">Subtotal</span><span>₱{Number(order.subtotal).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span></div>
                             <div className="flex justify-between"><span className="text-gray-500">Shipping</span><span>₱{Number(order.shipping_fee || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span></div>
-                            {order.discount > 0 && <div className="flex justify-between text-green-600"><span>Discount</span><span>-₱{Number(order.discount).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span></div>}
+                            {Number(order.discount_amount) > 0 && <div className="flex justify-between text-green-600"><span>Discount</span><span>-₱{Number(order.discount_amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span></div>}
                             <div className="flex justify-between font-semibold border-t border-gray-100 pt-2"><span>Total</span><span>₱{Number(order.total).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span></div>
                         </div>
                     </div>

@@ -46,9 +46,9 @@ export default function ReportsProducts() {
                             {products.length > 0 ? products.map((p) => (
                                 <tr key={p.id} className="hover:bg-gray-50 transition">
                                     <td className="px-6 py-4 font-medium text-gray-900">{p.name}</td>
-                                    <td className="px-6 py-4 text-gray-600">{p.seller?.shop_name || '—'}</td>
-                                    <td className="px-6 py-4 text-right text-gray-600">{p.units_sold}</td>
-                                    <td className="px-6 py-4 text-right font-medium text-gray-900">₱{Number(p.revenue).toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
+                                    <td className="px-6 py-4 text-gray-600">{p.shop_name || '—'}</td>
+                                    <td className="px-6 py-4 text-right text-gray-600">{Number(p.units_sold || 0).toLocaleString()}</td>
+                                    <td className="px-6 py-4 text-right font-medium text-gray-900">₱{Number(p.revenue || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
                                 </tr>
                             )) : (
                                 <tr><td colSpan="4" className="px-6 py-12 text-center text-gray-400">No data available.</td></tr>

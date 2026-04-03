@@ -56,7 +56,15 @@ export default function OrdersIndex() {
                         </div>
                         <div className="flex items-center justify-between mt-3 text-sm">
                             <span className="text-gray-500">{order.created_at ? new Date(order.created_at).toLocaleDateString() : ''}</span>
-                            <span className="font-semibold text-gray-900">₱{Number(order.total).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                            <div className="text-right">
+                                {Number(order.discount_amount) > 0 && (
+                                    <div className="flex items-center gap-2 justify-end">
+                                        <span className="text-xs text-gray-400 line-through">₱{Number(order.subtotal).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                                        <span className="text-xs text-green-600 font-medium">-₱{Number(order.discount_amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                                    </div>
+                                )}
+                                <span className="font-semibold text-gray-900">₱{Number(order.total).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                            </div>
                         </div>
                     </Link>
                 )) : (

@@ -11,6 +11,7 @@ class SellerController extends Controller
     public function index(Request $request)
     {
         $sellers = SellerProfile::with('user')
+            ->withCount('products')
             ->when($request->search, fn ($q, $s) => $q->where('shop_name', 'like', "%{$s}%"))
             ->when($request->status, fn ($q, $s) => $q->where('status', $s))
             ->latest()

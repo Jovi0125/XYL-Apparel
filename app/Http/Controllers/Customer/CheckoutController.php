@@ -116,13 +116,21 @@ class CheckoutController extends Controller
         $shippingFee = (float) SystemSetting::get('default_shipping_fee', 50);
         $commissionRate = (float) SystemSetting::get('platform_commission', 10);
 
-        // Retrieve discount if applied
+        // Retrieve discount if applied (session first, then fall back to form input)
         $discount = null;
         if ($discountId = session('discount_code_id')) {
             $discount = DiscountCode::find($discountId);
             if ($discount && ! $discount->isValid()) {
                 $discount = null;
                 session()->forget(['discount_code_id', 'discount_code']);
+            }
+        }
+
+        // Fallback: if session didn't have it, check form input
+        if (! $discount && $request->filled('discount_code')) {
+            $discount = DiscountCode::where('code', $request->discount_code)->first();
+            if ($discount && ! $discount->isValid()) {
+                $discount = null;
             }
         }
 

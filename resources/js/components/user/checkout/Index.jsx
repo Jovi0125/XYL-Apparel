@@ -53,6 +53,12 @@ export default function CheckoutIndex() {
     const subtotal = cartItems.reduce((sum, item) => sum + (getItemPrice(item) * item.quantity), 0);
     const shippingFee = 50;
 
+    const discountAmount = discountApplied
+        ? (discountApplied.type === 'percentage'
+            ? Math.round(subtotal * (Number(discountApplied.value) / 100) * 100) / 100
+            : Math.min(Number(discountApplied.value), subtotal))
+        : 0;
+
     return (
         <DashboardLayout sidebar={<UserSidebar />} pageTitle="Checkout">
             <form onSubmit={handleSubmit}>
@@ -139,8 +145,8 @@ export default function CheckoutIndex() {
                             <div className="space-y-2 text-sm">
                                 <div className="flex justify-between"><span className="text-gray-500">Subtotal</span><span>₱{subtotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span></div>
                                 <div className="flex justify-between"><span className="text-gray-500">Shipping</span><span>₱{shippingFee.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span></div>
-                                {discountApplied && <div className="flex justify-between text-green-600"><span>Discount</span><span>-₱{discountApplied.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span></div>}
-                                <div className="flex justify-between font-semibold border-t border-gray-100 pt-2"><span>Total</span><span>₱{(subtotal + shippingFee - (discountApplied || 0)).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span></div>
+                                {discountApplied && <div className="flex justify-between text-green-600"><span>Discount ({discountApplied.type === 'percentage' ? `${discountApplied.value}%` : 'Fixed'})</span><span>-₱{discountAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span></div>}
+                                <div className="flex justify-between font-semibold border-t border-gray-100 pt-2"><span>Total</span><span>₱{(subtotal + shippingFee - discountAmount).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span></div>
                             </div>
                             <button type="submit" className="w-full mt-4 px-6 py-3 bg-gray-900 text-white text-sm font-medium rounded-xl hover:bg-gray-800 transition">Place Order</button>
                         </div>
