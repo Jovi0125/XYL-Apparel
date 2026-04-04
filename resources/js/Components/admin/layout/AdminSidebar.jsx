@@ -94,8 +94,6 @@ const sidebarConfig = [
         icon: <Icons.Inventory />,
         children: [
             { id: 'inventory-overview', label: 'Inventory Overview', href: '/admin/inventory' },
-            { id: 'stock-management', label: 'Stock Management', href: '/admin/inventory' },
-            { id: 'low-stock-alerts', label: 'Low Stock Alerts', href: '/admin/inventory' },
         ],
     },
     {
@@ -161,7 +159,7 @@ export default function AdminSidebar({ activeItem = 'dashboard' }) {
     };
 
     return (
-        <aside className="fixed inset-y-0 left-0 z-50 w-72 bg-slate-900 border-r border-slate-800/50 flex flex-col">
+        <aside className="fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 border-r border-slate-800/50 flex flex-col">
             {/* Brand Header */}
             <div className="flex items-center h-16 px-6 border-b border-slate-800/50">
                 <div className="flex items-center gap-3">
