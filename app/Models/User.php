@@ -13,6 +13,13 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     /**
+     * User Roles
+     */
+    public const ROLE_ADMIN = 'admin';
+    public const ROLE_BUYER = 'buyer';
+    public const ROLE_LOGISTICS = 'logistics';
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var list<string>
@@ -23,6 +30,12 @@ class User extends Authenticatable
         'password',
         'role',
         'status',
+        'suspended_at',
+        'postal_code',
+        'birthday',
+        'gender',
+        'terms_accepted',
+        'terms_accepted_at',
     ];
 
     /**
@@ -45,6 +58,10 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'birthday' => 'date',
+            'terms_accepted' => 'boolean',
+            'terms_accepted_at' => 'datetime',
+            'suspended_at' => 'datetime',
         ];
     }
 
@@ -53,7 +70,7 @@ class User extends Authenticatable
      */
     public function isAdmin(): bool
     {
-        return $this->role === 'admin';
+        return $this->role === self::ROLE_ADMIN;
     }
 
     /**
@@ -61,7 +78,7 @@ class User extends Authenticatable
      */
     public function isBuyer(): bool
     {
-        return $this->role === 'buyer';
+        return $this->role === self::ROLE_BUYER;
     }
 
     /**
@@ -69,7 +86,7 @@ class User extends Authenticatable
      */
     public function isLogistics(): bool
     {
-        return $this->role === 'logistics';
+        return $this->role === self::ROLE_LOGISTICS;
     }
 
     /**
@@ -78,5 +95,13 @@ class User extends Authenticatable
     public function isActive(): bool
     {
         return $this->status === 'active';
+    }
+
+    /**
+     * Check if user is suspended/banned
+     */
+    public function isSuspended(): bool
+    {
+        return $this->status === 'suspended' || !is_null($this->suspended_at);
     }
 }

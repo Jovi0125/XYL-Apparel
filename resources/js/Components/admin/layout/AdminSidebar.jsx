@@ -72,7 +72,7 @@ const sidebarConfig = [
         children: [
             { id: 'orders', label: 'Orders', href: '#' },
             { id: 'payments', label: 'Payments', href: '#' },
-            { id: 'customers', label: 'Customers', href: '#' },
+            { id: 'users', label: 'Users', href: '/admin/users' },
             { id: 'shipments', label: 'Shipments', href: '#' },
             { id: 'reviews', label: 'Reviews', href: '#' },
         ],

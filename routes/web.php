@@ -66,6 +66,10 @@ Route::prefix('admin')
         // Archive Management
         Route::get('/archive', [ArchiveController::class, 'index'])->name('archive.index');
         Route::post('/archive/restore/{type}/{id}', [ArchiveController::class, 'restore'])->name('archive.restore');
+
+        // Users Management
+        Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
+        Route::post('users/{user}/toggle-status', [\App\Http\Controllers\Admin\UserController::class, 'toggleStatus'])->name('users.toggleStatus');
     });
 
 /*
