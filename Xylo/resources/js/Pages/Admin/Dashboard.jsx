@@ -1,196 +1,209 @@
 import { Head } from '@inertiajs/react';
 import AdminLayout from '../../Layouts/AdminLayout';
+import StatCard from '../../Components/admin/StatCard';
+import SalesChart from '../../Components/admin/SalesChart';
+import CustomerMap from '../../Components/admin/CustomerMap';
+import DeviceChart from '../../Components/admin/DeviceChart';
+import RecentOrdersTable from '../../Components/admin/RecentOrdersTable';
 
-export default function Dashboard({ user, stats }) {
+export default function Dashboard({ user, stats = {} }) {
+    // Extract data with proper null handling for empty states
+    const {
+        revenue = null,
+        orders = null,
+        products = null,
+        lowStockAlerts = null,
+        salesData = null,
+        customerDistribution = null,
+        deviceUsage = null,
+        recentOrders = []
+    } = stats;
+
+    // Format currency
+    const formatCurrency = (value) => {
+        if (value === null || value === undefined) return null;
+        return `$${value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    };
+
     return (
-        <AdminLayout title="Dashboard">
+        <AdminLayout title="Dashboard" activeItem="dashboard">
             <Head title="Admin Dashboard" />
 
-            {/* Welcome Section */}
-            <div className="mb-8">
-                <h2 className="text-2xl font-bold text-white">
-                    Welcome back, {user?.name || 'Admin'}!
-                </h2>
-                <p className="text-gray-400 mt-1">
-                    Here's what's happening with your store today.
-                </p>
+            {/* Page Background Gradient */}
+            <div className="fixed inset-0 pointer-events-none">
+                <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl" />
+                <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-violet-500/5 rounded-full blur-3xl" />
             </div>
 
-            {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <StatCard
-                    title="Total Products"
-                    value={stats.totalProducts}
-                    icon={<ProductIcon />}
-                    color="indigo"
-                />
-                <StatCard
-                    title="Total Orders"
-                    value={stats.totalOrders}
-                    icon={<OrderIcon />}
-                    color="emerald"
-                />
-                <StatCard
-                    title="Pending Shipments"
-                    value={stats.pendingShipments}
-                    icon={<ShipmentIcon />}
-                    color="amber"
-                />
-                <StatCard
-                    title="Total Revenue"
-                    value={`$${stats.totalRevenue.toLocaleString()}`}
-                    icon={<RevenueIcon />}
-                    color="rose"
-                />
-            </div>
+            <div className="relative z-10">
+                {/* Top Metrics Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+                    <StatCard
+                        title="Total Revenue"
+                        value={formatCurrency(revenue?.value)}
+                        trend={revenue?.trend}
+                        trendLabel="vs last month"
+                        emptyMessage="No revenue data yet"
+                        gradient="from-emerald-500/10 to-cyan-500/10"
+                        icon={<RevenueIcon />}
+                    />
+                    <StatCard
+                        title="Total Orders"
+                        value={orders?.value}
+                        trend={orders?.trend}
+                        trendLabel="vs last month"
+                        emptyMessage="No orders yet"
+                        gradient="from-blue-500/10 to-indigo-500/10"
+                        icon={<OrdersIcon />}
+                    />
+                    <StatCard
+                        title="Active Products"
+                        value={products?.value}
+                        trend={products?.trend}
+                        trendLabel="vs last month"
+                        emptyMessage="No products yet"
+                        gradient="from-violet-500/10 to-purple-500/10"
+                        icon={<ProductsIcon />}
+                    />
+                    <StatCard
+                        title="Low Stock Alerts"
+                        value={lowStockAlerts?.value}
+                        trend={lowStockAlerts?.trend}
+                        trendLabel="items need attention"
+                        emptyMessage="No alerts yet"
+                        gradient="from-amber-500/10 to-orange-500/10"
+                        icon={<AlertIcon />}
+                    />
+                </div>
 
-            {/* Recent Orders & Quick Actions */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Recent Orders */}
-                <div className="lg:col-span-2 bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
-                    <div className="px-6 py-4 border-b border-gray-700">
-                        <h3 className="text-lg font-semibold text-white">Recent Orders</h3>
+                {/* Charts Row */}
+                <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-8">
+                    {/* Sales Overview - Takes 2 columns */}
+                    <div className="xl:col-span-2">
+                        <SalesChart data={salesData} />
                     </div>
-                    <div className="divide-y divide-gray-700">
-                        {stats.recentOrders.map((order) => (
-                            <div key={order.id} className="px-6 py-4 flex items-center justify-between hover:bg-gray-700/50 transition-colors">
-                                <div className="flex items-center space-x-4">
-                                    <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center">
-                                        <span className="text-sm font-medium text-gray-300">
-                                            {order.customer.charAt(0)}
-                                        </span>
-                                    </div>
-                                    <div>
-                                        <p className="text-sm font-medium text-white">{order.customer}</p>
-                                        <p className="text-xs text-gray-400">{order.id}</p>
-                                    </div>
-                                </div>
-                                <div className="text-right">
-                                    <p className="text-sm font-medium text-white">${order.amount.toFixed(2)}</p>
-                                    <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(order.status)}`}>
-                                        {order.status}
-                                    </span>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                    <div className="px-6 py-4 border-t border-gray-700">
-                        <button className="text-sm text-indigo-400 hover:text-indigo-300 font-medium">
-                            View all orders →
-                        </button>
+                    
+                    {/* Device Usage */}
+                    <div>
+                        <DeviceChart data={deviceUsage} />
                     </div>
                 </div>
 
-                {/* Quick Actions */}
-                <div className="bg-gray-800 rounded-xl border border-gray-700 p-6">
-                    <h3 className="text-lg font-semibold text-white mb-4">Quick Actions</h3>
-                    <div className="space-y-3">
-                        <QuickActionButton icon={<PlusIcon />} label="Add New Product" />
-                        <QuickActionButton icon={<CategoryIcon />} label="Manage Categories" />
-                        <QuickActionButton icon={<OrderIcon />} label="Process Orders" />
-                        <QuickActionButton icon={<ShipmentIcon />} label="Update Shipments" />
+                {/* Map and Orders Row */}
+                <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-8">
+                    {/* Customer Distribution Map */}
+                    <div className="xl:col-span-2">
+                        <CustomerMap data={customerDistribution} />
                     </div>
+
+                    {/* Quick Actions Panel */}
+                    <div className="relative overflow-hidden rounded-2xl bg-slate-900/80 border border-slate-800/50 backdrop-blur-sm">
+                        <div className="absolute inset-0 bg-gradient-to-br from-violet-500/5 via-transparent to-blue-500/5 pointer-events-none" />
+                        <div className="relative z-10 p-6">
+                            <h3 className="text-lg font-semibold text-white mb-5">Quick Actions</h3>
+                            <div className="space-y-3">
+                                <QuickAction icon={<PlusIcon />} label="Add New Product" color="blue" />
+                                <QuickAction icon={<TagIcon />} label="Create Discount" color="violet" />
+                                <QuickAction icon={<TruckIcon />} label="Process Shipments" color="cyan" />
+                                <QuickAction icon={<ChartIcon />} label="View Analytics" color="emerald" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Recent Orders Table - Full Width */}
+                <div className="mb-8">
+                    <RecentOrdersTable orders={recentOrders} />
                 </div>
             </div>
         </AdminLayout>
     );
 }
 
-// Stat Card Component
-function StatCard({ title, value, icon, color }) {
+// Quick Action Button with gradient
+function QuickAction({ icon, label, color = 'blue' }) {
     const colorClasses = {
-        indigo: 'bg-indigo-500/10 text-indigo-400',
-        emerald: 'bg-emerald-500/10 text-emerald-400',
-        amber: 'bg-amber-500/10 text-amber-400',
-        rose: 'bg-rose-500/10 text-rose-400',
+        blue: 'group-hover:text-blue-400 group-hover:border-blue-500/30',
+        violet: 'group-hover:text-violet-400 group-hover:border-violet-500/30',
+        cyan: 'group-hover:text-cyan-400 group-hover:border-cyan-500/30',
+        emerald: 'group-hover:text-emerald-400 group-hover:border-emerald-500/30',
     };
 
     return (
-        <div className="bg-gray-800 rounded-xl border border-gray-700 p-6">
-            <div className="flex items-center justify-between">
-                <div>
-                    <p className="text-sm text-gray-400">{title}</p>
-                    <p className="text-2xl font-bold text-white mt-1">{value}</p>
-                </div>
-                <div className={`p-3 rounded-lg ${colorClasses[color]}`}>
-                    {icon}
-                </div>
-            </div>
-        </div>
-    );
-}
-
-// Quick Action Button Component
-function QuickActionButton({ icon, label }) {
-    return (
-        <button className="w-full flex items-center px-4 py-3 bg-gray-700/50 hover:bg-gray-700 rounded-lg text-gray-300 hover:text-white transition-colors">
-            <span className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-600 mr-3">
+        <button className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl bg-slate-800/30 border border-slate-700/30 hover:bg-slate-800/50 text-slate-300 hover:text-white transition-all duration-200 group">
+            <span className={`p-2.5 rounded-xl bg-slate-700/50 border border-slate-600/30 text-slate-400 transition-all duration-200 ${colorClasses[color]}`}>
                 {icon}
             </span>
             <span className="text-sm font-medium">{label}</span>
+            <svg className="w-4 h-4 ml-auto text-slate-600 group-hover:text-slate-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
         </button>
     );
 }
 
-// Helper function for status colors
-function getStatusColor(status) {
-    switch (status) {
-        case 'Processing':
-            return 'bg-blue-500/20 text-blue-400';
-        case 'Shipped':
-            return 'bg-emerald-500/20 text-emerald-400';
-        case 'Pending':
-            return 'bg-amber-500/20 text-amber-400';
-        default:
-            return 'bg-gray-500/20 text-gray-400';
-    }
-}
-
-// Icon Components
-function ProductIcon() {
-    return (
-        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-        </svg>
-    );
-}
-
-function OrderIcon() {
-    return (
-        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-        </svg>
-    );
-}
-
-function ShipmentIcon() {
-    return (
-        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
-        </svg>
-    );
-}
-
+// Icons
 function RevenueIcon() {
     return (
-        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+    );
+}
+
+function OrdersIcon() {
+    return (
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+        </svg>
+    );
+}
+
+function ProductsIcon() {
+    return (
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+        </svg>
+    );
+}
+
+function AlertIcon() {
+    return (
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
         </svg>
     );
 }
 
 function PlusIcon() {
     return (
-        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
         </svg>
     );
 }
 
-function CategoryIcon() {
+function TagIcon() {
     return (
-        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z" />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6 6h.008v.008H6V6z" />
+        </svg>
+    );
+}
+
+function TruckIcon() {
+    return (
+        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+        </svg>
+    );
+}
+
+function ChartIcon() {
+    return (
+        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
         </svg>
     );
 }

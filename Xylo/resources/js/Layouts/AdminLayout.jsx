@@ -1,171 +1,96 @@
 import { useState } from 'react';
-import { Link, usePage } from '@inertiajs/react';
-import { router } from '@inertiajs/react';
+import { usePage } from '@inertiajs/react';
+import AdminSidebar from '../Components/admin/AdminSidebar';
 
-export default function AdminLayout({ children, title }) {
+export default function AdminLayout({ children, title, activeItem = 'dashboard' }) {
     const { auth } = usePage().props;
-    const [sidebarOpen, setSidebarOpen] = useState(true);
-
-    const navigation = [
-        { name: 'Dashboard', href: '/admin/dashboard', icon: DashboardIcon, current: true },
-        { name: 'Products', href: '#', icon: ProductsIcon, current: false },
-        { name: 'Categories', href: '#', icon: CategoriesIcon, current: false },
-        { name: 'Orders', href: '#', icon: OrdersIcon, current: false },
-        { name: 'Shipments', href: '#', icon: ShipmentsIcon, current: false },
-    ];
-
-    const handleLogout = (e) => {
-        e.preventDefault();
-        router.post('/logout');
-    };
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     return (
-        <div className="min-h-screen bg-gray-900">
-            {/* Sidebar */}
-            <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-gray-800 transform transition-transform duration-300 ease-in-out ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}>
-                {/* Logo */}
-                <div className="flex items-center justify-center h-16 bg-gray-900">
-                    <span className="text-2xl font-bold text-white">
-                        XYLO<span className="text-indigo-500">.</span>
-                    </span>
-                </div>
+        <div className="min-h-screen bg-slate-950">
+            {/* Mobile Menu Overlay */}
+            {mobileMenuOpen && (
+                <div 
+                    className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden"
+                    onClick={() => setMobileMenuOpen(false)}
+                />
+            )}
 
-                {/* Navigation */}
-                <nav className="mt-8 px-4">
-                    <ul className="space-y-2">
-                        {navigation.map((item) => (
-                            <li key={item.name}>
-                                <Link
-                                    href={item.href}
-                                    className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-200 ${
-                                        item.current
-                                            ? 'bg-indigo-600 text-white'
-                                            : 'text-gray-300 hover:bg-gray-700 hover:text-white'
-                                    }`}
-                                >
-                                    <item.icon className="w-5 h-5 mr-3" />
-                                    {item.name}
-                                </Link>
-                            </li>
-                        ))}
-                    </ul>
-                </nav>
+            {/* Mobile Menu Button */}
+            <button
+                onClick={() => setMobileMenuOpen(true)}
+                className="fixed top-4 left-4 z-30 p-2.5 rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 lg:hidden transition-colors"
+            >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
 
-                {/* User section at bottom */}
-                <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-700">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center">
-                            <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center">
-                                <span className="text-sm font-medium text-white">
-                                    {auth?.user?.name?.charAt(0) || 'A'}
-                                </span>
-                            </div>
-                            <div className="ml-3">
-                                <p className="text-sm font-medium text-white">{auth?.user?.name || 'Admin'}</p>
-                                <p className="text-xs text-gray-400">Administrator</p>
-                            </div>
-                        </div>
-                        <button
-                            onClick={handleLogout}
-                            className="p-2 text-gray-400 hover:text-white rounded-lg hover:bg-gray-700 transition-colors"
-                            title="Logout"
-                        >
-                            <LogoutIcon className="w-5 h-5" />
-                        </button>
-                    </div>
-                </div>
-            </aside>
-
-            {/* Main content */}
-            <div className="lg:pl-64">
-                {/* Top bar */}
-                <header className="sticky top-0 z-40 flex items-center justify-between h-16 px-4 bg-gray-800 border-b border-gray-700 lg:px-8">
+            {/* Sidebar - Desktop always visible, Mobile conditional */}
+            <div className={`
+                ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
+                lg:translate-x-0
+                fixed inset-y-0 left-0 z-50 transition-transform duration-300 ease-out
+            `}>
+                <AdminSidebar activeItem={activeItem} />
+                
+                {/* Mobile Close Button */}
+                {mobileMenuOpen && (
                     <button
-                        onClick={() => setSidebarOpen(!sidebarOpen)}
-                        className="p-2 text-gray-400 rounded-lg lg:hidden hover:bg-gray-700 hover:text-white"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="absolute top-4 right-4 p-2 rounded-lg text-slate-400 hover:text-white lg:hidden"
                     >
-                        <MenuIcon className="w-6 h-6" />
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
                     </button>
-                    
-                    <h1 className="text-xl font-semibold text-white">{title || 'Dashboard'}</h1>
+                )}
+            </div>
 
-                    <div className="flex items-center space-x-4">
-                        <button className="p-2 text-gray-400 rounded-lg hover:bg-gray-700 hover:text-white">
-                            <BellIcon className="w-6 h-6" />
-                        </button>
+            {/* Main Content */}
+            <div className="lg:pl-72">
+                {/* Top Header Bar */}
+                <header className="sticky top-0 z-20 h-16 bg-slate-900/80 backdrop-blur-xl border-b border-slate-800/50">
+                    <div className="flex items-center justify-between h-full px-4 lg:px-8">
+                        {/* Page Title */}
+                        <div className="flex items-center gap-4">
+                            <div className="w-10 lg:hidden" /> {/* Spacer for mobile menu button */}
+                            <h1 className="text-lg font-semibold text-white">{title || 'Dashboard'}</h1>
+                        </div>
+
+                        {/* Header Actions */}
+                        <div className="flex items-center gap-2">
+                            {/* Search */}
+                            <button className="p-2.5 rounded-xl text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-colors">
+                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                                </svg>
+                            </button>
+
+                            {/* Notifications */}
+                            <button className="relative p-2.5 rounded-xl text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-colors">
+                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                                </svg>
+                                <span className="absolute top-2 right-2 w-2 h-2 bg-violet-500 rounded-full ring-2 ring-slate-900"></span>
+                            </button>
+
+                            {/* Quick Actions */}
+                            <button className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium transition-colors">
+                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                </svg>
+                                <span>New Order</span>
+                            </button>
+                        </div>
                     </div>
                 </header>
 
-                {/* Page content */}
+                {/* Page Content */}
                 <main className="p-4 lg:p-8">
                     {children}
                 </main>
             </div>
         </div>
-    );
-}
-
-// Icon components
-function DashboardIcon({ className }) {
-    return (
-        <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-        </svg>
-    );
-}
-
-function ProductsIcon({ className }) {
-    return (
-        <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-        </svg>
-    );
-}
-
-function CategoriesIcon({ className }) {
-    return (
-        <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-        </svg>
-    );
-}
-
-function OrdersIcon({ className }) {
-    return (
-        <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-        </svg>
-    );
-}
-
-function ShipmentsIcon({ className }) {
-    return (
-        <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
-        </svg>
-    );
-}
-
-function MenuIcon({ className }) {
-    return (
-        <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-    );
-}
-
-function BellIcon({ className }) {
-    return (
-        <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-        </svg>
-    );
-}
-
-function LogoutIcon({ className }) {
-    return (
-        <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-        </svg>
     );
 }
