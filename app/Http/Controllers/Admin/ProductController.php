@@ -7,13 +7,14 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\Discount;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::with(['category', 'mainImage'])->latest()->get();
+        $products = Product::with(['category', 'mainImage', 'variants'])->latest()->get();
 
         return Inertia::render('Admin/Products/Index', [
             'products' => $products,
@@ -41,42 +42,80 @@ class ProductController extends Controller
             'parent_category' => 'required|in:Men,Women,Unisex',
             'warranty' => 'required|string',
             'colors' => 'nullable|array',
-            'sizes' => 'nullable|array',
             'tags' => 'nullable|array',
             'payment_methods' => 'nullable|array',
-            'regular_price' => 'required|numeric|min:0',
-            'sale_price' => 'nullable|numeric|min:0',
             'discount_code_id' => 'nullable|exists:discounts,id',
-            'stock' => 'required_without:variants|integer|min:0',
-            'variants' => 'nullable|array',
+            'stock' => 'nullable|integer|min:0',
+            'variants' => 'required|array|min:1',
+            'variants.*.size' => 'required|string',
+            'variants.*.stock' => 'required|integer|min:0',
+            'variants.*.regular_price' => 'required|numeric|min:0',
+            'variants.*.sale_price' => 'nullable|numeric|min:0',
             'images' => 'nullable|array',
+            'images.*' => 'nullable|file|image',
         ]);
 
-        $product = Product::create($validated);
+        // Defensive assignments
+        $validated['colors'] = $validated['colors'] ?? [];
+        $validated['tags'] = $validated['tags'] ?? [];
+        $validated['payment_methods'] = $validated['payment_methods'] ?? [];
+        $validated['stock'] = $validated['stock'] ?? 0;
 
-        if (!empty($validated['variants'])) {
-            foreach ($validated['variants'] as $variant) {
-                $product->variants()->create($variant);
-            }
-        }
+        try {
+            DB::beginTransaction();
 
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $index => $file) {
-                $imageData = cloudinary_upload($file, [
-                    'folder' => 'xylo-apparel/products',
+            $product = Product::create($validated);
+
+            // Safely iterate variants
+            $variants = $validated['variants'] ?? [];
+            foreach ($variants as $variant) {
+                $product->variants()->create([
+                    'size'          => $variant['size'] ?? '',
+                    'stock'         => $variant['stock'] ?? 0,
+                    'regular_price' => $variant['regular_price'] ?? 0,
+                    'sale_price'    => $variant['sale_price'] ?? null,
                 ]);
-
-                $product->images()->create([
-                    'image_public_id' => $imageData['public_id'],
-                    'image_url' => $imageData['url'],
-                    'is_main' => $index === 0,
-                    'order' => $index,
-                ]);
             }
-        }
 
-        return redirect()->route('admin.products.index')
-            ->with('success', 'Product created successfully.');
+            // Safely process images
+            if ($request->hasFile('images')) {
+                $images = $request->file('images');
+                if (!is_array($images)) {
+                    $images = [$images];
+                }
+
+                $validIndex = 0;
+                foreach ($images as $file) {
+                    if ($file && $file->isValid()) {
+                        $imageData = cloudinary_upload($file, [
+                            'folder' => 'xylo-apparel/products',
+                        ]);
+
+                        // Ensurecloudinary returned expected structure
+                        if (is_array($imageData) && isset($imageData['public_id'], $imageData['url'])) {
+                            $product->images()->create([
+                                'image_public_id' => $imageData['public_id'],
+                                'image_url'       => $imageData['url'],
+                                'is_main'         => $validIndex === 0,
+                                'order'           => $validIndex,
+                            ]);
+                            $validIndex++;
+                        }
+                    }
+                }
+            }
+
+            DB::commit();
+
+            return redirect()->route('admin.products.index')
+                ->with('success', 'Product created successfully.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['error' => 'Product creation failed: ' . $e->getMessage()]);
+        }
     }
 
     public function destroy(Product $product)

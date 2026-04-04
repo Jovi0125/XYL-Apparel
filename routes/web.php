@@ -5,6 +5,8 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DiscountController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Buyer\BuyerDashboardController;
+use App\Http\Controllers\Logistics\LogisticsDashboardController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -62,7 +64,7 @@ Route::prefix('buyer')
     ->middleware(['auth', 'role:buyer'])
     ->name('buyer.')
     ->group(function () {
-        // Route::get('/dashboard', [BuyerDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/dashboard', [BuyerDashboardController::class, 'index'])->name('dashboard');
     });
 
 /*
@@ -74,7 +76,7 @@ Route::prefix('logistics')
     ->middleware(['auth', 'role:logistics'])
     ->name('logistics.')
     ->group(function () {
-        // Route::get('/dashboard', [LogisticsDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/dashboard', [LogisticsDashboardController::class, 'index'])->name('dashboard');
     });
 
 /*

@@ -4,7 +4,7 @@ export default function ProductVariants({ data, setData, errors }) {
     const addVariant = () => {
         setData('variants', [
             ...data.variants,
-            { color: '', size: '', stock: '', price: '' }
+            { size: '', stock: '', regular_price: '', sale_price: '' }
         ]);
     };
 
@@ -45,32 +45,41 @@ export default function ProductVariants({ data, setData, errors }) {
                     <div className="space-y-3">
                         {data.variants.map((variant, index) => (
                             <div key={index} className="grid grid-cols-5 gap-3 p-4 bg-slate-800/30 rounded-xl border border-slate-700/30">
-                                <input
-                                    type="text"
-                                    value={variant.color}
-                                    onChange={(e) => updateVariant(index, 'color', e.target.value)}
-                                    placeholder="Color"
-                                    className="px-3 py-2 bg-slate-800/50 border border-slate-700/50 rounded-lg text-white text-sm placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-                                />
-                                <input
-                                    type="text"
+                                <select
                                     value={variant.size}
                                     onChange={(e) => updateVariant(index, 'size', e.target.value)}
-                                    placeholder="Size"
-                                    className="px-3 py-2 bg-slate-800/50 border border-slate-700/50 rounded-lg text-white text-sm placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-                                />
+                                    className="px-3 py-2 bg-slate-800/50 border border-slate-700/50 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                                >
+                                    <option value="" disabled>Select Size</option>
+                                    <option value="XS">XS</option>
+                                    <option value="S">S</option>
+                                    <option value="M">M</option>
+                                    <option value="L">L</option>
+                                    <option value="XL">XL</option>
+                                    <option value="XXL">XXL</option>
+                                </select>
                                 <input
                                     type="number"
                                     value={variant.stock}
                                     onChange={(e) => updateVariant(index, 'stock', e.target.value)}
                                     placeholder="Stock"
+                                    min="0"
                                     className="px-3 py-2 bg-slate-800/50 border border-slate-700/50 rounded-lg text-white text-sm placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
                                 />
                                 <input
                                     type="number"
-                                    value={variant.price}
-                                    onChange={(e) => updateVariant(index, 'price', e.target.value)}
-                                    placeholder="Price (optional)"
+                                    step="0.01"
+                                    value={variant.regular_price}
+                                    onChange={(e) => updateVariant(index, 'regular_price', e.target.value)}
+                                    placeholder="Regular Price"
+                                    className="px-3 py-2 bg-slate-800/50 border border-slate-700/50 rounded-lg text-white text-sm placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                                />
+                                <input
+                                    type="number"
+                                    step="0.01"
+                                    value={variant.sale_price}
+                                    onChange={(e) => updateVariant(index, 'sale_price', e.target.value)}
+                                    placeholder="Sale Price (Opt)"
                                     className="px-3 py-2 bg-slate-800/50 border border-slate-700/50 rounded-lg text-white text-sm placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
                                 />
                                 <button

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Head } from '@inertiajs/react';
 import AdminLayout from '../../Layouts/AdminLayout';
-import CategoryForm from '../../Components/admin/CategoryForm';
-import CategoryGrid from '../../Components/admin/CategoryGrid';
+import CategoryForm from '../../Components/admin/categories/CategoryForm';
+import CategoryGrid from '../../Components/admin/categories/CategoryGrid';
 
 export default function CategoriesIndex({ categories = [] }) {
     const [searchQuery, setSearchQuery] = useState('');

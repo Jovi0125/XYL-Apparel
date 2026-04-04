@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Head } from '@inertiajs/react';
 import AdminLayout from '../../Layouts/AdminLayout';
-import DiscountForm from '../../Components/admin/DiscountForm';
-import DiscountGrid from '../../Components/admin/DiscountGrid';
+import DiscountForm from '../../Components/admin/discounts/DiscountForm';
+import DiscountGrid from '../../Components/admin/discounts/DiscountGrid';
 
 export default function DiscountsIndex({ discounts = [] }) {
     const [searchQuery, setSearchQuery] = useState('');

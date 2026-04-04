@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { usePage } from '@inertiajs/react';
-import AdminSidebar from '../Components/admin/AdminSidebar';
+import AdminSidebar from '../Components/admin/layout/AdminSidebar';
 
 export default function AdminLayout({ children, title, activeItem = 'dashboard' }) {
     const { auth } = usePage().props;

@@ -12,7 +12,6 @@ export default function ProductOptions({ data, setData, errors }) {
         { name: 'Pink', hex: '#EC4899' },
         { name: 'Purple', hex: '#8B5CF6' },
     ];
-    const sizeOptions = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
     const toggleColor = (color) => {
         const exists = data.colors.includes(color);
@@ -23,14 +22,6 @@ export default function ProductOptions({ data, setData, errors }) {
         }
     };
 
-    const toggleSize = (size) => {
-        const exists = data.sizes.includes(size);
-        if (exists) {
-            setData('sizes', data.sizes.filter(s => s !== size));
-        } else {
-            setData('sizes', [...data.sizes, size]);
-        }
-    };
 
     const handleTagsInput = (e) => {
         if (e.key === 'Enter' && e.target.value.trim()) {
@@ -105,25 +96,7 @@ export default function ProductOptions({ data, setData, errors }) {
                     </div>
                 </div>
 
-                <div>
-                    <label className="block text-sm font-medium text-slate-300 mb-3">Sizes</label>
-                    <div className="flex flex-wrap gap-2">
-                        {sizeOptions.map(size => (
-                            <button
-                                key={size}
-                                type="button"
-                                onClick={() => toggleSize(size)}
-                                className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                                    data.sizes.includes(size)
-                                        ? 'bg-blue-500/20 border-2 border-blue-500/50 text-blue-400'
-                                        : 'bg-slate-800/50 border border-slate-700/50 text-slate-400 hover:border-slate-600/50'
-                                }`}
-                            >
-                                {size}
-                            </button>
-                        ))}
-                    </div>
-                </div>
+
 
                 <div>
                     <label className="block text-sm font-medium text-slate-300 mb-2">Tags</label>

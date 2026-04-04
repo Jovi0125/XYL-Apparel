@@ -1,10 +1,10 @@
 import { Head } from '@inertiajs/react';
 import AdminLayout from '../../Layouts/AdminLayout';
-import StatCard from '../../Components/admin/StatCard';
-import SalesChart from '../../Components/admin/SalesChart';
-import CustomerMap from '../../Components/admin/CustomerMap';
-import DeviceChart from '../../Components/admin/DeviceChart';
-import RecentOrdersTable from '../../Components/admin/RecentOrdersTable';
+import StatCard from '../../Components/admin/dashboard/StatCard';
+import SalesChart from '../../Components/admin/dashboard/SalesChart';
+import CustomerMap from '../../Components/admin/dashboard/CustomerMap';
+import DeviceChart from '../../Components/admin/dashboard/DeviceChart';
+import RecentOrdersTable from '../../Components/admin/dashboard/RecentOrdersTable';
 
 export default function Dashboard({ user, stats = {} }) {
     // Extract data with proper null handling for empty states

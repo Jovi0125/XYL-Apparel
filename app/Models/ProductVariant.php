@@ -11,14 +11,15 @@ class ProductVariant extends Model
 
     protected $fillable = [
         'product_id',
-        'color',
         'size',
         'stock',
-        'price',
+        'regular_price',
+        'sale_price',
     ];
 
     protected $casts = [
-        'price' => 'decimal:2',
+        'regular_price' => 'decimal:2',
+        'sale_price' => 'decimal:2',
     ];
 
     public function product()

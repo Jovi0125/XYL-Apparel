@@ -9,6 +9,8 @@ class Product extends Model
 {
     use HasFactory;
 
+    protected $appends = ['regular_price', 'sale_price', 'total_stock', 'final_price'];
+
     protected $fillable = [
         'title',
         'short_description',
@@ -20,8 +22,6 @@ class Product extends Model
         'sizes',
         'tags',
         'payment_methods',
-        'regular_price',
-        'sale_price',
         'discount_code_id',
         'stock',
         'status',
@@ -29,11 +29,8 @@ class Product extends Model
 
     protected $casts = [
         'colors' => 'array',
-        'sizes' => 'array',
         'tags' => 'array',
         'payment_methods' => 'array',
-        'regular_price' => 'decimal:2',
-        'sale_price' => 'decimal:2',
     ];
 
     public function category()
@@ -68,14 +65,28 @@ class Product extends Model
 
     public function getTotalStockAttribute()
     {
-        if ($this->variants()->count() > 0) {
-            return $this->variants()->sum('stock');
+        if ($this->variants->count() > 0) {
+            return $this->variants->sum('stock');
         }
-        return $this->stock;
+        return $this->stock ?? 0;
+    }
+
+    public function getRegularPriceAttribute()
+    {
+        return $this->variants->first()?->regular_price ?? 0;
+    }
+
+    public function getSalePriceAttribute()
+    {
+        return $this->variants->first()?->sale_price;
     }
 
     public function getFinalPriceAttribute()
     {
-        return $this->sale_price ?? $this->regular_price;
+        $variant = $this->variants->first();
+        if ($variant) {
+            return $variant->sale_price ?? $variant->regular_price;
+        }
+        return 0;
     }
 }

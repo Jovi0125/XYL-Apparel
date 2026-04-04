@@ -15,40 +15,6 @@ export default function ProductPricing({ data, setData, discounts, errors }) {
                     Pricing
                 </h3>
 
-                <div className="grid grid-cols-2 gap-4">
-                    <div>
-                        <label className="block text-sm font-medium text-slate-300 mb-2">
-                            Regular Price <span className="text-rose-400">*</span>
-                        </label>
-                        <div className="relative">
-                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">₱</span>
-                            <input
-                                type="number"
-                                value={data.regular_price}
-                                onChange={(e) => setData('regular_price', e.target.value)}
-                                placeholder="0.00"
-                                className="w-full pl-10 pr-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
-                            />
-                        </div>
-                        {errors.regular_price && <p className="mt-1 text-sm text-rose-400">{errors.regular_price}</p>}
-                    </div>
-
-                    <div>
-                        <label className="block text-sm font-medium text-slate-300 mb-2">
-                            Sale Price <span className="text-slate-500">(Optional)</span>
-                        </label>
-                        <div className="relative">
-                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">₱</span>
-                            <input
-                                type="number"
-                                value={data.sale_price}
-                                onChange={(e) => setData('sale_price', e.target.value)}
-                                placeholder="0.00"
-                                className="w-full pl-10 pr-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
-                            />
-                        </div>
-                    </div>
-                </div>
 
                 <div>
                     <label className="block text-sm font-medium text-slate-300 mb-2">

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -20,11 +21,13 @@ class DashboardController extends Controller
         // Set values to null for empty states, or provide data when available
         // This can be replaced with real database queries later
         
+        $activeProductsCount = Product::active()->count();
+        
         $stats = [
             // Top metric cards - set to null for empty state, or provide value/trend
             'revenue' => null,        // Example with data: ['value' => 45230.50, 'trend' => 12.5]
             'orders' => null,         // Example with data: ['value' => 89, 'trend' => 8.2]
-            'products' => null,       // Example with data: ['value' => 156, 'trend' => 3.1]
+            'products' => $activeProductsCount > 0 ? ['value' => $activeProductsCount, 'trend' => 0] : null,
             'lowStockAlerts' => null, // Example with data: ['value' => 12, 'trend' => -2]
             
             // Sales chart data - null for empty state, or array of monthly data
