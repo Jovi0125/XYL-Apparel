@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-export default function ProductMediaUpload({ images, onChange, errors }) {
+export default function ProductMediaUpload({ images, existingImages = [], onChange, onExistingChange, errors }) {
     const [previews, setPreviews] = useState([]);
 
     const handleFileSelect = (e) => {
@@ -30,6 +30,13 @@ export default function ProductMediaUpload({ images, onChange, errors }) {
         const newPreviews = previews.filter((_, i) => i !== index);
         onChange(newImages);
         setPreviews(newPreviews);
+    };
+
+    const removeExistingImage = (id) => {
+        if (onExistingChange) {
+            const updated = existingImages.filter(img => img.id !== id);
+            onExistingChange(updated);
+        }
     };
 
     return (
@@ -67,33 +74,55 @@ export default function ProductMediaUpload({ images, onChange, errors }) {
                         <p className="mt-2 text-sm text-rose-400">{errors.images}</p>
                     )}
 
-                    {previews.length > 0 && (
-                        <div className="mt-6 grid grid-cols-2 gap-3">
-                            {previews.map((preview, index) => (
-                                <div key={index} className="relative group">
-                                    <img
-                                        src={preview}
-                                        alt={`Preview ${index + 1}`}
-                                        className="w-full h-32 object-cover rounded-xl border border-slate-700/50"
-                                    />
-                                    {index === 0 && (
-                                        <span className="absolute top-2 left-2 px-2 py-1 bg-blue-500 text-white text-xs font-medium rounded">
-                                            Main
-                                        </span>
-                                    )}
-                                    <button
-                                        type="button"
-                                        onClick={() => removeImage(index)}
-                                        className="absolute top-2 right-2 p-1.5 bg-rose-500 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
-                                    >
-                                        <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                        </svg>
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
-                    )}
+                    <div className="mt-6 grid grid-cols-2 gap-3">
+                        {/* Existing Images */}
+                        {existingImages.map((img) => (
+                            <div key={`existing-${img.id}`} className="relative group">
+                                <img
+                                    src={img.image_url}
+                                    alt="Product"
+                                    className="w-full h-32 object-cover rounded-xl border border-slate-700/50 opacity-80 group-hover:opacity-100 transition-opacity"
+                                />
+                                <span className="absolute top-2 left-2 px-2 py-1 bg-slate-800/80 text-white text-xs font-medium rounded border border-slate-600/50">
+                                    Saved
+                                </span>
+                                <button
+                                    type="button"
+                                    onClick={() => removeExistingImage(img.id)}
+                                    className="absolute top-2 right-2 p-1.5 bg-rose-500 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                                >
+                                    <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            </div>
+                        ))}
+
+                        {/* New Previews */}
+                        {previews.map((preview, index) => (
+                            <div key={`new-${index}`} className="relative group">
+                                <img
+                                    src={preview}
+                                    alt={`Preview ${index + 1}`}
+                                    className="w-full h-32 object-cover rounded-xl border border-blue-500/50 shadow-sm shadow-blue-500/10"
+                                />
+                                {existingImages.length === 0 && index === 0 && (
+                                    <span className="absolute top-2 left-2 px-2 py-1 bg-blue-500 text-white text-xs font-medium rounded">
+                                        Main
+                                    </span>
+                                )}
+                                <button
+                                    type="button"
+                                    onClick={() => removeImage(index)}
+                                    className="absolute top-2 right-2 p-1.5 bg-rose-500 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                                >
+                                    <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
         </div>

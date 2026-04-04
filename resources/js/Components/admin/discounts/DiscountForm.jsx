@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from '@inertiajs/react';
 
-export default function DiscountForm() {
-    const { data, setData, post, processing, errors, reset } = useForm({
+export default function DiscountForm({ editingDiscount, onCancelEdit }) {
+    const { data, setData, post, put, processing, errors, reset } = useForm({
         title: '',
         type: 'percentage',
         value: '',
@@ -13,12 +13,39 @@ export default function DiscountForm() {
         status: 'active',
     });
 
+    useEffect(() => {
+        if (editingDiscount) {
+            setData({
+                title: editingDiscount.title || '',
+                type: editingDiscount.type || 'percentage',
+                value: editingDiscount.value || '',
+                code: editingDiscount.code || '',
+                description: editingDiscount.description || '',
+                usage_limit: editingDiscount.usage_limit || '',
+                expires_at: editingDiscount.expires_at || '',
+                status: editingDiscount.status || 'active',
+            });
+        } else {
+            reset();
+        }
+    }, [editingDiscount]);
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        post('/admin/discounts', {
-            preserveScroll: true,
-            onSuccess: () => reset(),
-        });
+        if (editingDiscount) {
+            put(`/admin/discounts/${editingDiscount.id}`, {
+                preserveScroll: true,
+                onSuccess: () => {
+                    onCancelEdit();
+                    reset();
+                },
+            });
+        } else {
+            post('/admin/discounts', {
+                preserveScroll: true,
+                onSuccess: () => reset(),
+            });
+        }
     };
 
     const generateCode = () => {
@@ -45,9 +72,24 @@ export default function DiscountForm() {
                             </svg>
                         </div>
                         <div>
-                            <h2 className="text-lg font-semibold text-white">Create Discount</h2>
-                            <p className="text-sm text-slate-400">Add a new promotional code</p>
+                            <h2 className="text-lg font-semibold text-white">
+                                {editingDiscount ? 'Edit Discount' : 'Create Discount'}
+                            </h2>
+                            <p className="text-sm text-slate-400">
+                                {editingDiscount ? 'Update existing promotional code' : 'Add a new promotional code'}
+                            </p>
                         </div>
+                        {editingDiscount && (
+                            <button
+                                type="button"
+                                onClick={onCancelEdit}
+                                className="ml-auto p-2 text-slate-400 hover:text-white bg-slate-800/50 rounded-lg transition-all"
+                            >
+                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        )}
                     </div>
                 </div>
 
@@ -229,12 +271,22 @@ export default function DiscountForm() {
                     >
                         <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                         <span className="relative flex items-center justify-center gap-2">
-                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                             </svg>
-                            {processing ? 'Creating...' : 'Create Discount'}
+                            {processing ? (editingDiscount ? 'Updating...' : 'Creating...') : (editingDiscount ? 'Update Discount' : 'Create Discount')}
                         </span>
                     </button>
+                    {editingDiscount && (
+                        <button
+                            type="button"
+                            onClick={onCancelEdit}
+                            disabled={processing}
+                            className="w-full px-6 py-3 bg-slate-800/50 border border-slate-700/50 text-slate-400 hover:text-white rounded-xl font-semibold transition-all mt-3"
+                        >
+                            Cancel Editing
+                        </button>
+                    )}
                 </form>
             </div>
         </div>

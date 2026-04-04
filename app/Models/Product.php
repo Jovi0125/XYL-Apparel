@@ -4,12 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
-    protected $appends = ['regular_price', 'sale_price', 'total_stock', 'final_price'];
+    protected $appends = ['regular_price', 'sale_price', 'total_stock', 'final_price', 'stock_percentage', 'is_low_stock'];
 
     protected $fillable = [
         'title',
@@ -24,6 +25,7 @@ class Product extends Model
         'payment_methods',
         'discount_code_id',
         'stock',
+        'reference_stock',
         'status',
     ];
 
@@ -88,5 +90,16 @@ class Product extends Model
             return $variant->sale_price ?? $variant->regular_price;
         }
         return 0;
+    }
+
+    public function getStockPercentageAttribute()
+    {
+        if (($this->reference_stock ?? 0) <= 0) return 0;
+        return ($this->total_stock / $this->reference_stock) * 100;
+    }
+
+    public function getIsLowStockAttribute()
+    {
+        return $this->stock_percentage <= 50;
     }
 }

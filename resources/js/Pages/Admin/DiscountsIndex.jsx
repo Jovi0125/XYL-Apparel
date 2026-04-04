@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import AdminLayout from '../../Layouts/AdminLayout';
 import DiscountForm from '../../Components/admin/discounts/DiscountForm';
 import DiscountGrid from '../../Components/admin/discounts/DiscountGrid';
@@ -8,6 +8,20 @@ export default function DiscountsIndex({ discounts = [] }) {
     const [searchQuery, setSearchQuery] = useState('');
     const [typeFilter, setTypeFilter] = useState('all');
     const [statusFilter, setStatusFilter] = useState('all');
+    const [editingDiscount, setEditingDiscount] = useState(null);
+
+    const handleEdit = (discount) => {
+        setEditingDiscount(discount);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const handleDelete = (id) => {
+        if (confirm('Are you sure you want to archive this discount?')) {
+            router.delete(`/admin/discounts/${id}`, {
+                preserveScroll: true,
+            });
+        }
+    };
 
     // Filter discounts based on search and filters
     const filteredDiscounts = discounts.filter(discount => {
@@ -35,7 +49,10 @@ export default function DiscountsIndex({ discounts = [] }) {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* LEFT: Discount Form */}
                     <div className="lg:col-span-1">
-                        <DiscountForm />
+                        <DiscountForm 
+                            editingDiscount={editingDiscount} 
+                            onCancelEdit={() => setEditingDiscount(null)} 
+                        />
                     </div>
 
                     {/* CENTER/RIGHT: Discounts Display */}
@@ -98,7 +115,11 @@ export default function DiscountsIndex({ discounts = [] }) {
                         </div>
 
                         {/* Discounts Grid */}
-                        <DiscountGrid discounts={filteredDiscounts} />
+                        <DiscountGrid 
+                            discounts={filteredDiscounts} 
+                            onEdit={handleEdit}
+                            onDelete={handleDelete}
+                        />
                     </div>
                 </div>
             </div>

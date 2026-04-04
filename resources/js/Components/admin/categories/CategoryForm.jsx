@@ -1,17 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from '@inertiajs/react';
 
-export default function CategoryForm() {
+export default function CategoryForm({ editingCategory, onCancelEdit }) {
     const [imagePreview, setImagePreview] = useState(null);
     const [isDragging, setIsDragging] = useState(false);
 
-    const { data, setData, post, processing, errors, reset } = useForm({
+    const { data, setData, post, patch, processing, errors, reset } = useForm({
+        _method: 'POST',
         name: '',
         parent_category: 'Men',
         description: '',
         image: null,
         status: 'active',
     });
+
+    // Load data when editingCategory changes
+    useEffect(() => {
+        if (editingCategory) {
+            setData({
+                _method: 'PUT',
+                name: editingCategory.name || '',
+                parent_category: editingCategory.parent_category || 'Men',
+                description: editingCategory.description || '',
+                image: null, // Reset image field
+                status: editingCategory.status || 'active',
+            });
+            setImagePreview(editingCategory.image_url || null);
+        } else {
+            reset();
+            setData('_method', 'POST');
+            setImagePreview(null);
+        }
+    }, [editingCategory]);
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -59,13 +79,28 @@ export default function CategoryForm() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        post('/admin/categories', {
-            preserveScroll: true,
-            onSuccess: () => {
-                reset();
-                setImagePreview(null);
-            },
-        });
+        
+        if (editingCategory) {
+            // For files, we use POST with _method spoofing
+            post(`/admin/categories/${editingCategory.id}`, {
+                forceFormData: true,
+                preserveScroll: true,
+                onSuccess: () => {
+                    onCancelEdit();
+                    reset();
+                    setImagePreview(null);
+                },
+            });
+        } else {
+            setData('_method', 'POST');
+            post('/admin/categories', {
+                preserveScroll: true,
+                onSuccess: () => {
+                    reset();
+                    setImagePreview(null);
+                },
+            });
+        }
     };
 
     return (
@@ -76,12 +111,28 @@ export default function CategoryForm() {
                 
                 {/* Form Header */}
                 <div className="relative z-10 px-6 pt-6 pb-4 border-b border-slate-800/30">
-                    <h3 className="text-lg font-semibold text-white tracking-tight">
-                        Create Category
-                    </h3>
-                    <p className="text-slate-500 text-sm mt-1">
-                        Add a new category to organize your products.
-                    </p>
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h3 className="text-lg font-semibold text-white tracking-tight">
+                                {editingCategory ? 'Edit Category' : 'Create Category'}
+                            </h3>
+                            <p className="text-slate-500 text-sm mt-1">
+                                {editingCategory ? 'Update existing category details.' : 'Add a new category to organize your products.'}
+                            </p>
+                        </div>
+                        {editingCategory && (
+                            <button
+                                type="button"
+                                onClick={onCancelEdit}
+                                className="p-2 text-slate-400 hover:text-white bg-slate-800/50 rounded-lg transition-all"
+                                title="Cancel Edit"
+                            >
+                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        )}
+                    </div>
                 </div>
 
                 {/* Form Content */}
@@ -274,13 +325,23 @@ export default function CategoryForm() {
                             </>
                         ) : (
                             <>
-                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                                 </svg>
-                                Add Category
+                                {editingCategory ? 'Update Category' : 'Add Category'}
                             </>
                         )}
                     </button>
+                    {editingCategory && (
+                        <button
+                            type="button"
+                            onClick={onCancelEdit}
+                            disabled={processing}
+                            className="w-full px-6 py-2 bg-slate-800/50 border border-slate-700/50 text-slate-400 hover:text-white rounded-xl transition-all"
+                        >
+                            Cancel Editing
+                        </button>
+                    )}
                 </form>
             </div>
         </div>

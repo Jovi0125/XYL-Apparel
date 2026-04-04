@@ -93,9 +93,9 @@ const sidebarConfig = [
         label: 'Inventory',
         icon: <Icons.Inventory />,
         children: [
-            { id: 'inventory-overview', label: 'Inventory Overview', href: '#' },
-            { id: 'stock-management', label: 'Stock Management', href: '#' },
-            { id: 'low-stock-alerts', label: 'Low Stock Alerts', href: '#', badge: '3' },
+            { id: 'inventory-overview', label: 'Inventory Overview', href: '/admin/inventory' },
+            { id: 'stock-management', label: 'Stock Management', href: '/admin/inventory' },
+            { id: 'low-stock-alerts', label: 'Low Stock Alerts', href: '/admin/inventory' },
         ],
     },
     {
@@ -132,6 +132,7 @@ const sidebarConfig = [
         icon: <Icons.System />,
         children: [
             { id: 'settings', label: 'Settings', href: '#' },
+            { id: 'archive', label: 'Archive', href: '/admin/archive' },
             { id: 'logs', label: 'Logs', href: '#' },
             { id: 'site-customization', label: 'Site Customization', href: '#' },
         ],

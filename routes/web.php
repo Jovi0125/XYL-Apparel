@@ -7,6 +7,10 @@ use App\Http\Controllers\Admin\DiscountController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Buyer\BuyerDashboardController;
 use App\Http\Controllers\Logistics\LogisticsDashboardController;
+use App\Http\Controllers\Admin\ArchiveController;
+use App\Http\Controllers\Admin\InventoryController;
+use App\Http\Controllers\Admin\SearchController;
+use App\Http\Controllers\Admin\NotificationController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -47,12 +51,21 @@ Route::prefix('admin')
         Route::post('discounts/validate', [DiscountController::class, 'validate'])->name('discounts.validate');
         
         // Products Management
-        Route::resource('products', ProductController::class)->except(['show', 'edit']);
+        Route::resource('products', ProductController::class)->except(['show']);
         
-        // Future admin routes will go here:
-        // Route::resource('products', ProductController::class);
-        // Route::resource('orders', OrderController::class);
-        // Route::resource('shipments', ShipmentController::class);
+        // Inventory Management
+        Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
+        
+        // Search
+        Route::get('/search', [SearchController::class, 'globalSearch'])->name('search');
+        
+        // Notifications
+        Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+        Route::post('/notifications/mark-read', [NotificationController::class, 'markAsRead'])->name('notifications.markRead');
+        
+        // Archive Management
+        Route::get('/archive', [ArchiveController::class, 'index'])->name('archive.index');
+        Route::post('/archive/restore/{type}/{id}', [ArchiveController::class, 'restore'])->name('archive.restore');
     });
 
 /*

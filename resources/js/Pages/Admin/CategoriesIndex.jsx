@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import AdminLayout from '../../Layouts/AdminLayout';
 import CategoryForm from '../../Components/admin/categories/CategoryForm';
 import CategoryGrid from '../../Components/admin/categories/CategoryGrid';
@@ -8,6 +8,21 @@ export default function CategoriesIndex({ categories = [] }) {
     const [searchQuery, setSearchQuery] = useState('');
     const [parentFilter, setParentFilter] = useState('all');
     const [statusFilter, setStatusFilter] = useState('all');
+    const [editingCategory, setEditingCategory] = useState(null);
+
+    const handleEdit = (category) => {
+        setEditingCategory(category);
+        // Scroll to form on mobile
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const handleDelete = (id) => {
+        if (confirm('Are you sure you want to archive this category? It will be moved to the System Archive.')) {
+            router.delete(`/admin/categories/${id}`, {
+                preserveScroll: true,
+            });
+        }
+    };
 
     // Filter categories based on search and filters
     const filteredCategories = categories.filter(category => {
@@ -34,7 +49,10 @@ export default function CategoriesIndex({ categories = [] }) {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* LEFT: Category Form */}
                     <div className="lg:col-span-1">
-                        <CategoryForm />
+                        <CategoryForm 
+                            editingCategory={editingCategory} 
+                            onCancelEdit={() => setEditingCategory(null)} 
+                        />
                     </div>
 
                     {/* CENTER/RIGHT: Categories Display */}
@@ -97,7 +115,11 @@ export default function CategoriesIndex({ categories = [] }) {
                         </div>
 
                         {/* Categories Grid */}
-                        <CategoryGrid categories={filteredCategories} />
+                        <CategoryGrid 
+                            categories={filteredCategories} 
+                            onEdit={handleEdit} 
+                            onDelete={handleDelete} 
+                        />
                     </div>
                 </div>
             </div>
