@@ -42,27 +42,27 @@ Route::prefix('admin')
     ->name('admin.')
     ->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-        
+
         // Categories Management
         Route::resource('categories', CategoryController::class)->except(['show', 'create', 'edit']);
-        
+
         // Discounts Management
         Route::resource('discounts', DiscountController::class)->except(['show', 'create', 'edit']);
         Route::post('discounts/validate', [DiscountController::class, 'validate'])->name('discounts.validate');
-        
+
         // Products Management
         Route::resource('products', ProductController::class)->except(['show']);
-        
+
         // Inventory Management
         Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
-        
+
         // Search
         Route::get('/search', [SearchController::class, 'globalSearch'])->name('search');
-        
+
         // Notifications
         Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
         Route::post('/notifications/mark-read', [NotificationController::class, 'markAsRead'])->name('notifications.markRead');
-        
+
         // Archive Management
         Route::get('/archive', [ArchiveController::class, 'index'])->name('archive.index');
         Route::post('/archive/restore/{type}/{id}', [ArchiveController::class, 'restore'])->name('archive.restore');
