@@ -8,6 +8,7 @@ import RecentOrdersTable from '../../Components/admin/dashboard/RecentOrdersTabl
 
 export default function Dashboard({ user, stats = {} }) {
     // Extract data with proper null handling for empty states
+    // Extract data with proper null handling for empty states
     const {
         revenue = null,
         orders = null,
@@ -17,7 +18,7 @@ export default function Dashboard({ user, stats = {} }) {
         customerDistribution = null,
         deviceUsage = null,
         recentOrders = []
-    } = stats;
+    } = stats || {};
 
     // Format currency
     const formatCurrency = (value) => {
@@ -107,6 +108,82 @@ export default function Dashboard({ user, stats = {} }) {
                                 <QuickAction icon={<TruckIcon />} label="Process Shipments" color="cyan" />
                                 <QuickAction icon={<ChartIcon />} label="View Analytics" color="emerald" />
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Products and Alerts Row */}
+                <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-8">
+                    {/* Active Products List */}
+                    <div className="relative overflow-hidden rounded-2xl bg-slate-900/80 border border-slate-800/50 backdrop-blur-sm p-6">
+                        <div className="flex items-center justify-between mb-6">
+                            <h3 className="text-lg font-semibold text-white">Active Products</h3>
+                            <button onClick={() => router.visit('/admin/products')} className="text-xs text-blue-400 hover:text-blue-300 transition-colors">View All</button>
+                        </div>
+                        <div className="space-y-4">
+                            {stats.activeProducts?.length > 0 ? (
+                                stats.activeProducts.map(product => (
+                                    <div key={product.id} className="flex items-center gap-4 p-3 rounded-xl bg-slate-800/30 border border-slate-700/30">
+                                        <div className="w-12 h-12 rounded-lg bg-slate-800 overflow-hidden flex-shrink-0">
+                                            {product.main_image ? (
+                                                <img src={product.main_image.image_url} alt={product.title} className="w-full h-full object-cover" />
+                                            ) : (
+                                                <div className="w-full h-full flex items-center justify-center text-slate-600">
+                                                    <ProductsIcon />
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <h4 className="text-sm font-medium text-white truncate">{product.title}</h4>
+                                            <p className="text-xs text-slate-500">{product.category?.name || 'Uncategorized'}</p>
+                                        </div>
+                                        <div className="text-right">
+                                            <span className="text-sm font-semibold text-white">₱{parseFloat(product.final_price).toLocaleString()}</span>
+                                        </div>
+                                    </div>
+                                ))
+                            ) : (
+                                <div className="py-10 text-center text-slate-500 text-sm italic">No active products yet</div>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Low Stock Alerts List */}
+                    <div className="relative overflow-hidden rounded-2xl bg-slate-900/80 border border-slate-800/50 backdrop-blur-sm p-6">
+                        <div className="flex items-center justify-between mb-6">
+                            <h3 className="text-lg font-semibold text-white text-orange-400">Low Stock Alerts</h3>
+                            <button onClick={() => router.visit('/admin/inventory')} className="text-xs text-slate-500 hover:text-slate-400 transition-colors">Manage Stock</button>
+                        </div>
+                        <div className="space-y-4">
+                            {stats.lowStockProducts?.length > 0 ? (
+                                stats.lowStockProducts.map(product => (
+                                    <div key={product.id} className="flex items-center gap-4 p-3 rounded-xl bg-orange-500/5 border border-orange-500/10 transition-colors hover:bg-orange-500/10">
+                                        <div className="w-12 h-12 rounded-lg bg-slate-800 overflow-hidden flex-shrink-0 border border-orange-500/20">
+                                            {product.main_image ? (
+                                                <img src={product.main_image.image_url} alt={product.title} className="w-full h-full object-cover" />
+                                            ) : (
+                                                <div className="w-full h-full flex items-center justify-center text-orange-500/50">
+                                                    <AlertIcon />
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <h4 className="text-sm font-medium text-white truncate">{product.title}</h4>
+                                            <p className="text-xs text-orange-500/70 font-medium">Only {product.total_stock} items left!</p>
+                                        </div>
+                                        <div className="text-right">
+                                            <div className="w-16 h-1.5 rounded-full bg-slate-800 overflow-hidden">
+                                                <div 
+                                                    className="h-full bg-orange-500 rounded-full" 
+                                                    style={{ width: `${Math.max(10, product.stock_percentage)}%` }}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))
+                            ) : (
+                                <div className="py-10 text-center text-slate-500 text-sm italic">Excellent! No low stock alerts.</div>
+                            )}
                         </div>
                     </div>
                 </div>

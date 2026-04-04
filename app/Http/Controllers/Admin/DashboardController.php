@@ -11,21 +11,25 @@ use Inertia\Response;
 
 class DashboardController extends Controller
 {
-
     /**
      * Show the admin dashboard
      */
     public function index(): Response
     {
         $productsCount = Product::count();
-        $lowStockCount = Product::all()->filter(fn($p) => $p->is_low_stock)->count();
-        
+        $products = Product::all();
+        $lowStockCount = $products->filter(fn($p) => $p->is_low_stock)->count();
+
         // Calculate trends (mocked for now)
         $productTrend = 5.4; // 5.4% increase
         $alertTrend = $lowStockCount > 0 ? 2 : 0; 
 
         return Inertia::render('Admin/Dashboard', [
             'stats' => [
+                'totalProducts' => $productsCount,
+                'totalOrders' => 0, // Placeholder
+                'totalCategories' => Category::count(),
+                'lowStockCount' => $lowStockCount,
                 'revenue' => [
                     'value' => 0,
                     'trend' => 0,
@@ -52,6 +56,12 @@ class DashboardController extends Controller
                     ['name' => 'Tablet', 'value' => 7, 'color' => '#22d3ee'],
                 ],
             ],
+            'recentProducts' => Product::with(['category', 'mainImage'])
+                ->latest()
+                ->limit(5)
+                ->get(),
+            'activeProducts' => Product::active()->latest()->limit(5)->get(),
+            'lowStockProducts' => $products->filter(fn($p) => $p->is_low_stock)->values()->take(5),
         ]);
     }
 

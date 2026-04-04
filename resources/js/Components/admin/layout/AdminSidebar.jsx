@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { usePage } from '@inertiajs/react';
+import { usePage, router } from '@inertiajs/react';
 import AdminSidebarSection from './AdminSidebarSection';
 
 // Icon Components
@@ -50,8 +50,8 @@ const Icons = {
             <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
         </svg>
     ),
-    Logout: () => (
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+    Logout: (props) => (
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} {...props}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
         </svg>
     ),
@@ -137,15 +137,6 @@ const sidebarConfig = [
     },
 ];
 
-const accountConfig = {
-    id: 'account',
-    label: 'Account',
-    icon: <Icons.Account />,
-    children: [
-        { id: 'logout', label: 'Logout', href: '#', icon: <Icons.Logout />, onClick: () => console.log('Logout clicked') },
-    ],
-};
-
 export default function AdminSidebar({ activeItem = 'dashboard' }) {
     const { auth } = usePage().props;
     const [openSections, setOpenSections] = useState([]);
@@ -156,6 +147,10 @@ export default function AdminSidebar({ activeItem = 'dashboard' }) {
                 ? prev.filter(id => id !== sectionId)
                 : [...prev, sectionId]
         );
+    };
+
+    const handleLogout = () => {
+        router.post('/logout');
     };
 
     return (
@@ -186,16 +181,6 @@ export default function AdminSidebar({ activeItem = 'dashboard' }) {
                 ))}
             </nav>
 
-            {/* Account Section */}
-            <div className="border-t border-slate-800/50 py-3">
-                <AdminSidebarSection
-                    section={accountConfig}
-                    isOpen={openSections.includes('account')}
-                    onToggle={() => toggleSection('account')}
-                    activeItem={activeItem}
-                />
-            </div>
-
             {/* User Profile */}
             <div className="p-4 border-t border-slate-800/50">
                 <div className="flex items-center gap-3 px-2">
@@ -213,12 +198,11 @@ export default function AdminSidebar({ activeItem = 'dashboard' }) {
                         </p>
                     </div>
                     <button 
-                        className="p-2 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-colors"
-                        title="Settings"
+                        onClick={handleLogout}
+                        className="p-2 rounded-lg text-slate-400 hover:text-red-400 hover:bg-slate-800/50 transition-colors"
+                        title="Logout"
                     >
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
-                        </svg>
+                        <Icons.Logout className="w-4 h-4" />
                     </button>
                 </div>
             </div>
