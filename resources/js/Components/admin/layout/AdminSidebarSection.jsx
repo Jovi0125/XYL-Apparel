@@ -49,7 +49,7 @@ export default function AdminSidebarSection({
                 <div className="flex items-center gap-3">
                     {section.icon && (
                         <span className={`w-5 h-5 flex-shrink-0 transition-colors duration-200 ${
-                            isOpen ? 'text-violet-400' : 'text-slate-500 group-hover:text-slate-400'
+                            isOpen ? 'text-teal-400' : 'text-slate-500 group-hover:text-slate-400'
                         }`}>
                             {section.icon}
                         </span>

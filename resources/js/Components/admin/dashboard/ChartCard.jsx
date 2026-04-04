@@ -14,7 +14,7 @@ const ChartCard = ({
     return (
         <div className={`relative overflow-hidden rounded-2xl bg-slate-900/80 border border-slate-800/50 backdrop-blur-sm ${className}`}>
             {/* Subtle gradient background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-violet-500/5 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-teal-500/5 pointer-events-none" />
             
             {/* Header */}
             <div className="relative z-10 px-6 pt-6 pb-4 border-b border-slate-800/30">

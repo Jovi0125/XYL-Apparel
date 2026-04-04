@@ -17,7 +17,7 @@ const CategoryCard = ({ category, onEdit, onDelete }) => {
         const colors = {
             'Men': 'bg-blue-500/20 text-blue-400 border-blue-500/30',
             'Women': 'bg-pink-500/20 text-pink-400 border-pink-500/30',
-            'Unisex': 'bg-violet-500/20 text-violet-400 border-violet-500/30',
+            'Unisex': 'bg-teal-500/20 text-teal-400 border-teal-500/30',
         };
         return colors[parent] || 'bg-slate-500/20 text-slate-400 border-slate-500/30';
     };
@@ -31,7 +31,7 @@ const CategoryCard = ({ category, onEdit, onDelete }) => {
     return (
         <div className="group relative overflow-hidden rounded-2xl bg-slate-900/80 border border-slate-800/50 backdrop-blur-sm transition-all duration-300 hover:border-slate-700/50 hover:shadow-lg hover:shadow-blue-500/5">
             {/* Gradient Background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-violet-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-teal-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
             
             {/* Image */}
             {category.image_url ? (

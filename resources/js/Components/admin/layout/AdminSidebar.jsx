@@ -158,7 +158,7 @@ export default function AdminSidebar({ activeItem = 'dashboard' }) {
             {/* Brand Header */}
             <div className="flex items-center h-16 px-6 border-b border-slate-800/50">
                 <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-lg shadow-violet-500/20">
+                    <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center shadow-lg shadow-teal-500/20">
                         <span className="text-white font-bold text-sm">X</span>
                     </div>
                     <div>

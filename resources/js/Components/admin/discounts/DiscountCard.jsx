@@ -47,7 +47,7 @@ export default function DiscountCard({ discount, onEdit, onDelete }) {
 
     const getTypeColor = () => {
         return discount.type === 'percentage'
-            ? 'bg-violet-500/20 text-violet-400 border-violet-500/30'
+            ? 'bg-teal-500/20 text-teal-400 border-teal-500/30'
             : 'bg-amber-500/20 text-amber-400 border-amber-500/30';
     };
 

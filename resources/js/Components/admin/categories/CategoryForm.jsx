@@ -107,7 +107,7 @@ export default function CategoryForm({ editingCategory, onCancelEdit }) {
         <div className="sticky top-6">
             <div className="relative overflow-hidden rounded-2xl bg-slate-900/80 border border-slate-800/50 backdrop-blur-sm">
                 {/* Gradient Background */}
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-violet-500/5 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-teal-500/5 pointer-events-none" />
                 
                 {/* Form Header */}
                 <div className="relative z-10 px-6 pt-6 pb-4 border-b border-slate-800/30">
@@ -313,7 +313,7 @@ export default function CategoryForm({ editingCategory, onCancelEdit }) {
                     <button
                         type="submit"
                         disabled={processing}
-                        className="w-full px-6 py-3.5 bg-gradient-to-r from-blue-500 to-violet-500 hover:from-blue-600 hover:to-violet-600 text-white font-semibold rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20"
+                        className="w-full px-6 py-3.5 bg-gradient-to-r from-blue-500 to-teal-500 hover:from-blue-600 hover:to-teal-600 text-white font-semibold rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20"
                     >
                         {processing ? (
                             <>

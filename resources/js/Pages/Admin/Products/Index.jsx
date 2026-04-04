@@ -21,18 +21,14 @@ export default function ProductsIndex({ products = [] }) {
 
             <div className="fixed inset-0 pointer-events-none">
                 <div className="absolute top-0 right-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl" />
-                <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-violet-500/5 rounded-full blur-3xl" />
+                <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-teal-500/5 rounded-full blur-3xl" />
             </div>
 
             <div className="relative z-10">
-                <div className="flex items-center justify-between mb-6">
-                    <div>
-                        <h1 className="text-2xl font-bold text-white">All Products</h1>
-                        <p className="text-slate-400 mt-1">Manage your product catalog</p>
-                    </div>
+                <div className="flex items-center justify-end mb-6">
                     <button
                         onClick={() => router.visit('/admin/products/create')}
-                        className="px-6 py-3 bg-gradient-to-r from-blue-500 to-violet-600 rounded-xl font-semibold text-white shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all"
+                        className="px-6 py-3 bg-gradient-to-r from-blue-500 to-teal-600 rounded-xl font-semibold text-white shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all"
                     >
                         + Create Product
                     </button>
@@ -40,7 +36,7 @@ export default function ProductsIndex({ products = [] }) {
 
                 <div className="mb-6">
                     <div className="relative overflow-hidden rounded-2xl bg-slate-900/80 border border-slate-800/50 backdrop-blur-sm p-6">
-                        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-violet-500/5 pointer-events-none" />
+                        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-teal-500/5 pointer-events-none" />
                         
                         <div className="relative">
                             <div className="relative">
@@ -63,10 +59,10 @@ export default function ProductsIndex({ products = [] }) {
 
                 {filteredProducts.length === 0 ? (
                     <div className="relative overflow-hidden rounded-2xl bg-slate-900/80 border border-slate-800/50 backdrop-blur-sm">
-                        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-violet-500/5 pointer-events-none" />
+                        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-teal-500/5 pointer-events-none" />
                         
                         <div className="relative px-8 py-16 flex flex-col items-center justify-center text-center">
-                            <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500/20 to-violet-500/20 flex items-center justify-center border border-blue-500/20 mb-6">
+                            <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500/20 to-teal-500/20 flex items-center justify-center border border-blue-500/20 mb-6">
                                 <svg className="w-10 h-10 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                                 </svg>
@@ -77,7 +73,7 @@ export default function ProductsIndex({ products = [] }) {
                             </p>
                             <button
                                 onClick={() => router.visit('/admin/products/create')}
-                                className="px-6 py-3 bg-gradient-to-r from-blue-500 to-violet-600 rounded-xl font-semibold text-white shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all"
+                                className="px-6 py-3 bg-gradient-to-r from-blue-500 to-teal-600 rounded-xl font-semibold text-white shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all"
                             >
                                 Create Your First Product
                             </button>
@@ -85,7 +81,7 @@ export default function ProductsIndex({ products = [] }) {
                     </div>
                 ) : (
                     <div className="relative overflow-hidden rounded-2xl bg-slate-900/80 border border-slate-800/50 backdrop-blur-sm">
-                        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-violet-500/5 pointer-events-none" />
+                        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-teal-500/5 pointer-events-none" />
                         
                         <div className="relative overflow-x-auto">
                             <table className="w-full">

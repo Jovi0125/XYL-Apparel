@@ -14,7 +14,8 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $query = User::query();
+        // Only show non-admin users (registered via Brevo/OTP flow)
+        $query = User::where('role', '!=', User::ROLE_ADMIN);
 
         // Search functionality
         if ($request->filled('search')) {

@@ -42,7 +42,7 @@ export default function ProductMediaUpload({ images, existingImages = [], onChan
     return (
         <div className="sticky top-6 space-y-4">
             <div className="relative overflow-hidden rounded-2xl bg-slate-900/80 border border-slate-800/50 backdrop-blur-sm">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-violet-500/10 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-teal-500/10 pointer-events-none" />
                 
                 <div className="relative p-6">
                     <h3 className="text-lg font-semibold text-white mb-4">Product Media</h3>
@@ -57,7 +57,7 @@ export default function ProductMediaUpload({ images, existingImages = [], onChan
                         />
                         <div className="border-2 border-dashed border-slate-700/50 rounded-xl p-8 text-center hover:border-blue-500/50 transition-all group">
                             <div className="flex flex-col items-center gap-3">
-                                <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-blue-500/20 to-violet-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-blue-500/20 to-teal-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
                                     <svg className="w-8 h-8 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                     </svg>

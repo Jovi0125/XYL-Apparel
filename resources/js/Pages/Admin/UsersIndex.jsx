@@ -67,7 +67,7 @@ export default function UsersIndex({ users, filters }) {
 
     const roleBadge = (role) => {
         const styles = {
-            admin: 'bg-purple-500/10 text-purple-500 border border-purple-500/20',
+            admin: 'bg-teal-500/10 text-teal-500 border border-teal-500/20',
             buyer: 'bg-blue-500/10 text-blue-500 border border-blue-500/20',
             logistics: 'bg-amber-500/10 text-amber-500 border border-amber-500/20',
         };
@@ -86,43 +86,39 @@ export default function UsersIndex({ users, filters }) {
                 {/* Background effects */}
                 <div className="fixed inset-0 pointer-events-none">
                     <div className="absolute top-0 right-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl" />
-                    <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-violet-500/5 rounded-full blur-3xl" />
+                    <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-teal-500/5 rounded-full blur-3xl" />
                 </div>
 
                 <div className="relative z-10 space-y-6">
                     {/* Header/Filters Section */}
                     <div className="bg-slate-900/80 border border-slate-800/50 backdrop-blur-md rounded-2xl p-6 shadow-2xl">
-                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                            <div>
-                                <h1 className="text-2xl font-bold text-white tracking-tight">Access Control</h1>
-                                <p className="text-slate-400 text-sm">Real-time management of active, inactive, and suspended accounts.</p>
-                            </div>
+                        <div className="flex flex-col md:flex-row md:items-center justify-end gap-3">
                             
                             <div className="flex flex-col sm:flex-row gap-3">
                                 <div className="relative group">
                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <svg className="w-4 h-4 text-slate-500 group-focus-within:text-blue-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <svg className="w-4 h-4 text-slate-500 group-focus-within:text-teal-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                         </svg>
                                     </div>
                                     <input
                                         type="text"
-                                        placeholder="Dynamic Search..."
+                                        placeholder="Search users..."
                                         value={data.search}
                                         onChange={e => setData('search', e.target.value)}
-                                        className="w-full sm:w-64 pl-10 pr-4 py-2 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all font-medium"
+                                        className="w-full sm:w-64 pl-10 pr-4 py-2 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500/50 transition-all font-medium"
                                     />
                                 </div>
 
                                 <select
                                     value={data.role}
                                     onChange={e => handleRoleChange(e.target.value)}
-                                    className="px-4 py-2 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all font-medium"
+                                    className="px-4 py-2 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500/50 transition-all font-medium"
                                 >
-                                    <option value="">Filter Roles</option>
-                                    <option value="admin">Admin Only</option>
-                                    <option value="buyer">Buyers Only</option>
-                                    <option value="logistics">Logistics Only</option>
+                                    <option value="">All Roles</option>
+                                    <option value="admin">Admin</option>
+                                    <option value="buyer">Buyer</option>
+                                    <option value="logistics">Logistics</option>
                                 </select>
                             </div>
                         </div>
@@ -149,7 +145,7 @@ export default function UsersIndex({ users, filters }) {
                                                 <td className="px-6 py-4">
                                                     <div className="flex items-center gap-4">
                                                         <div className="relative">
-                                                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-blue-500/20">
+                                                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-slate-600 to-slate-700 flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-slate-500/10">
                                                                 {user.name ? user.name.charAt(0).toUpperCase() : user.email.charAt(0).toUpperCase()}
                                                             </div>
                                                             <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-slate-900 ${user.status === 'active' ? 'bg-emerald-500' : 'bg-rose-500'}`} />

@@ -43,17 +43,10 @@ export default function EditProduct({ product, categories = [], discounts = [] }
 
             <div className="fixed inset-0 pointer-events-none">
                 <div className="absolute top-0 right-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl" />
-                <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-violet-500/5 rounded-full blur-3xl" />
+                <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-teal-500/5 rounded-full blur-3xl" />
             </div>
 
             <div className="relative z-10">
-                <div className="mb-6 flex items-center justify-between">
-                    <div>
-                        <h1 className="text-2xl font-bold text-white">Edit Product: {product.title}</h1>
-                        <p className="text-slate-400 mt-1">Update product information and variants</p>
-                    </div>
-                </div>
-
                 <form onSubmit={handleSubmit}>
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <div className="lg:col-span-1">
@@ -124,7 +117,7 @@ export default function EditProduct({ product, categories = [], discounts = [] }
                                 <button
                                     type="submit"
                                     disabled={processing}
-                                    className="px-8 py-3 bg-gradient-to-r from-blue-500 to-violet-600 rounded-xl font-semibold text-white shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all disabled:opacity-50"
+                                    className="px-8 py-3 bg-gradient-to-r from-blue-500 to-teal-600 rounded-xl font-semibold text-white shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all disabled:opacity-50"
                                 >
                                     {processing ? 'Saving Changes...' : 'Update Product'}
                                 </button>

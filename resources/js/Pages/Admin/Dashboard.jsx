@@ -33,7 +33,7 @@ export default function Dashboard({ user, stats = {} }) {
             {/* Page Background Gradient */}
             <div className="fixed inset-0 pointer-events-none">
                 <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl" />
-                <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-violet-500/5 rounded-full blur-3xl" />
+                <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-teal-500/5 rounded-full blur-3xl" />
             </div>
 
             <div className="relative z-10">
@@ -63,7 +63,7 @@ export default function Dashboard({ user, stats = {} }) {
                         trend={products?.trend}
                         trendLabel="vs last month"
                         emptyMessage="No products yet"
-                        gradient="from-violet-500/10 to-purple-500/10"
+                        gradient="from-teal-500/10 to-cyan-500/10"
                         icon={<ProductsIcon />}
                     />
                     <StatCard
@@ -99,12 +99,12 @@ export default function Dashboard({ user, stats = {} }) {
 
                     {/* Quick Actions Panel */}
                     <div className="relative overflow-hidden rounded-2xl bg-slate-900/80 border border-slate-800/50 backdrop-blur-sm">
-                        <div className="absolute inset-0 bg-gradient-to-br from-violet-500/5 via-transparent to-blue-500/5 pointer-events-none" />
+                        <div className="absolute inset-0 bg-gradient-to-br from-teal-500/5 via-transparent to-blue-500/5 pointer-events-none" />
                         <div className="relative z-10 p-6">
                             <h3 className="text-lg font-semibold text-white mb-5">Quick Actions</h3>
                             <div className="space-y-3">
                                 <QuickAction icon={<PlusIcon />} label="Add New Product" color="blue" />
-                                <QuickAction icon={<TagIcon />} label="Create Discount" color="violet" />
+                                <QuickAction icon={<TagIcon />} label="Create Discount" color="teal" />
                                 <QuickAction icon={<TruckIcon />} label="Process Shipments" color="cyan" />
                                 <QuickAction icon={<ChartIcon />} label="View Analytics" color="emerald" />
                             </div>
@@ -201,7 +201,7 @@ export default function Dashboard({ user, stats = {} }) {
 function QuickAction({ icon, label, color = 'blue' }) {
     const colorClasses = {
         blue: 'group-hover:text-blue-400 group-hover:border-blue-500/30',
-        violet: 'group-hover:text-violet-400 group-hover:border-violet-500/30',
+        teal: 'group-hover:text-teal-400 group-hover:border-teal-500/30',
         cyan: 'group-hover:text-cyan-400 group-hover:border-cyan-500/30',
         emerald: 'group-hover:text-emerald-400 group-hover:border-emerald-500/30',
     };

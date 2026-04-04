@@ -3,7 +3,7 @@ import React from 'react';
 const CategoryEmptyState = () => {
     return (
         <div className="relative overflow-hidden rounded-2xl bg-slate-900/80 border border-slate-800/50 backdrop-blur-sm p-12">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-violet-500/5 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-teal-500/5 pointer-events-none" />
             
             <div className="relative z-10 flex flex-col items-center justify-center text-center py-12">
                 <div className="w-20 h-20 rounded-2xl bg-slate-800/50 flex items-center justify-center mb-6">

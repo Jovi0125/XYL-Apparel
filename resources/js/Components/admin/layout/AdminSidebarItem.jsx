@@ -21,21 +21,21 @@ export default function AdminSidebarItem({ item, isActive = false }) {
     `;
 
     const activeClasses = isActive
-        ? 'bg-violet-500/10 text-violet-400'
+        ? 'bg-teal-500/10 text-teal-400'
         : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50';
 
     const content = (
         <>
             {item.icon && (
                 <span className={`w-5 h-5 flex-shrink-0 transition-colors duration-200 ${
-                    isActive ? 'text-violet-400' : 'text-slate-500 group-hover:text-slate-400'
+                    isActive ? 'text-teal-400' : 'text-slate-500 group-hover:text-slate-400'
                 }`}>
                     {item.icon}
                 </span>
             )}
             <span className="truncate">{item.label}</span>
             {item.badge && (
-                <span className="ml-auto px-2 py-0.5 text-xs font-semibold rounded-full bg-violet-500/20 text-violet-400">
+                <span className="ml-auto px-2 py-0.5 text-xs font-semibold rounded-full bg-teal-500/20 text-teal-400">
                     {item.badge}
                 </span>
             )}

@@ -6,7 +6,7 @@ const StatusBadge = ({ status }) => {
         'completed': 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
         'processing': 'bg-blue-500/20 text-blue-400 border-blue-500/30',
         'pending': 'bg-amber-500/20 text-amber-400 border-amber-500/30',
-        'shipped': 'bg-violet-500/20 text-violet-400 border-violet-500/30',
+        'shipped': 'bg-teal-500/20 text-teal-400 border-teal-500/30',
         'cancelled': 'bg-rose-500/20 text-rose-400 border-rose-500/30',
         'refunded': 'bg-slate-500/20 text-slate-400 border-slate-500/30',
     };
@@ -34,7 +34,7 @@ const RecentOrdersTable = ({ orders = [] }) => {
             accessor: 'customer',
             render: (value, row) => (
                 <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center text-white text-xs font-semibold">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-teal-500 flex items-center justify-center text-white text-xs font-semibold">
                         {value.charAt(0).toUpperCase()}
                     </div>
                     <div>

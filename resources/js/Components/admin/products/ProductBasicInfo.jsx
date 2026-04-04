@@ -3,7 +3,7 @@ import React from 'react';
 export default function ProductBasicInfo({ data, setData, errors }) {
     return (
         <div className="relative overflow-hidden rounded-2xl bg-slate-900/80 border border-slate-800/50 backdrop-blur-sm">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-violet-500/5 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-teal-500/5 pointer-events-none" />
             
             <div className="relative p-6 space-y-5">
                 <h3 className="text-lg font-semibold text-white flex items-center gap-2">
