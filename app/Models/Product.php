@@ -20,14 +20,11 @@ class Product extends Model
         'parent_category',
         'warranty',
         'colors',
-        'sizes',
         'tags',
         'payment_methods',
         'discount_code_id',
         'stock',
         'reference_stock',
-        'regular_price',
-        'sale_price',
         'status',
     ];
 

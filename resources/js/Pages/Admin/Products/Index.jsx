@@ -1,12 +1,18 @@
 import React, { useState } from 'react';
-import { Head, router } from '@inertiajs/react';
+import { Head, router, usePage } from '@inertiajs/react';
 import AdminLayout from '../../../Layouts/AdminLayout';
 
 export default function ProductsIndex({ products = [] }) {
+    const { flash } = usePage().props;
     const [searchQuery, setSearchQuery] = useState('');
+    const [showFlash, setShowFlash] = useState(!!flash?.success);
 
     const filteredProducts = products.filter(product => {
-        return product.title.toLowerCase().includes(searchQuery.toLowerCase());
+        const q = searchQuery.toLowerCase();
+        return (
+            product.title?.toLowerCase().includes(q) ||
+            product.short_description?.toLowerCase().includes(q)
+        );
     });
 
     const handleDelete = (id) => {
@@ -25,7 +31,27 @@ export default function ProductsIndex({ products = [] }) {
             </div>
 
             <div className="relative z-10">
-                <div className="flex items-center justify-end mb-6">
+                {/* Flash success message */}
+                {showFlash && flash?.success && (
+                    <div className="mb-6 p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl text-emerald-400 text-sm flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                            <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            {flash.success}
+                        </div>
+                        <button onClick={() => setShowFlash(false)} className="text-emerald-400 hover:text-emerald-300">
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                )}
+
+                <div className="flex items-center justify-between mb-6">
+                    <p className="text-sm text-slate-400">
+                        {products.length} {products.length === 1 ? 'product' : 'products'} total
+                    </p>
                     <button
                         onClick={() => router.visit('/admin/products/create')}
                         className="px-6 py-3 bg-gradient-to-r from-blue-500 to-teal-600 rounded-xl font-semibold text-white shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all"

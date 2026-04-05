@@ -1,0 +1,41 @@
+{
+    "products": [
+        "id",
+        "title",
+        "short_description",
+        "detailed_description",
+        "category_id",
+        "parent_category",
+        "warranty",
+        "colors",
+        "tags",
+        "payment_methods",
+        "discount_code_id",
+        "stock",
+        "status",
+        "created_at",
+        "updated_at",
+        "deleted_at",
+        "reference_stock"
+    ],
+    "variants": [
+        "id",
+        "product_id",
+        "size",
+        "stock",
+        "created_at",
+        "updated_at",
+        "regular_price",
+        "sale_price"
+    ],
+    "images": [
+        "id",
+        "product_id",
+        "image_public_id",
+        "image_url",
+        "is_main",
+        "order",
+        "created_at",
+        "updated_at"
+    ]
+}

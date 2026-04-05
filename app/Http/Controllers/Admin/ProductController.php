@@ -76,10 +76,7 @@ class ProductController extends Controller
 
         // Sync summary data from variants for the main products table record
         $variantsData = $validated['variants'] ?? [];
-        $firstVariant = $variantsData[0] ?? null;
         
-        $validated['regular_price'] = $firstVariant['regular_price'] ?? 0;
-        $validated['sale_price'] = $firstVariant['sale_price'] ?? null;
         $validated['stock'] = collect($variantsData)->sum('stock');
         $validated['reference_stock'] = $validated['stock'];
 
@@ -135,6 +132,8 @@ class ProductController extends Controller
 
             DB::commit();
 
+            self::notifyAdmins("New product '{$product->title}' has been created.", 'success');
+
             return redirect()->route('admin.products.index')
                 ->with('success', 'Product created successfully.');
 
@@ -176,7 +175,6 @@ class ProductController extends Controller
 
             // Sync summary data from variants for the main products table record
             $variantsData = $validated['variants'] ?? [];
-            $firstVariant = $variantsData[0] ?? null;
 
             // Update product basic info
             $product->update([
@@ -191,8 +189,6 @@ class ProductController extends Controller
                 'payment_methods' => $validated['payment_methods'] ?? [],
                 'discount_code_id' => $validated['discount_code_id'] ?? null,
                 'stock' => collect($variantsData)->sum('stock'),
-                'regular_price' => $firstVariant['regular_price'] ?? 0,
-                'sale_price' => $firstVariant['sale_price'] ?? null,
             ]);
 
             // Sync variants (wipe and replace)
