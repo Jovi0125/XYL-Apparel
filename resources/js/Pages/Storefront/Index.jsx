@@ -8,12 +8,10 @@ import ScrollProgressIndicator from '@/Components/storefront/ScrollProgressIndic
 import OpeningTransition from '@/Components/storefront/OpeningTransition';
 
 export default function StorefrontIndex({ storefrontConfigs = [], initialActive }) {
-    // Synchronize state with initialActive passed from Laravel
     const [activeCategory, setActiveCategory] = useState(initialActive);
     const [isSplashActive, setIsSplashActive] = useState(true);
     const [scrollOpacity, setScrollOpacity] = useState(1);
 
-    // React to initialActive changes during inertial navigation
     useEffect(() => {
         setActiveCategory(initialActive);
     }, [initialActive]);
@@ -33,27 +31,29 @@ export default function StorefrontIndex({ storefrontConfigs = [], initialActive 
 
             <OpeningTransition isActive={isSplashActive} onComplete={() => setIsSplashActive(false)} />
 
+            {/* Mobile Header logic integrated */}
             <StorefrontHeader categories={storefrontConfigs} />
 
             <ScrollProgressIndicator />
 
             <main className="fixed inset-0 w-full h-screen z-0">
-                {/* 
-                   Forcing a unique key per source ensures the video 
-                   reloads and transitions smoothly during route changes 
-                */}
                 <HeroMedia src={activeCategory.videoSrc} key={activeCategory.slug} />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
 
+                {/* Mobile composition adjustments */}
                 <div 
-                    className="absolute bottom-24 left-8 md:left-14 max-w-xl z-20 transition-all duration-1000"
-                    style={{ opacity: scrollOpacity, transform: `translateY(${(1 - scrollOpacity) * 30}px)` }}
+                    className="absolute bottom-28 md:bottom-24 left-6 md:left-14 max-w-xl z-20 transition-all duration-1000"
+                    style={{ 
+                        opacity: scrollOpacity, 
+                        transform: `translateY(${(1 - scrollOpacity) * 30}px)` 
+                    }}
                 >
                     <HeroContent config={activeCategory} />
                 </div>
             </main>
 
-            <div className="fixed bottom-12 inset-x-0 z-50 flex justify-center pointer-events-none">
+            {/* Bottom Nav positioned for mobile safety zones */}
+            <div className="fixed bottom-8 md:bottom-12 inset-x-0 z-50 flex justify-center pointer-events-none px-4">
                 <FloatingBottomNav onHomeClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} />
             </div>
 
