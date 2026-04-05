@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Head, useForm, Link } from '@inertiajs/react';
 
 export default function Login() {
@@ -85,7 +85,7 @@ export default function Login() {
 
                     {/* Social Login */}
                     <Link
-                        href={route('google.redirect')}
+                        href="/auth/google/redirect"
                         className="w-full flex items-center justify-center space-x-3 bg-white border border-gray-200 text-black text-[11px] font-black tracking-[0.2em] uppercase py-5 rounded-sm hover:bg-gray-50 transition-all active:scale-[0.98]"
                     >
                         <svg className="w-4 h-4" viewBox="0 0 24 24">

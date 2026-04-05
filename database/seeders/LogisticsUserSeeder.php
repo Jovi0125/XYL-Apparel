@@ -13,19 +13,13 @@ class LogisticsUserSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create 2 logistics accounts for development
-        // Logistics accounts are staff-only and created via seeder or internal admin portal
-        $accounts = [
-            ['name' => 'Logistics Team A', 'email' => 'logistics@xylo.com'],
-            ['name' => 'Logistics Handler', 'email' => 'handler@xylo.com'],
-        ];
-
-        foreach ($accounts as $account) {
+        // Seed exactly 5 logistics accounts as per requirements
+        for ($i = 1; $i <= 5; $i++) {
             User::updateOrCreate(
-                ['email' => $account['email']],
+                ['email' => "logistics{$i}@xylo.com"],
                 [
-                    'name' => $account['name'],
-                    'password' => 'password', // Automatically hashed via cast
+                    'name' => "Logistics Handler {$i}",
+                    'password' => 'password', // Automatically hashed via User model cast
                     'role' => User::ROLE_LOGISTICS,
                     'status' => 'active',
                     'email_verified_at' => now(),
@@ -33,6 +27,6 @@ class LogisticsUserSeeder extends Seeder
             );
         }
 
-        $this->command->info('Logistics accounts created for development.');
+        $this->command->info('5 Logistics accounts successfully seeded/updated.');
     }
 }

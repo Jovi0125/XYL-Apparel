@@ -1,59 +1,42 @@
 import React from 'react';
-import { usePage, router } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 
-export default function LogisticsLayout({ children, title }) {
+export default function LogisticsLayout({ children }) {
     const { auth } = usePage().props;
 
-    const handleLogout = () => {
-        router.post('/logout');
-    };
-
     return (
-        <div className="min-h-screen bg-[#0A0A0A] font-sans text-slate-200">
-            {/* Minimal Header */}
-            <header className="bg-slate-900 border-b border-slate-800/50 sticky top-0 z-40 relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-transparent pointer-events-none" />
-                <div className="max-w-[100rem] mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between items-center h-16 relative z-10">
-                        {/* Logo Left */}
-                        <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
-                                <span className="text-white font-bold text-lg">X</span>
-                            </div>
-                            <div>
-                                <h1 className="text-xl font-bold text-white tracking-tight">XYLO</h1>
-                                <p className="text-[10px] uppercase tracking-widest text-blue-400 font-bold -mt-0.5">Logistics Terminal</p>
-                            </div>
-                        </div>
-
-                        {/* Title Bar Center */}
-                        <div className="hidden lg:flex">
-                            <span className="text-slate-400 text-sm">{title || 'Dashboard'}</span>
-                        </div>
-
-                        {/* Auth Right */}
-                        <div className="flex items-center gap-4">
-                            <div className="text-right hidden sm:block">
-                                <div className="text-sm font-semibold text-white">{auth?.user?.name}</div>
-                                <div className="text-xs text-slate-500 capitalize">{auth?.user?.role || 'Logistics Staff'}</div>
-                            </div>
-                            <div className="w-9 h-9 rounded-xl bg-slate-800 border border-slate-700/50 flex items-center justify-center text-blue-400 font-bold shadow-inner">
-                                {auth?.user?.name?.charAt(0) || 'L'}
-                            </div>
-                            <button 
-                                onClick={handleLogout}
-                                className="px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-red-400 hover:bg-slate-800/50 transition-colors"
-                            >
-                                Sign Out
-                            </button>
-                        </div>
-                    </div>
+        <div className="min-h-screen bg-[#050505] text-white flex">
+            {/* Sidebar */}
+            <aside className="w-64 border-r border-white/5 bg-[#0A0A0A] hidden md:flex flex-col">
+                <div className="p-8">
+                    <h1 className="text-xl font-black tracking-[0.3em] italic">XYLO<span className="text-white/20">.LOG</span></h1>
                 </div>
-            </header>
+                
+                <nav className="flex-1 px-4 space-y-2">
+                    <Link href="/logistics/dashboard" className="flex items-center space-x-3 px-4 py-3 bg-white/5 rounded-xl text-sm font-bold tracking-widest uppercase transition-all hover:bg-white/10">
+                        Dashboard
+                    </Link>
+                </nav>
 
-            {/* Page Content */}
-            <main className="py-8">
-                {children}
+                <div className="p-8 border-t border-white/5">
+                    <Link href="/logout" method="post" as="button" className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 hover:text-white transition-colors">
+                        Logout
+                    </Link>
+                </div>
+            </aside>
+
+            {/* Main Content */}
+            <main className="flex-1 flex flex-col">
+                <header className="h-20 border-b border-white/5 flex items-center justify-between px-8">
+                    <h2 className="text-[10px] font-bold tracking-[0.4em] text-white/40 uppercase">Terminal Context / Dashboard</h2>
+                    <div className="flex items-center space-x-4">
+                        <span className="text-[10px] font-black uppercase tracking-widest">{auth.user.name}</span>
+                    </div>
+                </header>
+                
+                <div className="p-8 overflow-y-auto">
+                    {children}
+                </div>
             </main>
         </div>
     );

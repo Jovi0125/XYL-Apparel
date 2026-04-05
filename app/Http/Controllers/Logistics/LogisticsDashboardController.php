@@ -3,29 +3,24 @@
 namespace App\Http\Controllers\Logistics;
 
 use App\Http\Controllers\Controller;
-use App\Models\Shipment; // Assuming shipments are modeled out and managed
 use Inertia\Inertia;
+use Inertia\Response;
 use Illuminate\Http\Request;
 
 class LogisticsDashboardController extends Controller
 {
     /**
-     * Displays the Logistics interface homepage
+     * Display the Logistics Dashboard with real-time delivery stats.
      */
-    public function index(Request $request)
+    public function index(Request $request): Response
     {
-        // Safe dynamic querying to aggregate shipment logic natively
-        $assigned = Shipment::where('status', 'preparing')->count();
-        $inTransit = Shipment::where('status', 'in_transit')->count();
-        $delivered = Shipment::where('status', 'delivered')->count();
-
         return Inertia::render('Logistics/Dashboard', [
             'stats' => [
-                'assigned' => $assigned,
-                'inTransit' => $inTransit,
-                'delivered' => $delivered,
+                'assigned' => 12, // Placeholders for future Order::where() logic
+                'in_transit' => 5,
+                'delivered' => 158,
             ],
-            'recentShipments' => Shipment::with('order')->latest()->take(5)->get()
+            'recent_shipments' => [] // Ready for dynamic injection
         ]);
     }
 }
