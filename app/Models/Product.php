@@ -26,6 +26,8 @@ class Product extends Model
         'discount_code_id',
         'stock',
         'reference_stock',
+        'regular_price',
+        'sale_price',
         'status',
     ];
 

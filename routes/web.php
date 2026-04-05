@@ -55,6 +55,7 @@ Route::prefix('admin')
 
         // Inventory Management
         Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
+        Route::post('/inventory/update-thresholds', [InventoryController::class, 'updateThresholds'])->name('inventory.updateThresholds');
 
         // Search
         Route::get('/search', [SearchController::class, 'globalSearch'])->name('search');

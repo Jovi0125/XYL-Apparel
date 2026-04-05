@@ -2,7 +2,7 @@
 
 if (!function_exists('cloudinary_upload')) {
     /**
-     * Upload a file to Cloudinary
+     * Upload a file to Cloudinary using the official Laravel helper
      *
      * @param mixed $file
      * @param array $options
@@ -11,15 +11,6 @@ if (!function_exists('cloudinary_upload')) {
     function cloudinary_upload($file, array $options = []): ?array
     {
         try {
-            $cloudinary = new \Cloudinary\Cloudinary([
-                'cloud' => [
-                    'cloud_name' => config('cloudinary.cloud_name'),
-                    'api_key' => config('cloudinary.api_key'),
-                    'api_secret' => config('cloudinary.api_secret'),
-                ],
-            ]);
-
-            $uploadApi = $cloudinary->uploadApi();
             $filePath = $file instanceof \Illuminate\Http\UploadedFile ? $file->getRealPath() : $file;
 
             $uploadOptions = array_merge([
@@ -28,7 +19,8 @@ if (!function_exists('cloudinary_upload')) {
                 'quality' => 'auto',
             ], $options);
 
-            $result = $uploadApi->upload($filePath, $uploadOptions);
+            // Use the globally available cloudinary() helper from the library
+            $result = cloudinary()->uploadApi()->upload($filePath, $uploadOptions);
 
             return [
                 'public_id' => $result['public_id'],
@@ -50,21 +42,16 @@ if (!function_exists('cloudinary_delete')) {
     /**
      * Delete a file from Cloudinary
      *
-     * @param string $publicId
+     * @param string|null $publicId
      * @return bool
      */
-    function cloudinary_delete(string $publicId): bool
+    function cloudinary_delete(?string $publicId): bool
     {
-        try {
-            $cloudinary = new \Cloudinary\Cloudinary([
-                'cloud' => [
-                    'cloud_name' => config('cloudinary.cloud_name'),
-                    'api_key' => config('cloudinary.api_key'),
-                    'api_secret' => config('cloudinary.api_secret'),
-                ],
-            ]);
+        if (!$publicId) return true;
 
-            $cloudinary->uploadApi()->destroy($publicId);
+        try {
+            // Use the globally available cloudinary() helper
+            cloudinary()->uploadApi()->destroy($publicId);
             return true;
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Cloudinary delete failed: ' . $e->getMessage());

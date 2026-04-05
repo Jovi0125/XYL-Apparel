@@ -4,8 +4,9 @@ import AdminLayout from '../../../Layouts/AdminLayout';
 import InventoryOverview from '../../../Components/admin/inventory/InventoryOverview';
 import StockManagementTable from '../../../Components/admin/inventory/StockManagementTable';
 import LowStockPanel from '../../../Components/admin/inventory/LowStockPanel';
+import SystemInventorySettings from '../../../Components/admin/inventory/SystemInventorySettings';
 
-export default function Inventory({ overview, lowStockProducts }) {
+export default function Inventory({ overview, lowStockProducts, allProducts }) {
     return (
         <AdminLayout title="Inventory Board" activeItem="inventory">
             <Head title="Xylo Apparel - Inventory" />
@@ -19,19 +20,24 @@ export default function Inventory({ overview, lowStockProducts }) {
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                    {/* Tasks Container 1: Overview */}
+                    {/* Overview Card */}
                     <div className="lg:col-span-5">
                         <InventoryOverview data={overview} />
                     </div>
 
-                    {/* Tasks Container 3: Low Stock List */}
+                    {/* Low Stock Alerts Card */}
                     <div className="lg:col-span-7">
-                        <LowStockPanel products={lowStockProducts} />
+                        <LowStockPanel products={lowStockProducts} thresholds={overview.thresholds} />
                     </div>
 
-                    {/* Tasks Container 2: Main Table */}
-                    <div className="lg:col-span-12">
-                        <StockManagementTable products={lowStockProducts} />
+                    {/* Stock Management Card */}
+                    <div className="lg:col-span-8">
+                        <StockManagementTable products={allProducts} />
+                    </div>
+
+                    {/* Inventory Settings Card */}
+                    <div className="lg:col-span-4">
+                        <SystemInventorySettings thresholds={overview.thresholds} />
                     </div>
                 </div>
             </div>

@@ -9,10 +9,12 @@ class ProductImage extends Model
 {
     use HasFactory;
 
+    protected $appends = ['image_url'];
+
     protected $fillable = [
         'product_id',
         'image_public_id',
-        'image_url',
+        'image_url', // Kept for legacy/fallback
         'is_main',
         'order',
     ];
@@ -24,5 +26,19 @@ class ProductImage extends Model
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+
+    /**
+     * Get the dynamic Cloudinary URL based on the current environment settings.
+     */
+    public function getImageUrlAttribute()
+    {
+        if ($this->image_public_id) {
+            // Reconstruct URL using current cloud_name from config
+            $cloudName = config('cloudinary.cloud_name');
+            return "https://res.cloudinary.com/{$cloudName}/image/upload/{$this->image_public_id}";
+        }
+
+        return $this->attributes['image_url'] ?? '';
     }
 }

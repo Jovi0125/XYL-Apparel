@@ -74,11 +74,14 @@ class ProductController extends Controller
             'images.*' => 'nullable|file|image',
         ]);
 
-        // Defensive assignments
-        $validated['colors'] = $validated['colors'] ?? [];
-        $validated['tags'] = $validated['tags'] ?? [];
-        $validated['payment_methods'] = $validated['payment_methods'] ?? [];
-        $validated['stock'] = $validated['stock'] ?? 0;
+        // Sync summary data from variants for the main products table record
+        $variantsData = $validated['variants'] ?? [];
+        $firstVariant = $variantsData[0] ?? null;
+        
+        $validated['regular_price'] = $firstVariant['regular_price'] ?? 0;
+        $validated['sale_price'] = $firstVariant['sale_price'] ?? null;
+        $validated['stock'] = collect($variantsData)->sum('stock');
+        $validated['reference_stock'] = $validated['stock'];
 
         try {
             DB::beginTransaction();
@@ -103,6 +106,8 @@ class ProductController extends Controller
                     $images = [$images];
                 }
 
+                \Log::info('Processing ' . count($images) . ' images for product ' . $product->id);
+
                 $validIndex = 0;
                 foreach ($images as $file) {
                     if ($file && $file->isValid()) {
@@ -110,8 +115,8 @@ class ProductController extends Controller
                             'folder' => 'xylo-apparel/products',
                         ]);
 
-                        // Ensurecloudinary returned expected structure
-                        if (is_array($imageData) && isset($imageData['public_id'], $imageData['url'])) {
+                        if ($imageData) {
+                            \Log::info('Image uploaded successfully: ' . $imageData['public_id']);
                             $product->images()->create([
                                 'image_public_id' => $imageData['public_id'],
                                 'image_url'       => $imageData['url'],
@@ -119,7 +124,11 @@ class ProductController extends Controller
                                 'order'           => $validIndex,
                             ]);
                             $validIndex++;
+                        } else {
+                            \Log::error('Cloudinary upload returned null for a valid file.');
                         }
+                    } else {
+                        \Log::warning('Invalid file encountered in images array.');
                     }
                 }
             }
@@ -165,6 +174,10 @@ class ProductController extends Controller
         try {
             DB::beginTransaction();
 
+            // Sync summary data from variants for the main products table record
+            $variantsData = $validated['variants'] ?? [];
+            $firstVariant = $variantsData[0] ?? null;
+
             // Update product basic info
             $product->update([
                 'title' => $validated['title'],
@@ -177,7 +190,9 @@ class ProductController extends Controller
                 'tags' => $validated['tags'] ?? [],
                 'payment_methods' => $validated['payment_methods'] ?? [],
                 'discount_code_id' => $validated['discount_code_id'] ?? null,
-                'stock' => $validated['stock'] ?? 0,
+                'stock' => collect($variantsData)->sum('stock'),
+                'regular_price' => $firstVariant['regular_price'] ?? 0,
+                'sale_price' => $firstVariant['sale_price'] ?? null,
             ]);
 
             // Sync variants (wipe and replace)
