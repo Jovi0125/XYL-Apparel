@@ -42,6 +42,11 @@ class HomeController extends Controller
             ]
         ];
 
+        // Fetch dynamic child categories grouped by parent
+        $categoryGroups = \App\Models\Category::active()
+            ->get()
+            ->groupBy('parent_category');
+
         // Determine default active category based on URI
         $defaultActive = $storefrontConfigs[0];
         foreach ($storefrontConfigs as $config) {
@@ -53,7 +58,11 @@ class HomeController extends Controller
 
         return Inertia::render('Storefront/Index', [
             'storefrontConfigs' => $storefrontConfigs,
-            'initialActive' => $defaultActive
+            'initialActive' => $defaultActive,
+            'categoryGroups' => $categoryGroups,
+            'auth' => [
+                'user' => $request->user()
+            ]
         ]);
     }
 }
