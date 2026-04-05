@@ -13,19 +13,26 @@ class LogisticsUserSeeder extends Seeder
      */
     public function run(): void
     {
-        $password = Hash::make('password123'); // Adjust default generic password logic optionally based on standard defaults.
+        // Create 2 logistics accounts for development
+        // Logistics accounts are staff-only and created via seeder or internal admin portal
+        $accounts = [
+            ['name' => 'Logistics Team A', 'email' => 'logistics@xylo.com'],
+            ['name' => 'Logistics Handler', 'email' => 'handler@xylo.com'],
+        ];
 
-        for ($i = 1; $i <= 5; $i++) {
+        foreach ($accounts as $account) {
             User::updateOrCreate(
-                ['email' => "logistics{$i}@xylo.com"],
+                ['email' => $account['email']],
                 [
-                    'name' => "Logistics Employee {$i}",
-                    'password' => $password,
+                    'name' => $account['name'],
+                    'password' => 'password', // Automatically hashed via cast
                     'role' => User::ROLE_LOGISTICS,
                     'status' => 'active',
                     'email_verified_at' => now(),
                 ]
             );
         }
+
+        $this->command->info('Logistics accounts created for development.');
     }
 }

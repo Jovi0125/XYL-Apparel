@@ -18,6 +18,13 @@ class RoleMiddleware
     public function handle(Request $request, Closure $next, string ...$roles): Response
     {
         if (!Auth::check()) {
+            // Path-aware redirection for unauthenticated guests
+            if ($request->is('admin/*')) {
+                return redirect('/admin/login');
+            }
+            if ($request->is('logistics/*')) {
+                return redirect('/logistics/login');
+            }
             return redirect('/login');
         }
 
@@ -25,7 +32,7 @@ class RoleMiddleware
 
         // Check if user has one of the allowed roles
         if (!in_array($user->role, $roles)) {
-            // Redirect to appropriate dashboard based on role
+            // Redirect to appropriate dashboard based on their current role
             return match ($user->role) {
                 'admin' => redirect('/admin/dashboard'),
                 'buyer' => redirect('/buyer/dashboard'),
@@ -37,9 +44,15 @@ class RoleMiddleware
         // Check if user is active
         if (!$user->isActive()) {
             Auth::logout();
-            return redirect('/login')->withErrors([
-                'email' => 'Your account is not active.',
-            ]);
+            
+            // Re-detect redirection after logout
+            if ($request->is('admin/*')) {
+                return redirect('/admin/login')->withErrors(['email' => 'Account inactive.']);
+            }
+            if ($request->is('logistics/*')) {
+                return redirect('/logistics/login')->withErrors(['email' => 'Account inactive.']);
+            }
+            return redirect('/login')->withErrors(['email' => 'Your account is not active.']);
         }
 
         return $next($request);

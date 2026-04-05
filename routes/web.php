@@ -31,17 +31,31 @@ Route::get('/unisex', [HomeController::class, 'index'])->name('store.unisex');
 
 /*
 |--------------------------------------------------------------------------
-| Guest Routes
+| Guest / Public Entry
 |--------------------------------------------------------------------------
 */
 Route::middleware('guest')->group(function () {
+    // Buyer Access
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
+    Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+    Route::post('/register', [AuthController::class, 'register']);
+
+    // Staff Access (Seeded ONLY)
+    Route::get('/admin/login', [AuthController::class, 'showAdminLogin'])->name('admin.login');
+    Route::post('/admin/login', [AuthController::class, 'login']);
+    
+    Route::get('/logistics/login', [AuthController::class, 'showLogisticsLogin'])->name('logistics.login');
+    Route::post('/logistics/login', [AuthController::class, 'login']);
+
+    // Social Authentication (Buyer ONLY)
+    Route::get('/auth/google/redirect', [\App\Http\Controllers\Auth\GoogleAuthController::class, 'redirectToGoogle'])->name('google.redirect');
+    Route::get('/auth/google/callback', [\App\Http\Controllers\Auth\GoogleAuthController::class, 'handleGoogleCallback'])->name('google.callback');
 });
 
 /*
 |--------------------------------------------------------------------------
-| Authenticated Routes
+| Authenticated Global Routes
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth')->group(function () {
