@@ -16,7 +16,18 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Storefront\HomeController;
 use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| Storefront / Landing Entry
+|--------------------------------------------------------------------------
+*/
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/women', [HomeController::class, 'index'])->name('store.women');
+Route::get('/men', [HomeController::class, 'index'])->name('store.men');
+Route::get('/unisex', [HomeController::class, 'index'])->name('store.unisex');
 
 /*
 |--------------------------------------------------------------------------
@@ -122,9 +133,6 @@ Route::prefix('logistics')
 
 /*
 |--------------------------------------------------------------------------
-| Default Redirect
+| Default Redirect Fallbacks
 |--------------------------------------------------------------------------
 */
-Route::get('/', function () {
-    return redirect('/login');
-});
