@@ -11,6 +11,11 @@ use App\Http\Controllers\Admin\ArchiveController;
 use App\Http\Controllers\Admin\InventoryController;
 use App\Http\Controllers\Admin\SearchController;
 use App\Http\Controllers\Admin\NotificationController;
+use App\Http\Controllers\Admin\ShipmentController;
+use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\PaymentController;
+use App\Http\Controllers\Admin\ReviewController;
+use App\Http\Controllers\Admin\ReportController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -57,6 +62,11 @@ Route::prefix('admin')
         Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
         Route::post('/inventory/update-thresholds', [InventoryController::class, 'updateThresholds'])->name('inventory.updateThresholds');
 
+        // Shipments / Order Fulfillment
+        Route::get('/shipments', [ShipmentController::class, 'index'])->name('shipments.index');
+        Route::post('/shipments/{order}/update-status', [ShipmentController::class, 'updateStatus'])->name('shipments.updateStatus');
+        Route::post('/shipments/{order}/update-payment', [ShipmentController::class, 'updatePaymentStatus'])->name('shipments.updatePayment');
+
         // Search
         Route::get('/search', [SearchController::class, 'globalSearch'])->name('search');
 
@@ -71,6 +81,19 @@ Route::prefix('admin')
         // Users Management
         Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
         Route::post('users/{user}/toggle-status', [\App\Http\Controllers\Admin\UserController::class, 'toggleStatus'])->name('users.toggleStatus');
+
+        // Orders Management
+        Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+
+        // Payments Management
+        Route::get('/payments', [PaymentController::class, 'index'])->name('payments.index');
+
+        // Reviews Management
+        Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews.index');
+        Route::post('/reviews/{review}/toggle', [ReviewController::class, 'toggleApproval'])->name('reviews.toggle');
+
+        // Analytics & Reports
+        Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
     });
 
 /*

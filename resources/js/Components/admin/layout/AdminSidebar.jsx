@@ -70,11 +70,11 @@ const sidebarConfig = [
         label: 'Commerce',
         icon: <Icons.Commerce />,
         children: [
-            { id: 'orders', label: 'Orders', href: '#' },
-            { id: 'payments', label: 'Payments', href: '#' },
+            { id: 'orders', label: 'Orders', href: '/admin/orders' },
+            { id: 'payments', label: 'Payments', href: '/admin/payments' },
             { id: 'users', label: 'Users', href: '/admin/users' },
-            { id: 'shipments', label: 'Shipments', href: '#' },
-            { id: 'reviews', label: 'Reviews', href: '#' },
+            { id: 'shipments', label: 'Shipments', href: '/admin/shipments' },
+            { id: 'reviews', label: 'Reviews', href: '/admin/reviews' },
         ],
     },
     {
@@ -119,9 +119,7 @@ const sidebarConfig = [
         label: 'Reports',
         icon: <Icons.Reports />,
         children: [
-            { id: 'sales-analytics', label: 'Sales Analytics', href: '#' },
-            { id: 'product-performance', label: 'Product Performance', href: '#' },
-            { id: 'inventory-reports', label: 'Inventory Reports', href: '#' },
+            { id: 'sales-analytics', label: 'Analytics & Reports', href: '/admin/reports' },
         ],
     },
     {

@@ -1,59 +1,91 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# XYLO APPAREL - Master Project Context & AI Instructions
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+> **AI ASSISTANT INSTRUCTIONS:** If you are an AI assistant (like ChatGPT or Claude) reading this document, this is the absolute source of truth for the project context. You must **STRICTLY** follow the rules, architecture, and UI requirements detailed below. Do not output pseudo-code. Do not overengineer. Do not redesign the UI unnecessarily. Ensure all code output is deployment-ready.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🛠 TECH STACK
+- **Backend:** Laravel 12
+- **Frontend:** Inertia.js + React
+- **Styling:** Tailwind CSS (Pure utility classes, strictly no Blade UI for pages)
+- **Database:** MySQL / DB compatible (like TiDB)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 🏢 PROJECT CONTEXT
+**Project Name:** XYLO APPAREL
+**System Type:** E-Commerce Admin / Management Architecture
+**Core Stakeholders:**
+1. **Admin:** Master system controller (Seller + Inventory Manager)
+2. **Buyers:** Customers browsing the storefront and placing orders
+3. **Logistics:** Delivery and shipment flow tracking
 
-## Learning Laravel
+**Handshake Logic:**
+- **Buyers** create orders, interact with payment methods (COD/GCash), and generate reviews.
+- **Logistics** update shipment statuses which dynamically reflect in the system.
+- **Admins** oversee the entire handshake, possessing complete CRUD access over products, inventory, users, financial ledgers, and site customizations. 
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 🎨 UI / DESIGN LANGUAGE (STRICT)
+- **Vibe:** Dark, Premium, and Enterprise Admin Dashboard.
+- **Color Palette:** Strictly utilizes `slate-900` / `#0A0A0A` backgrounds, `teal-400` / `cyan-500` accents for active actions, and `emerald`/`amber` text badges for semantic statuses.
+- **Components:** Glassmorphism layouts mapping gradients with backdrop blurs (e.g., `bg-slate-900/80 backdrop-blur-sm shadow-xl border border-slate-800/50`).
+- **Data Rendering:** No raw HTML tables without proper styling. Empty states should *always* be rendered professionally if arrays are empty.
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## ✅ MODULES CURRENTLY COMPLETED
+*Do NOT rebuild these modules. Only interface with them when adding complementary features.*
 
-### Premium Partners
+1. **Catalog System:** Categories, Products (Create & View All).
+2. **Inventory System:** Overview metrics, Stock Management, Low Stock Alerts.
+3. **Marketing:** Promotions, Discount Codes, and standard Banners.
+4. **Phase 1 - Commerce:** Orders, Payments Ledger, Shipments / Order Fulfillment, Product Reviews.
+5. **Phase 4 - Analytics:** Sales Analytics, Product Performance, Inventory Reports (via `ReportController`).
+6. **System & Auth:** Local Auth (Logout, Admin Roles), Database Logs, Basic User Management.
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+---
 
-## Contributing
+## 🚧 REMAINING BUILD TARGETS
+*If instructed to build, complete these modules respecting proper standard foreign keys and React inertia architecture.*
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+**Phase 2 — Support Module**
+- `Events`: Campaign-based groupings, scheduled start/end dates.
+- `Messages`: Two-way admin inbox, message threads, unread states.
 
-## Code of Conduct
+**Phase 3 — System Architecture**
+- `Settings`: Global system config, payment overrides, inventory threshold configurations.
+- `Site Customization`: Expandable storefront modifiers.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## 💾 DATABASE STRUCTURE & RULES
+The database is heavily normalized. Follow clean Eloquent relationships. Existing core migrations include:
+- `users`
+- `categories`, `products`, `product_variants`, `product_images`
+- `tags`, `product_tag`
+- `discount_codes`
+- `orders`, `payments`, `shipments`, `reviews`
+- `events`, `messages` *[Models & Schemas Built, UI Pending]*
+- `notifications`, `settings`, `archives`
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+**Database Integrity Rules:**
+- Apply strict `$fillable` arrays to all Models.
+- Implement proper foreign keys with `->onDelete('cascade')` when natively applicable.
+- Leverage `SoftDeletes` correctly so crucial financial records are never entirely wiped from MySQL.
 
-## License
+---
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## ⚙️ OUTPUT FORMAT EXPECTATIONS (FOR AI)
+When generating new code, always output in the following format:
+
+**1. FILE STRUCTURE**
+*(List exactly what files you are adding or touching)*
+
+**2. FILE-BY-FILE CODE**
+*(Output robust, un-truncated blocks labeled clearly)*
+```language
+// FILE: path/to/file.php
+[CODE BLOCK]
+```
