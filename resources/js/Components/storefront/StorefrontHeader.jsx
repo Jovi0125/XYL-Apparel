@@ -10,44 +10,40 @@ export default function StorefrontHeader({ categories }) {
     };
 
     return (
-        <header className="fixed top-0 inset-x-0 h-16 md:h-20 z-[100] px-4 md:px-10 flex items-center justify-between pointer-events-none">
+        <header className="fixed top-0 inset-x-0 h-20 md:h-28 z-[100] px-8 md:px-16 flex items-center justify-between pointer-events-none">
             
-            {/* 1. BRAND IDENTITY: Hidden on Mobile, Fixed for Desktop */}
             <div className="hidden md:flex w-1/4 pointer-events-auto">
-                <Link href="/" className="group flex items-center">
-                    <span className="text-[16px] font-black tracking-[0.15em] uppercase text-white">
+                <Link href="/" className="group">
+                    <span className="text-[14px] font-black tracking-[0.6em] uppercase text-white transition-opacity group-hover:opacity-60 leading-none">
                         XYLO
                     </span>
                 </Link>
             </div>
 
-            {/* 2. CATEGORY NAVIGATION: Centered on Desktop, Spaced Flex on Mobile */}
-            <nav className="flex-1 md:flex-none flex items-center justify-start md:justify-center space-x-6 md:space-x-16 pointer-events-auto ml-2 md:ml-0">
+            <nav className="flex-1 md:flex-none flex items-center justify-start md:justify-center space-x-10 md:space-x-20 pointer-events-auto">
                 {categories.map((cat) => (
                     <Link
                         key={cat.slug}
                         href={cat.slug === 'women' ? '/' : `/${cat.slug}`}
-                        className={`text-[10px] md:text-[11px] font-bold tracking-[0.2em] uppercase transition-all relative py-1.5
-                            ${isActive(cat.slug) ? 'text-white' : 'text-white/40 hover:text-white/70'}`}
+                        className={`text-[9px] md:text-[10px] font-black tracking-[0.4em] uppercase transition-all relative py-2
+                            ${isActive(cat.slug) ? 'text-white' : 'text-white/30 hover:text-white/60'}`}
                     >
                         {cat.label}
-                        <span className={`absolute bottom-0 left-0 h-[1.5px] md:h-[2px] bg-white transition-all duration-500
+                        <span className={`absolute bottom-0 left-1/2 -translate-x-1/2 h-[1px] bg-white transition-all duration-700
                             ${isActive(cat.slug) ? 'w-full opacity-100' : 'w-0 opacity-0'}`} />
                     </Link>
                 ))}
             </nav>
 
-            {/* 3. ICON UTILITY: Scaled for Phone Interaction */}
-            <div className="w-auto md:w-1/4 flex justify-end items-center space-x-5 md:space-x-9 pointer-events-auto text-white/90 pr-2 md:pr-0">
-                <button aria-label="Region & Language" className="hover:text-white transition-opacity hidden sm:block">
+            <div className="w-auto md:w-1/4 flex justify-end items-center space-x-6 md:space-x-10 pointer-events-auto text-white/90">
+                <button aria-label="Region" className="opacity-30 hover:opacity-100 transition-opacity hidden sm:block">
                     <GlobeIcon />
                 </button>
-                <Link href="#" aria-label="Favorites" className="hover:text-white transition-opacity">
+                <Link href="#" aria-label="Favorites" className="opacity-30 hover:opacity-100 transition-opacity">
                     <HeartIcon />
                 </Link>
-                <Link href="/login" aria-label="Shopping Cart" className="hover:text-white transition-opacity relative">
+                <Link href="/login" aria-label="Cart" className="opacity-30 hover:opacity-100 transition-opacity relative">
                     <CartIcon />
-                    <span className="absolute -top-1 -right-1.5 text-[7px] font-bold bg-white text-black px-1 rounded-sm">0</span>
                 </Link>
             </div>
         </header>

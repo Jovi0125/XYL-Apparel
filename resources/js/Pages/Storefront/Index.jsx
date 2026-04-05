@@ -46,44 +46,45 @@ export default function StorefrontIndex({ storefrontConfigs = [], initialActive,
 
             <OpeningTransition isActive={isSplashActive} onComplete={() => setIsSplashActive(false)} />
 
-            <StorefrontHeader categories={storefrontConfigs} />
-            <ScrollProgressIndicator />
+            <div className={`transition-opacity duration-1000 ease-out ${isSplashActive ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+                <StorefrontHeader categories={storefrontConfigs} />
+                <ScrollProgressIndicator />
 
-            {/* Login Required Overlay Shield */}
-            <LoginRequiredModal 
-                isOpen={isLoginModalOpen} 
-                onClose={() => setIsLoginModalOpen(false)} 
-            />
-
-            <StorefrontCategoryOverlay 
-                isOpen={isSearchActive} 
-                onClose={() => setIsSearchActive(false)}
-                categoryGroups={categoryGroups}
-            />
-
-            <main className="fixed inset-0 w-full h-screen z-0">
-                <HeroMedia src={activeCategory.videoSrc} key={activeCategory.slug} />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
-
-                <div 
-                    className="absolute bottom-28 md:bottom-24 left-8 md:left-14 max-w-xl z-20 transition-all duration-1000"
-                    style={{ 
-                        opacity: (isSearchActive || isLoginModalOpen) ? 0 : scrollOpacity, 
-                        pointerEvents: (isSearchActive || isLoginModalOpen) ? 'none' : 'auto',
-                        transform: `translateY(${(1 - scrollOpacity) * 30}px)` 
-                    }}
-                >
-                    <HeroContent config={activeCategory} />
-                </div>
-            </main>
-
-            <div className="fixed bottom-10 inset-x-0 z-[200] flex justify-center pointer-events-none px-4">
-                <FloatingBottomNav 
-                    isSearchActive={isSearchActive}
-                    onSearchToggle={() => setIsSearchActive(!isSearchActive)}
-                    onHomeClick={handleHomeReset}
-                    onProfileClick={() => setIsLoginModalOpen(true)}
+                <LoginRequiredModal 
+                    isOpen={isLoginModalOpen} 
+                    onClose={() => setIsLoginModalOpen(false)} 
                 />
+
+                <StorefrontCategoryOverlay 
+                    isOpen={isSearchActive} 
+                    onClose={() => setIsSearchActive(false)}
+                    categoryGroups={categoryGroups}
+                />
+
+                <main className="fixed inset-0 w-full h-screen z-0">
+                    <HeroMedia src={activeCategory.videoSrc} key={activeCategory.slug} />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+
+                    <div 
+                        className="absolute bottom-32 md:bottom-28 left-8 md:left-14 max-w-xl z-20 transition-all duration-1000"
+                        style={{ 
+                            opacity: (isSearchActive || isLoginModalOpen) ? 0 : scrollOpacity, 
+                            pointerEvents: (isSearchActive || isLoginModalOpen) ? 'none' : 'auto',
+                            transform: `translateY(${(1 - scrollOpacity) * 30}px)` 
+                        }}
+                    >
+                        <HeroContent config={activeCategory} />
+                    </div>
+                </main>
+
+                <div className="fixed bottom-12 inset-x-0 z-[200] flex justify-center pointer-events-none px-4">
+                    <FloatingBottomNav 
+                        isSearchActive={isSearchActive}
+                        onSearchToggle={() => setIsSearchActive(!isSearchActive)}
+                        onHomeClick={handleHomeReset}
+                        onProfileClick={() => setIsLoginModalOpen(true)}
+                    />
+                </div>
             </div>
 
             <style dangerouslySetInnerHTML={{ __html: `
