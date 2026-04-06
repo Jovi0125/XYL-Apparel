@@ -21,30 +21,68 @@ use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
-| Storefront / Landing Entry
+| Root Redirect
 |--------------------------------------------------------------------------
 */
-Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/women', [HomeController::class, 'index'])->name('store.women');
-Route::get('/men', [HomeController::class, 'index'])->name('store.men');
-Route::get('/unisex', [HomeController::class, 'index'])->name('store.unisex');
+Route::get('/', function () {
+    return redirect('/ph/en');
+});
 
 /*
 |--------------------------------------------------------------------------
-| Guest / Public Entry
+| Localized Storefront / Landing Entry
+|--------------------------------------------------------------------------
+*/
+Route::prefix('ph/en')->group(function () {
+    Route::get('/', [HomeController::class, 'index'])->name('home');
+    Route::get('/women', [HomeController::class, 'index'])->name('store.women');
+    Route::get('/men', [HomeController::class, 'index'])->name('store.men');
+    Route::get('/unisex', [HomeController::class, 'index'])->name('store.unisex');
+
+    // Navigation / Search Overlay Routes (-navi suffix)
+    Route::get('/women-navi', [HomeController::class, 'index'])->name('store.women.navi');
+    Route::get('/men-navi', [HomeController::class, 'index'])->name('store.men.navi');
+    Route::get('/unisex-navi', [HomeController::class, 'index'])->name('store.unisex.navi');
+
+    // Category detail routes
+    Route::get('/women/{category:slug}', [HomeController::class, 'index'])->name('store.women.category');
+    Route::get('/men/{category:slug}', [HomeController::class, 'index'])->name('store.men.category');
+    Route::get('/unisex/{category:slug}', [HomeController::class, 'index'])->name('store.unisex.category');
+
+    // Category detail routes within navi mode
+    Route::get('/women-navi/{category:slug}', [HomeController::class, 'index'])->name('store.women.navi.category');
+    Route::get('/men-navi/{category:slug}', [HomeController::class, 'index'])->name('store.men.navi.category');
+    Route::get('/unisex-navi/{category:slug}', [HomeController::class, 'index'])->name('store.unisex.navi.category');
+
+    // Placeholder routes for search, profile, wishlist, cart
+    Route::get('/search', [HomeController::class, 'index'])->name('store.search');
+    Route::get('/profile', [HomeController::class, 'index'])->name('store.profile');
+    Route::get('/wishlist', [HomeController::class, 'index'])->name('store.wishlist');
+    Route::get('/cart', [HomeController::class, 'index'])->name('store.cart');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Guest / Public Entry
+    |--------------------------------------------------------------------------
+    */
+    Route::middleware('guest')->group(function () {
+        // Buyer Access
+        Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+        Route::post('/login', [AuthController::class, 'login']);
+        Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+        Route::post('/register', [AuthController::class, 'register']);
+    });
+});
+
+/*
+|--------------------------------------------------------------------------
+| Staff Access (Seeded ONLY) - Outside localization for now as per system logic
 |--------------------------------------------------------------------------
 */
 Route::middleware('guest')->group(function () {
-    // Buyer Access
-    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-    Route::post('/login', [AuthController::class, 'login']);
-    Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
-    Route::post('/register', [AuthController::class, 'register']);
-
-    // Staff Access (Seeded ONLY)
     Route::get('/admin/login', [AuthController::class, 'showAdminLogin'])->name('admin.login');
     Route::post('/admin/login', [AuthController::class, 'login']);
-    
+
     Route::get('/logistics/login', [AuthController::class, 'showLogisticsLogin'])->name('logistics.login');
     Route::post('/logistics/login', [AuthController::class, 'login']);
 

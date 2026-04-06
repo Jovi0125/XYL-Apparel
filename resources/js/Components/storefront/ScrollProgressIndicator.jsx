@@ -36,7 +36,11 @@ export default function ScrollProgressIndicator() {
                 ))}
             </div>
             
-            <span className="text-[9px] font-black tracking-[0.3em] uppercase rotate-90 mt-10 opacity-30 select-none">XYLO</span>
+            <img 
+                src="/images/xylo-logo.png" 
+                alt="XYLO" 
+                className="w-4 h-auto rotate-90 mt-10 opacity-30 select-none grayscale"
+            />
         </div>
     );
 }

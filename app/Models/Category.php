@@ -17,12 +17,29 @@ class Category extends Model
      */
     protected $fillable = [
         'name',
+        'parent_id',
         'parent_category',
         'description',
         'image_public_id',
         'image_url',
         'status',
     ];
+
+    /**
+     * Get the subcategories (T-Shirts, Jackets, etc.)
+     */
+    public function children()
+    {
+        return $this->hasMany(Category::class, 'parent_id');
+    }
+
+    /**
+     * Get the parent category (Women/Men/Unisex).
+     */
+    public function parent()
+    {
+        return $this->belongsTo(Category::class, 'parent_id');
+    }
 
     /**
      * The attributes that should be cast.

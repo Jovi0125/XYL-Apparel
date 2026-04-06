@@ -8,12 +8,11 @@ export default function TopNavigation({ onSearchToggle, isSearchActive }) {
                 
                 {/* Red Square Logo Pair (XYLO Branding) */}
                 <div className="flex items-center gap-1 shrink-0 cursor-pointer" onClick={() => window.location.reload()}>
-                    <div className="bg-[#E60012] text-white font-bold text-[14px] leading-none w-8 h-8 flex items-center justify-center select-none shadow-sm">
-                        XY
-                    </div>
-                    <div className="bg-[#E60012] text-white font-bold text-[14px] leading-none w-8 h-8 flex items-center justify-center select-none shadow-sm">
-                        LO
-                    </div>
+                    <img 
+                        src="/images/xylo-logo.png" 
+                        alt="XYLO APPAREL" 
+                        className="h-10 w-auto"
+                    />
                 </div>
 
                 {/* Right Utility Icons */}

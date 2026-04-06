@@ -108,7 +108,7 @@ export default function AdminLogin() {
                     <p className="text-[10px] font-medium tracking-[0.2em] text-white/20 uppercase">
                         Enterprise Grade Security &bull; 256-bit SSL
                     </p>
-                    <a href="/" className="inline-block text-[10px] font-bold tracking-[0.3em] text-white/40 uppercase hover:text-white transition-all border-b border-white/0 hover:border-white/40 pb-1">
+                    <a href="/ph/en" className="inline-block text-[10px] font-bold tracking-[0.3em] text-white/40 uppercase hover:text-white transition-all border-b border-white/0 hover:border-white/40 pb-1">
                         ← Back to Brand Official
                     </a>
                 </div>

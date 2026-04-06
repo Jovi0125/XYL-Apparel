@@ -80,7 +80,7 @@ export default function LogisticsLogin() {
                 </div>
 
                 <div className="mt-8 text-center">
-                    <a href="/" className="inline-block text-[10px] font-bold tracking-[0.3em] text-white/40 uppercase hover:text-white transition-all pb-1">
+                    <a href="/ph/en" className="inline-block text-[10px] font-bold tracking-[0.3em] text-white/40 uppercase hover:text-white transition-all pb-1">
                         ← Back to Storefront
                     </a>
                 </div>

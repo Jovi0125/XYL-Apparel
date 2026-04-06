@@ -12,19 +12,40 @@ class StorefrontCategorySeeder extends Seeder
      */
     public function run(): void
     {
-        $data = [
-            'women' => ['New Arrivals', 'T-Shirts', 'Dresses & Skirts', 'Innerwear', 'Accessories'],
-            'men' => ['New Arrivals', 'Shirts', 'Bottoms', 'Outerwear', 'Sport Utility'],
-            'unisex' => ['Linen', 'UV Protection', 'AIRism', 'Collaboration', 'Sustainability']
+        // 1. Core Parent Categories (The Contexts)
+        $parents = [
+            'Women' => ['New Arrivals', 'T-Shirts', 'Dresses & Skirts', 'Innerwear', 'Accessories'],
+            'Men' => ['New Arrivals', 'Shirts', 'Bottoms', 'Outerwear', 'Sport Utility'],
+            'Unisex' => ['Linen', 'UV Protection', 'AIRism', 'Collaboration', 'Sustainability']
         ];
 
-        foreach ($data as $parent => $children) {
-            foreach ($children as $name) {
+        foreach ($parents as $parentName => $children) {
+            // Create the Parent Record
+            $parent = Category::updateOrCreate(
+                ['name' => $parentName],
+                [
+                    'status' => 'active', 
+                    'description' => "Main $parentName category.",
+                    'parent_id' => null, // Parents have no parent
+                ]
+            );
+
+            // Create the Child Categories
+            foreach ($children as $childName) {
                 Category::updateOrCreate(
-                    ['name' => $name, 'parent_category' => $parent],
-                    ['status' => 'active', 'description' => "Premium $name for $parent."]
+                    [
+                        'name' => $childName, 
+                        'parent_id' => $parent->id
+                    ],
+                    [
+                        'status' => 'active', 
+                        'description' => "Premium $childName for $parentName.",
+                        'parent_category' => strtolower($parentName) // Keep for backward compatibility if needed
+                    ]
                 );
             }
         }
+
+        $this->command->info('Category hierarchy (Parent > Child) successfully seeded.');
     }
 }

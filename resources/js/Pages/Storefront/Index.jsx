@@ -11,16 +11,33 @@ import LoginRequiredModal from '@/Components/storefront/LoginRequiredModal';
 
 export default function StorefrontIndex({ storefrontConfigs = [], initialActive, categoryGroups = {} }) {
     const [activeCategory, setActiveCategory] = useState(initialActive);
-    const [isSplashActive, setIsSplashActive] = useState(true);
-    const [isSearchActive, setIsSearchActive] = useState(false);
+    
+    // Only show splash on the first page load in this session
+    const [isSplashActive, setIsSplashActive] = useState(() => {
+        return !sessionStorage.getItem('xylo_splash_shown');
+    });
+
+    const [isSearchActive, setIsSearchActive] = useState(window.location.pathname.includes('-navi'));
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
     const [scrollOpacity, setScrollOpacity] = useState(1);
 
+    const handleSplashComplete = () => {
+        setIsSplashActive(false);
+        sessionStorage.setItem('xylo_splash_shown', 'true');
+    };
+
+    const handleSearchToggle = () => {
+        if (isSearchActive) {
+            router.get(`/ph/en/${activeCategory.slug === 'women' ? '' : activeCategory.slug}`);
+        } else {
+            router.get(`/ph/en/${activeCategory.slug}-navi`);
+        }
+    };
+
     const handleHomeReset = () => {
-        setIsSearchActive(false);
         setIsLoginModalOpen(false);
-        if (window.location.pathname !== '/') {
-            router.get('/');
+        if (window.location.pathname !== '/ph/en') {
+            router.get('/ph/en');
         } else {
             setActiveCategory(storefrontConfigs[0]);
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -44,7 +61,7 @@ export default function StorefrontIndex({ storefrontConfigs = [], initialActive,
         <div className="relative min-h-[400vh] bg-[#050505] text-white font-sans overflow-x-hidden selection:bg-white/20">
             <Head title={`XYLO | ${activeCategory.label}`} />
 
-            <OpeningTransition isActive={isSplashActive} onComplete={() => setIsSplashActive(false)} />
+            <OpeningTransition isActive={isSplashActive} onComplete={handleSplashComplete} />
 
             <div className={`transition-opacity duration-1000 ease-out ${isSplashActive ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
                 <StorefrontHeader categories={storefrontConfigs} />
@@ -80,7 +97,7 @@ export default function StorefrontIndex({ storefrontConfigs = [], initialActive,
                 <div className="fixed bottom-12 inset-x-0 z-[200] flex justify-center pointer-events-none px-4">
                     <FloatingBottomNav 
                         isSearchActive={isSearchActive}
-                        onSearchToggle={() => setIsSearchActive(!isSearchActive)}
+                        onSearchToggle={handleSearchToggle}
                         onHomeClick={handleHomeReset}
                         onProfileClick={() => setIsLoginModalOpen(true)}
                     />

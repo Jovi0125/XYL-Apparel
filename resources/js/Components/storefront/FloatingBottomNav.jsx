@@ -4,7 +4,7 @@ import { usePage, router } from '@inertiajs/react';
 export default function FloatingBottomNav({ onHomeClick, onSearchToggle, isSearchActive, onProfileClick }) {
     const { auth, url } = usePage().props;
 
-    const isHome = (url === '/' || url === '') && !isSearchActive;
+    const isHome = (url === '/ph/en' || url === '/ph/en/') && !isSearchActive;
 
     const handleProfileInteraction = (e) => {
         // Shielded Interaction Logic

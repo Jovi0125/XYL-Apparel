@@ -142,7 +142,7 @@ class AuthController extends Controller
         return match ($role) {
             'admin' => redirect('/admin/login'),
             'logistics' => redirect('/logistics/login'),
-            default => redirect('/login'),
+            default => redirect('/ph/en/login'),
         };
     }
 
@@ -153,9 +153,9 @@ class AuthController extends Controller
     {
         return match ($user->role) {
             'admin' => redirect()->intended('/admin/dashboard'),
-            'buyer' => redirect()->intended('/buyer/dashboard'),
+            'buyer' => redirect()->intended('/ph/en'),
             'logistics' => redirect()->intended('/logistics/dashboard'),
-            default => redirect('/login'),
+            default => redirect('/ph/en/login'),
         };
     }
 }

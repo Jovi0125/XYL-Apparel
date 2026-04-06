@@ -48,7 +48,7 @@ export default function LoginRequiredModal({ isOpen, onClose }) {
                 {/* Footer Action */}
                 <div className="p-6 pt-0">
                     <button
-                        onClick={() => router.get('/login')}
+                        onClick={() => router.get('/ph/en/login')}
                         className="w-full py-4 bg-black text-white text-[10px] font-black tracking-[0.3em] uppercase hover:bg-gray-900 transition-all rounded-sm shadow-lg shadow-black/10 active:scale-[0.98]"
                         aria-label="Confirm login"
                     >

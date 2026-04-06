@@ -38,7 +38,7 @@ export default function BottomNavigation({ onHomeClick, onToggleSearch, isSearch
 
             {/* Profile Block */}
             <Link 
-                href="/login" 
+                href="/ph/en/login" 
                 className="flex items-center justify-center w-14 h-14 rounded-full bg-white text-black shadow-xl hover:scale-110 active:scale-95 transition-all focus:outline-none"
                 aria-label="Account Profile"
             >

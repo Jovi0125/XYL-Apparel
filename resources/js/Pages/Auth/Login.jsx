@@ -12,7 +12,7 @@ export default function Login() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        post('/login');
+        post('/ph/en/login');
     };
 
     return (
@@ -22,7 +22,7 @@ export default function Login() {
             <div className="w-full max-w-[400px]">
                 {/* Brand Header */}
                 <div className="mb-14 text-center">
-                    <Link href="/" className="inline-block">
+                    <Link href="/ph/en" className="inline-block">
                         <h1 className="text-[32px] font-black tracking-[0.4em] text-black uppercase italic">
                             XYLO<span className="text-gray-300 not-italic">.</span>
                         </h1>
@@ -101,7 +101,7 @@ export default function Login() {
                     <div className="text-center pt-8">
                         <p className="text-[11px] text-gray-400 font-medium italic tracking-wide">
                             Don't have an account? {' '}
-                            <Link href="/register" className="text-black font-black not-italic border-b border-black pb-1 hover:text-gray-600 hover:border-gray-600 transition-all">
+                            <Link href="/ph/en/register" className="text-black font-black not-italic border-b border-black pb-1 hover:text-gray-600 hover:border-gray-600 transition-all">
                                 CREATE ACCOUNT
                             </Link>
                         </p>

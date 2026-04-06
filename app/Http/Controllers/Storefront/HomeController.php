@@ -13,7 +13,12 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
-        $currentPath = $request->path();
+        // Normalize path for category matching by removing /ph/en prefix
+        $pathSegments = explode('/', $request->path());
+        $activeSlug = end($pathSegments);
+        // Strip -navi suffix if present for normalized matching
+        $activeSlug = str_replace('-navi', '', $activeSlug);
+        if ($activeSlug === 'en' || $activeSlug === 'ph') $activeSlug = 'home';
         
         $storefrontConfigs = [
             [
@@ -47,10 +52,10 @@ class HomeController extends Controller
             ->get()
             ->groupBy('parent_category');
 
-        // Determine default active category based on URI
+        // Determine default active category based on active slug
         $defaultActive = $storefrontConfigs[0];
         foreach ($storefrontConfigs as $config) {
-            if ($currentPath === $config['slug']) {
+            if ($activeSlug === $config['slug']) {
                 $defaultActive = $config;
                 break;
             }

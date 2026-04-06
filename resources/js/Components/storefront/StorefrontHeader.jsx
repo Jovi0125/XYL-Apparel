@@ -5,18 +5,21 @@ export default function StorefrontHeader({ categories }) {
     const { url } = usePage();
 
     const isActive = (slug) => {
-        if (url === '/' && slug === 'women') return true;
-        return url.startsWith(`/${slug}`);
+        if (url === '/ph/en' && slug === 'women') return true;
+        // Check for base slug or -navi suffix version
+        return url.startsWith(`/ph/en/${slug}`) || url.startsWith(`/ph/en/${slug}-navi`);
     };
 
     return (
         <header className="fixed top-0 inset-x-0 h-20 md:h-28 z-[100] px-8 md:px-16 flex items-center justify-between pointer-events-none">
             
             <div className="hidden md:flex w-1/4 pointer-events-auto">
-                <Link href="/" className="group">
-                    <span className="text-[14px] font-black tracking-[0.6em] uppercase text-white transition-opacity group-hover:opacity-60 leading-none">
-                        XYLO
-                    </span>
+                <Link href="/ph/en" className="group flex items-center">
+                    <img 
+                        src="/images/xylo-logo.png" 
+                        alt="XYLO APPAREL" 
+                        className="h-10 md:h-14 w-auto transition-opacity group-hover:opacity-60"
+                    />
                 </Link>
             </div>
 
@@ -24,7 +27,7 @@ export default function StorefrontHeader({ categories }) {
                 {categories.map((cat) => (
                     <Link
                         key={cat.slug}
-                        href={cat.slug === 'women' ? '/' : `/${cat.slug}`}
+                        href={cat.slug === 'women' ? '/ph/en' : `/ph/en/${cat.slug}`}
                         className={`text-[9px] md:text-[10px] font-black tracking-[0.4em] uppercase transition-all relative py-2
                             ${isActive(cat.slug) ? 'text-white' : 'text-white/30 hover:text-white/60'}`}
                     >
@@ -42,7 +45,7 @@ export default function StorefrontHeader({ categories }) {
                 <Link href="#" aria-label="Favorites" className="opacity-30 hover:opacity-100 transition-opacity">
                     <HeartIcon />
                 </Link>
-                <Link href="/login" aria-label="Cart" className="opacity-30 hover:opacity-100 transition-opacity relative">
+                <Link href="/ph/en/login" aria-label="Cart" className="opacity-30 hover:opacity-100 transition-opacity relative">
                     <CartIcon />
                 </Link>
             </div>
