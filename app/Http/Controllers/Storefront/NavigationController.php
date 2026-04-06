@@ -5,34 +5,37 @@ namespace App\Http\Controllers\Storefront;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class NavigationController extends Controller
 {
     /**
-     * Display the contextual navigation hub.
+     * Display the navigation/search experience.
      */
-    public function show(Request $request)
+    public function index(Request $request, $parent = 'women')
     {
-        // 1. Detect Active Parent Category from Route Name
-        $routeName = $request->route()->getName();
+        // Normalize parent slug
+        $parent = strtolower($parent);
         
-        $activeParentNormalized = match ($routeName) {
-            'men_navi' => 'Men',
-            'unisex_navi' => 'Unisex',
-            default => 'Women', // Default to women_navi
-        };
+        // Fetch child categories for the specific parent
+        $query = Category::active()
+            ->where('parent_category', $parent);
 
-        // 2. 💡 Fetch the Parent Record first (Women, Men, or Unisex)
-        $parent = Category::where('name', $activeParentNormalized)->first();
+        // Dynamic Filtering
+        if ($request->filled('q')) {
+            $search = $request->query('q');
+            $query->where('name', 'like', "%{$search}%");
+        }
 
-        // 3. 💡 Fetch its Children (T-Shirts, etc.)
-        $categories = $parent 
-            ? $parent->children()->where('status', 'active')->get() 
-            : collect();
+        $categories = $query->get(['id', 'name', 'description', 'image_url']);
 
-        return view('storefront.navigation', [
-            'activeParent' => strtolower($activeParentNormalized),
-            'categories' => $categories
+        // Component mapping
+        $component = ucfirst($parent) . 'Navi';
+        
+        return Inertia::render("Navigation/{$component}", [
+            'categories' => $categories,
+            'activeSection' => $parent,
+            'searchQuery' => $request->query('q', ''),
         ]);
     }
 }

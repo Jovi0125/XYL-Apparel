@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Storefront\HomeController;
+use App\Http\Controllers\Storefront\NavigationController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -39,20 +40,15 @@ Route::prefix('ph/en')->group(function () {
     Route::get('/men', [HomeController::class, 'index'])->name('store.men');
     Route::get('/unisex', [HomeController::class, 'index'])->name('store.unisex');
 
-    // Navigation / Search Overlay Routes (-navi suffix)
-    Route::get('/women-navi', [HomeController::class, 'index'])->name('store.women.navi');
-    Route::get('/men-navi', [HomeController::class, 'index'])->name('store.men.navi');
-    Route::get('/unisex-navi', [HomeController::class, 'index'])->name('store.unisex.navi');
+    // Localized Parent Navigation / Search Overlay Routes (-navi suffix)
+    Route::get('/women-navi', [NavigationController::class, 'index'])->defaults('parent', 'women')->name('store.women.navi');
+    Route::get('/men-navi', [NavigationController::class, 'index'])->defaults('parent', 'men')->name('store.men.navi');
+    Route::get('/unisex-navi', [NavigationController::class, 'index'])->defaults('parent', 'unisex')->name('store.unisex.navi');
 
-    // Category detail routes
-    Route::get('/women/{category:slug}', [HomeController::class, 'index'])->name('store.women.category');
-    Route::get('/men/{category:slug}', [HomeController::class, 'index'])->name('store.men.category');
-    Route::get('/unisex/{category:slug}', [HomeController::class, 'index'])->name('store.unisex.category');
-
-    // Category detail routes within navi mode
-    Route::get('/women-navi/{category:slug}', [HomeController::class, 'index'])->name('store.women.navi.category');
-    Route::get('/men-navi/{category:slug}', [HomeController::class, 'index'])->name('store.men.navi.category');
-    Route::get('/unisex-navi/{category:slug}', [HomeController::class, 'index'])->name('store.unisex.navi.category');
+    // Child category routes (Navi detailed experience)
+    Route::get('/women-navi/{category:slug}', [NavigationController::class, 'index'])->defaults('parent', 'women')->name('store.women.navi.category');
+    Route::get('/men-navi/{category:slug}', [NavigationController::class, 'index'])->defaults('parent', 'men')->name('store.men.navi.category');
+    Route::get('/unisex-navi/{category:slug}', [NavigationController::class, 'index'])->defaults('parent', 'unisex')->name('store.unisex.navi.category');
 
     // Placeholder routes for search, profile, wishlist, cart
     Route::get('/search', [HomeController::class, 'index'])->name('store.search');
