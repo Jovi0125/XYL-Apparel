@@ -151,7 +151,7 @@ export default function Register() {
                             disabled={processing}
                             className="w-full bg-black text-white text-[11px] font-black tracking-[0.4em] uppercase py-5 rounded-sm hover:bg-gray-900 transition-all active:scale-[0.98] disabled:opacity-50"
                         >
-                            {processing ? 'Creating Account...' : 'Create Account'}
+                            {processing ? 'Creating account...' : 'Sign Up'}
                         </button>
 
                         <div className="text-center pt-6">
