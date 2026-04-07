@@ -18,7 +18,7 @@ export default function FloatingBottomNav({ onHomeClick, onSearchToggle, isSearc
     };
 
     return (
-        <nav className="flex items-center space-x-6 md:space-x-8 pointer-events-auto">
+        <nav className="flex items-center space-x-15 md:space-x-10 pointer-events-auto">
             
             <button 
                 onClick={onHomeClick}
