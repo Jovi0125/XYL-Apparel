@@ -84,7 +84,7 @@ class CategoryController extends Controller
             'status' => 'required|in:active,inactive',
         ]);
 
-        // Handle new image upload
+        // Handle new image upload only if a file is provided
         if ($request->hasFile('image')) {
             // Delete old image from Cloudinary if exists
             if ($category->image_public_id) {
@@ -101,6 +101,7 @@ class CategoryController extends Controller
                 $validated['image_url'] = $imageResult['url'];
             }
         }
+        // If no new image uploaded, don't modify image fields (keep existing)
 
         $category->update($validated);
 

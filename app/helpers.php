@@ -10,6 +10,10 @@ if (!function_exists('cloudinary_upload')) {
      */
     function cloudinary_upload($file, array $options = []): ?array
     {
+        if (!$file) {
+            return null;
+        }
+
         try {
             $filePath = $file instanceof \Illuminate\Http\UploadedFile ? $file->getRealPath() : $file;
 
@@ -19,8 +23,16 @@ if (!function_exists('cloudinary_upload')) {
                 'quality' => 'auto',
             ], $options);
 
-            // Use the globally available cloudinary() helper from the library
-            $result = cloudinary()->uploadApi()->upload($filePath, $uploadOptions);
+            // Use Cloudinary's direct upload API instead of the helper
+            $cloudinary = new \Cloudinary\Cloudinary([
+                'cloud' => [
+                    'cloud_name' => config('cloudinary.cloud_name'),
+                    'api_key' => config('cloudinary.api_key'),
+                    'api_secret' => config('cloudinary.api_secret'),
+                ]
+            ]);
+
+            $result = $cloudinary->uploadApi()->upload($filePath, $uploadOptions);
 
             return [
                 'public_id' => $result['public_id'],
@@ -47,11 +59,21 @@ if (!function_exists('cloudinary_delete')) {
      */
     function cloudinary_delete(?string $publicId): bool
     {
-        if (!$publicId) return true;
+        if (!$publicId || trim($publicId) === '') {
+            return true;
+        }
 
         try {
-            // Use the globally available cloudinary() helper
-            cloudinary()->uploadApi()->destroy($publicId);
+            // Use Cloudinary's direct API
+            $cloudinary = new \Cloudinary\Cloudinary([
+                'cloud' => [
+                    'cloud_name' => config('cloudinary.cloud_name'),
+                    'api_key' => config('cloudinary.api_key'),
+                    'api_secret' => config('cloudinary.api_secret'),
+                ]
+            ]);
+
+            $cloudinary->uploadApi()->destroy($publicId);
             return true;
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Cloudinary delete failed: ' . $e->getMessage());
@@ -63,19 +85,39 @@ if (!function_exists('cloudinary_delete')) {
 if (!function_exists('cloudinary_url')) {
     /**
      * Get a transformed image URL from Cloudinary
+     * Returns null if no public ID is provided
      *
-     * @param string $publicId
+     * @param string|null $publicId
      * @param string|array|null $transformation
-     * @return string
+     * @return string|null
      */
-    function cloudinary_url(string $publicId, $transformation = null): string
+    function cloudinary_url(?string $publicId, $transformation = null): ?string
     {
-        if (is_string($transformation)) {
-            $transformation = config("cloudinary.transformations.{$transformation}", []);
+        // Null-safe: return null if no public ID
+        if (!$publicId || trim($publicId) === '') {
+            return null;
         }
 
-        return cloudinary()->image($publicId)
-            ->addTransformation($transformation ?? [])
-            ->toUrl();
+        try {
+            if (is_string($transformation)) {
+                $transformation = config("cloudinary.transformations.{$transformation}", []);
+            }
+
+            // Use Cloudinary's direct URL generation
+            $cloudinary = new \Cloudinary\Cloudinary([
+                'cloud' => [
+                    'cloud_name' => config('cloudinary.cloud_name'),
+                    'api_key' => config('cloudinary.api_key'),
+                    'api_secret' => config('cloudinary.api_secret'),
+                ]
+            ]);
+
+            return $cloudinary->image($publicId)
+                ->addTransformation($transformation ?? [])
+                ->toUrl();
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Cloudinary URL generation failed: ' . $e->getMessage());
+            return null;
+        }
     }
 }

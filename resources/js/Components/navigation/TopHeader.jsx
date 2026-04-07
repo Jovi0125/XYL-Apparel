@@ -9,7 +9,7 @@ export default function TopHeader({ activeSection }) {
     ];
 
     return (
-        <header className="fixed top-0 inset-x-0 bg-white z-[300] border-b border-gray-100">
+        <header className="fixed top-0 inset-x-0 bg-transparent z-[300]">
             <div className="max-w-[120rem] mx-auto px-6 md:px-12 h-14 flex items-center justify-between">
                 {/* Left: Logo */}
                 <div className="w-1/4 flex justify-start shrink-0">

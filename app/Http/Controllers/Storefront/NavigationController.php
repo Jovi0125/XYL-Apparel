@@ -11,30 +11,32 @@ class NavigationController extends Controller
 {
     /**
      * Display the navigation/search experience.
+     * Fetches categories for a given parent (Women, Men, Unisex).
      */
     public function index(Request $request, $parent = 'women')
     {
         // Normalize parent slug
-        $parent = strtolower($parent);
-        
-        // Fetch child categories for the specific parent
-        $query = Category::active()
-            ->where('parent_category', $parent);
+        $parentSlug = strtolower($parent);
+        $parentName = ucfirst($parentSlug); // Women, Men, Unisex
 
-        // Dynamic Filtering
+        // Query categories by parent_category field
+        $query = Category::active()
+            ->where('parent_category', $parentName);
+
+        // Search filtering
         if ($request->filled('q')) {
             $search = $request->query('q');
             $query->where('name', 'like', "%{$search}%");
         }
 
-        $categories = $query->get(['id', 'name', 'description', 'image_url']);
+        $categories = $query->orderBy('name')->get(['id', 'name', 'description', 'image_url']);
 
-        // Component mapping
-        $component = ucfirst($parent) . 'Navi';
+        // Component mapping (WomenNavi, MenNavi, UnisexNavi)
+        $component = $parentName . 'Navi';
         
         return Inertia::render("Navigation/{$component}", [
             'categories' => $categories,
-            'activeSection' => $parent,
+            'activeSection' => $parentSlug,
             'searchQuery' => $request->query('q', ''),
         ]);
     }

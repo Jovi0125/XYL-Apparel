@@ -5,7 +5,7 @@ import CategoryGrid from '@/Components/navigation/CategoryGrid';
 import SearchField from '@/Components/navigation/SearchField';
 import NavBottomBar from '@/Components/navigation/NavBottomBar';
 
-export default function NavigationBase({ categories, activeSection, children }) {
+export default function NavigationBase({ categories, activeSection, searchQuery = '', children }) {
     return (
         <div className="relative min-h-screen bg-white text-black font-sans selection:bg-black selection:text-white transition-opacity duration-700 animate-in fade-in">
             <Head title={`Search ${activeSection.toUpperCase()} | XYLO APPAREL`} />
@@ -24,7 +24,7 @@ export default function NavigationBase({ categories, activeSection, children }) 
             </main>
 
             {/* Interaction Layer */}
-            <SearchField activeSection={activeSection} />
+            <SearchField activeSection={activeSection} initialQuery={searchQuery} />
             <NavBottomBar activeCategory={activeSection} />
 
             {/* Hide main system scrollbar during search mode */}

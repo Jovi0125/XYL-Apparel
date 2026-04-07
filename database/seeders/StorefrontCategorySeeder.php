@@ -27,6 +27,7 @@ class StorefrontCategorySeeder extends Seeder
                     'status' => 'active', 
                     'description' => "Main $parentName category.",
                     'parent_id' => null, // Parents have no parent
+                    'parent_category' => $parentName // Correctly set parent_category as one of Men, Women, or Unisex
                 ]
             );
 
@@ -40,7 +41,7 @@ class StorefrontCategorySeeder extends Seeder
                     [
                         'status' => 'active', 
                         'description' => "Premium $childName for $parentName.",
-                        'parent_category' => strtolower($parentName) // Keep for backward compatibility if needed
+                        'parent_category' => $parentName // Ensure consistency with enum
                     ]
                 );
             }
