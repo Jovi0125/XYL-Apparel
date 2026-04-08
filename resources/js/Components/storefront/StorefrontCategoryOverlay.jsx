@@ -133,7 +133,7 @@ function CategoryCell({ category, activeTab, index }) {
     
     return (
         <Link
-            href={`/ph/en/${activeTab}-navi`}
+            href={`/ph/en/products/${activeTab}?category=${category.id}`}
             className="group flex items-center gap-3 md:gap-4 py-3 px-1 rounded-lg hover:bg-gray-50/80 transition-all duration-300 cursor-pointer"
             style={{ 
                 animation: `cellFadeIn 0.4s ease-out ${index * 0.04}s both` 

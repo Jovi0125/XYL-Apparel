@@ -18,6 +18,10 @@ use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Storefront\HomeController;
 use App\Http\Controllers\Storefront\NavigationController;
+use App\Http\Controllers\Storefront\ProductController as StorefrontProductController;
+use App\Http\Controllers\Storefront\CartController;
+use App\Http\Controllers\Storefront\CheckoutController;
+use App\Http\Controllers\Storefront\MemberController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -50,11 +54,13 @@ Route::prefix('ph/en')->group(function () {
     Route::get('/men-navi/{category:slug}', [NavigationController::class, 'index'])->defaults('parent', 'men')->name('store.men.navi.category');
     Route::get('/unisex-navi/{category:slug}', [NavigationController::class, 'index'])->defaults('parent', 'unisex')->name('store.unisex.navi.category');
 
-    // Placeholder routes for search, profile, wishlist, cart
+    // Product Browsing (public)
+    Route::get('/products/{parentCategory}', [StorefrontProductController::class, 'index'])->name('store.products');
+    Route::get('/product/{product}', [StorefrontProductController::class, 'show'])->name('store.product.show');
+
+    // Search & Wishlist placeholders
     Route::get('/search', [HomeController::class, 'index'])->name('store.search');
-    Route::get('/profile', [HomeController::class, 'index'])->name('store.profile');
     Route::get('/wishlist', [HomeController::class, 'index'])->name('store.wishlist');
-    Route::get('/cart', [HomeController::class, 'index'])->name('store.cart');
 
     /*
     |--------------------------------------------------------------------------
@@ -67,6 +73,30 @@ Route::prefix('ph/en')->group(function () {
         Route::post('/login', [AuthController::class, 'login']);
         Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
         Route::post('/register', [AuthController::class, 'register']);
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Authenticated Buyer Routes (within /ph/en)
+    |--------------------------------------------------------------------------
+    */
+    Route::middleware('auth')->group(function () {
+        // Shopping Cart
+        Route::get('/cart', [CartController::class, 'index'])->name('store.cart');
+        Route::post('/cart', [CartController::class, 'store'])->name('store.cart.add');
+        Route::patch('/cart/{cartItem}', [CartController::class, 'update'])->name('store.cart.update');
+        Route::delete('/cart/{cartItem}', [CartController::class, 'destroy'])->name('store.cart.remove');
+        Route::post('/cart/clear', [CartController::class, 'clear'])->name('store.cart.clear');
+
+        // Checkout
+        Route::get('/checkout', [CheckoutController::class, 'index'])->name('store.checkout');
+        Route::post('/checkout', [CheckoutController::class, 'store'])->name('store.checkout.process');
+
+        // Member Profile (UNIQLO-style)
+        Route::get('/profile', [MemberController::class, 'index'])->name('store.profile');
+        Route::put('/profile', [MemberController::class, 'updateProfile'])->name('store.profile.update');
+        Route::get('/profile/orders', [MemberController::class, 'orders'])->name('store.profile.orders');
+        Route::get('/profile/orders/{order}', [MemberController::class, 'orderDetail'])->name('store.profile.order');
     });
 });
 
@@ -177,6 +207,7 @@ Route::prefix('logistics')
     ->name('logistics.')
     ->group(function () {
         Route::get('/dashboard', [LogisticsDashboardController::class, 'index'])->name('dashboard');
+        Route::post('/shipments/{order}/update-status', [LogisticsDashboardController::class, 'updateStatus'])->name('shipments.updateStatus');
     });
 
 /*

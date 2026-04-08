@@ -1,12 +1,15 @@
 import React from 'react';
-import { Link, router } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 
 export default function NavBottomBar({ activeCategory }) {
-    
+    const { auth } = usePage().props;
+
     const handleCloseNav = () => {
         // Return to the corresponding base storefront page
-        router.get(`/ph/en/${activeCategory === 'women' ? '' : activeCategory}`);
+        window.location.href = `/ph/en/${activeCategory === 'women' ? '' : activeCategory}`;
     };
+
+    const profileHref = auth?.user ? '/ph/en/profile' : '/ph/en/login';
 
     return (
         <div className="fixed bottom-10 inset-x-0 z-[300] flex justify-center px-6 pointer-events-none">
@@ -35,7 +38,7 @@ export default function NavBottomBar({ activeCategory }) {
 
                 {/* Profile Icon: Symmetrically Right */}
                 <Link 
-                    href="/ph/en/profile" 
+                    href={profileHref}
                     className="p-2 transition-all hover:scale-110 active:scale-95 group"
                 >
                     <svg className="w-6 h-6 text-black opacity-30 group-hover:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor">

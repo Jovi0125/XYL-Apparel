@@ -26,7 +26,7 @@ export default function CategoryGrid({ categories, activeSection }) {
                     return (
                         <Link 
                             key={cat.id} 
-                            href="#"
+                            href={`/ph/en/products/${activeSection}?category=${cat.id}`}
                             className="group flex items-center gap-3 md:gap-4 py-3 px-2 rounded-lg hover:bg-gray-50/80 transition-all duration-300"
                             style={{ 
                                 animation: `catGridIn 0.4s ease-out ${idx * 0.04}s both` 

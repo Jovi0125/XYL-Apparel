@@ -1,7 +1,9 @@
 import React from 'react';
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 
 export default function TopHeader({ activeSection }) {
+    const { auth, cartCount = 0 } = usePage().props;
+
     const tabs = [
         { id: 'women', label: 'WOMEN' },
         { id: 'men', label: 'MEN' },
@@ -42,9 +44,13 @@ export default function TopHeader({ activeSection }) {
                 <Link href="/ph/en/wishlist" className="text-black opacity-30 hover:opacity-100 transition-opacity">
                     <HeartIcon />
                 </Link>
-                <Link href="/ph/en/cart" className="text-black opacity-30 hover:opacity-100 transition-opacity relative">
+                <Link href={auth?.user ? '/ph/en/cart' : '/ph/en/login'} className="text-black opacity-30 hover:opacity-100 transition-opacity relative">
                     <CartIcon />
-                    <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#E60012] text-white text-[8px] font-bold flex items-center justify-center rounded-full">0</span>
+                    {cartCount > 0 && (
+                        <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#E60012] text-white text-[8px] font-bold flex items-center justify-center rounded-full">
+                            {cartCount > 99 ? '99+' : cartCount}
+                        </span>
+                    )}
                 </Link>
             </div>
         </header>

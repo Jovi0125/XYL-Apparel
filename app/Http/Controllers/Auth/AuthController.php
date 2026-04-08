@@ -57,21 +57,20 @@ class AuthController extends Controller
         if (Auth::attempt($credentials, $remember)) {
             $user = Auth::user();
 
-            // Check Path-Role Consistency
-            // Admin only at /admin/login
+            // Admin portal: admin accounts only
             if ($request->is('admin/*') && !$user->isAdmin()) {
                 Auth::logout();
-                return back()->withErrors(['email' => 'Access denied. Use the buyer login page.']);
-            }
-            
-            // Logistics only at /logistics/login
-            if ($request->is('logistics/*') && !$user->isLogistics()) {
-                Auth::logout();
-                return back()->withErrors(['email' => 'Access denied. Use the buyer login page.']);
+                return back()->withErrors(['email' => 'Access denied. Admin accounts only.']);
             }
 
-            // Buyer only at /login (strict if needed, but usually buyers can login anywhere)
-            if ($request->is('login') && ($user->isAdmin() || $user->isLogistics())) {
+            // Logistics portal: logistics accounts only
+            if ($request->is('logistics/*') && !$user->isLogistics()) {
+                Auth::logout();
+                return back()->withErrors(['email' => 'Access denied. Logistics accounts only.']);
+            }
+
+            // Member login: block admin and logistics (they must use their own portals)
+            if ($request->is('ph/en/*') && ($user->isAdmin() || $user->isLogistics())) {
                 Auth::logout();
                 return back()->withErrors(['email' => 'Staff accounts must use their dedicated portals.']);
             }
@@ -123,7 +122,7 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return redirect('/buyer/dashboard');
+        return redirect('/ph/en');
     }
 
     /**

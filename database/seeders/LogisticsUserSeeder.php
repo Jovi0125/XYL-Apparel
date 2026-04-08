@@ -13,13 +13,25 @@ class LogisticsUserSeeder extends Seeder
      */
     public function run(): void
     {
-        // Seed exactly 5 logistics accounts as per requirements
+        // Master logistics account
+        User::updateOrCreate(
+            ['email' => 'logistics@xylo.com'],
+            [
+                'name' => 'Logistics Manager',
+                'password' => 'password', // Automatically hashed via User model cast
+                'role' => User::ROLE_LOGISTICS,
+                'status' => 'active',
+                'email_verified_at' => now(),
+            ]
+        );
+
+        // Seed 5 additional logistics handler accounts
         for ($i = 1; $i <= 5; $i++) {
             User::updateOrCreate(
                 ['email' => "logistics{$i}@xylo.com"],
                 [
                     'name' => "Logistics Handler {$i}",
-                    'password' => 'password', // Automatically hashed via User model cast
+                    'password' => 'password',
                     'role' => User::ROLE_LOGISTICS,
                     'status' => 'active',
                     'email_verified_at' => now(),
@@ -27,6 +39,6 @@ class LogisticsUserSeeder extends Seeder
             );
         }
 
-        $this->command->info('5 Logistics accounts successfully seeded/updated.');
+        $this->command->info('Logistics accounts successfully seeded/updated.');
     }
 }

@@ -1,8 +1,10 @@
 import React from 'react';
-import { usePage, router } from '@inertiajs/react';
+import { Link, usePage, router } from '@inertiajs/react';
 
 export default function FloatingBottomNav({ onHomeClick, onSearchToggle, isSearchActive, onProfileClick }) {
-    const { auth, url } = usePage().props;
+    const page = usePage();
+    const auth = page.props?.auth;
+    const url = page.url || '';
 
     const isHome = (url === '/ph/en' || url === '/ph/en/') && !isSearchActive;
 
@@ -12,8 +14,7 @@ export default function FloatingBottomNav({ onHomeClick, onSearchToggle, isSearc
             e.preventDefault();
             onProfileClick(); // Triggers Modal in Parent
         } else {
-            const dashboardRoute = auth.user.role === 'admin' ? '/admin/dashboard' : '/buyer/dashboard';
-            router.get(dashboardRoute);
+            router.get('/ph/en/profile');
         }
     };
 

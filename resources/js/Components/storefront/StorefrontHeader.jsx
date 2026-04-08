@@ -2,7 +2,10 @@ import React from 'react';
 import { Link, usePage } from '@inertiajs/react';
 
 export default function StorefrontHeader({ categories }) {
-    const { url } = usePage();
+    const page = usePage();
+    const url = page.url || '';
+    const auth = page.props?.auth;
+    const cartCount = page.props?.cartCount || 0;
 
     const isActive = (slug) => {
         if (url === '/ph/en' && slug === 'women') return true;
@@ -42,11 +45,16 @@ export default function StorefrontHeader({ categories }) {
                 <button aria-label="Region" className="opacity-30 hover:opacity-100 transition-opacity hidden sm:block">
                     <GlobeIcon />
                 </button>
-                <Link href="#" aria-label="Favorites" className="opacity-30 hover:opacity-100 transition-opacity">
+                <Link href="/ph/en/wishlist" aria-label="Favorites" className="opacity-30 hover:opacity-100 transition-opacity">
                     <HeartIcon />
                 </Link>
-                <Link href="/ph/en/login" aria-label="Cart" className="opacity-30 hover:opacity-100 transition-opacity relative">
+                <Link href={auth?.user ? '/ph/en/cart' : '/ph/en/login'} aria-label="Cart" className="opacity-30 hover:opacity-100 transition-opacity relative">
                     <CartIcon />
+                    {cartCount > 0 && (
+                        <span className="absolute -top-1.5 -right-2 w-4 h-4 bg-[#E60012] text-white text-[8px] font-bold flex items-center justify-center rounded-full">
+                            {cartCount > 99 ? '99+' : cartCount}
+                        </span>
+                    )}
                 </Link>
             </div>
         </header>
