@@ -27,7 +27,7 @@ export default function StorefrontHeader({ categories }) {
                 {categories.map((cat) => (
                     <Link
                         key={cat.slug}
-                        href={cat.slug === 'women' ? '/ph/en' : `/ph/en/${cat.slug}`}
+                        href={`/ph/en/${cat.slug}-navi`}
                         className={`text-[9px] md:text-[10px] font-black tracking-[0.4em] uppercase transition-all relative py-2
                             ${isActive(cat.slug) ? 'text-white' : 'text-white/30 hover:text-white/60'}`}
                     >

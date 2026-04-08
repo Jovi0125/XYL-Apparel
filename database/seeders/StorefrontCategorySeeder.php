@@ -12,40 +12,48 @@ class StorefrontCategorySeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Core Parent Categories (The Contexts)
-        $parents = [
-            'Women' => ['New Arrivals', 'T-Shirts', 'Dresses & Skirts', 'Innerwear', 'Accessories'],
-            'Men' => ['New Arrivals', 'Shirts', 'Bottoms', 'Outerwear', 'Sport Utility'],
-            'Unisex' => ['Linen', 'UV Protection', 'AIRism', 'Collaboration', 'Sustainability']
+        // Unified child categories for all parent sections
+        $sharedChildren = [
+            'New Arrivals',
+            'T-Shirts',
+            'Shirts',
+            'Bottoms',
+            'Outerwear',
+            'Innerwear',
+            'Dresses & Skirts',
+            'Accessories',
+            'Sport Utility',
+            'Sale',
         ];
 
-        foreach ($parents as $parentName => $children) {
+        $parentNames = ['Women', 'Men', 'Unisex'];
+
+        foreach ($parentNames as $parentName) {
             // Create the Parent Record
             $parent = Category::updateOrCreate(
-                ['name' => $parentName],
+                ['name' => $parentName, 'parent_id' => null],
                 [
-                    'status' => 'active', 
+                    'status' => 'active',
                     'description' => "Main $parentName category.",
-                    'parent_id' => null, // Parents have no parent
                 ]
             );
 
-            // Create the Child Categories
-            foreach ($children as $childName) {
+            // Create the same Child Categories for every parent
+            foreach ($sharedChildren as $childName) {
                 Category::updateOrCreate(
                     [
-                        'name' => $childName, 
-                        'parent_id' => $parent->id
+                        'name' => $childName,
+                        'parent_id' => $parent->id,
                     ],
                     [
-                        'status' => 'active', 
+                        'status' => 'active',
                         'description' => "Premium $childName for $parentName.",
-                        'parent_category' => strtolower($parentName) // Keep for backward compatibility if needed
+                        'parent_category' => strtolower($parentName),
                     ]
                 );
             }
         }
 
-        $this->command->info('Category hierarchy (Parent > Child) successfully seeded.');
+        $this->command->info('Unified category hierarchy (Parent > Child) successfully seeded.');
     }
 }

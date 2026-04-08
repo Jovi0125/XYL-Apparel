@@ -1,7 +1,26 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 export default function ProductClassification({ data, setData, categories, errors }) {
     const parentCategories = ['Men', 'Women', 'Unisex'];
+
+    // Filter child categories to only show those belonging to the selected parent
+    const filteredCategories = useMemo(() => {
+        if (!data.parent_category) return [];
+        return categories.filter(cat => 
+            cat.parent_category && 
+            cat.parent_category.toLowerCase() === data.parent_category.toLowerCase() &&
+            cat.parent_id !== null
+        );
+    }, [categories, data.parent_category]);
+
+    const handleParentChange = (e) => {
+        const newParent = e.target.value;
+        setData(prev => ({
+            ...prev,
+            parent_category: newParent,
+            category_id: '', // Reset child category when parent changes
+        }));
+    };
 
     return (
         <div className="relative overflow-hidden rounded-2xl bg-slate-900/80 border border-slate-800/50 backdrop-blur-sm">
@@ -24,7 +43,7 @@ export default function ProductClassification({ data, setData, categories, error
                         </label>
                         <select
                             value={data.parent_category}
-                            onChange={(e) => setData('parent_category', e.target.value)}
+                            onChange={handleParentChange}
                             className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
                         >
                             <option value="">Select parent</option>
@@ -42,10 +61,11 @@ export default function ProductClassification({ data, setData, categories, error
                         <select
                             value={data.category_id}
                             onChange={(e) => setData('category_id', e.target.value)}
-                            className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
+                            disabled={!data.parent_category}
+                            className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                         >
-                            <option value="">Select category</option>
-                            {categories.map(cat => (
+                            <option value="">{data.parent_category ? 'Select category' : 'Select parent first'}</option>
+                            {filteredCategories.map(cat => (
                                 <option key={cat.id} value={cat.id}>{cat.name}</option>
                             ))}
                         </select>
