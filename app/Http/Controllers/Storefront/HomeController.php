@@ -27,8 +27,8 @@ class HomeController extends Controller
                 'slug' => 'women',
                 'label' => 'WOMEN',
                 'intro' => 'SS/26 COLLECTION',
-                'title' => 'Ethereal Forms',
-                'description' => 'A dialogue between structure and fluidity. Exploring the boundaries of modern femininity.',
+                'title' => 'XYLO Apparel',
+                'description' => 'Timeless essentials. Modern designs. Built for confidence in every fit.',
                 'videoSrc' => '/videos/vid2.mp4',
             ],
             [

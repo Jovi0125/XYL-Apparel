@@ -44,7 +44,7 @@ export default function Receipt({ order }) {
                         <div className="flex items-start justify-between">
                             <div>
                                 <h1 className="text-2xl font-black tracking-[0.3em] text-black uppercase italic">
-                                    XYLO<span className="text-gray-300 not-italic">.</span>
+                                    XYLO<span className="text-[#E60012] not-italic">.</span>
                                 </h1>
                                 <p className="text-[9px] font-bold tracking-[0.2em] text-gray-400 uppercase mt-0.5">APPAREL</p>
                             </div>
