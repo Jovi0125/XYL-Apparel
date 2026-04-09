@@ -37,6 +37,9 @@ class HandleInertiaRequests extends Middleware
             'cartCount' => fn () => $request->user()
                 ? \App\Models\CartItem::where('user_id', $request->user()->id)->sum('quantity')
                 : 0,
+            'wishlistCount' => fn () => $request->user()
+                ? \App\Models\Wishlist::where('user_id', $request->user()->id)->count()
+                : 0,
             'flash' => [
                 'success' => fn () => $request->session()->get('success'),
                 'message' => fn () => $request->session()->get('message'),

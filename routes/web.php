@@ -22,6 +22,7 @@ use App\Http\Controllers\Storefront\ProductController as StorefrontProductContro
 use App\Http\Controllers\Storefront\CartController;
 use App\Http\Controllers\Storefront\CheckoutController;
 use App\Http\Controllers\Storefront\MemberController;
+use App\Http\Controllers\Storefront\WishlistController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -60,7 +61,10 @@ Route::prefix('ph/en')->group(function () {
 
     // Search & Wishlist placeholders
     Route::get('/search', [HomeController::class, 'index'])->name('store.search');
-    Route::get('/wishlist', [HomeController::class, 'index'])->name('store.wishlist');
+    // Wishlist (public view redirects to login if not authenticated)
+    Route::get('/wishlist', [WishlistController::class, 'index'])->name('store.wishlist')->middleware('auth');
+    Route::post('/wishlist/toggle', [WishlistController::class, 'toggle'])->name('store.wishlist.toggle')->middleware('auth');
+    Route::delete('/wishlist/{wishlist}', [WishlistController::class, 'destroy'])->name('store.wishlist.remove')->middleware('auth');
 
     /*
     |--------------------------------------------------------------------------

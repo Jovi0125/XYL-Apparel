@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Storefront;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Wishlist;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class ProductController extends Controller
@@ -57,9 +59,14 @@ class ProductController extends Controller
             ->limit(4)
             ->get();
 
+        $isWishlisted = Auth::check() 
+            ? Wishlist::where('user_id', Auth::id())->where('product_id', $product->id)->exists()
+            : false;
+
         return Inertia::render('Storefront/ProductDetail', [
             'product' => $product,
             'relatedProducts' => $relatedProducts,
+            'isWishlisted' => $isWishlisted,
         ]);
     }
 }

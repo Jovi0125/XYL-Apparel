@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Head, router, usePage } from '@inertiajs/react';
 import BuyerNav from '@/Components/storefront/BuyerNav';
 
-export default function ProductDetail({ product, relatedProducts }) {
+export default function ProductDetail({ product, relatedProducts, isWishlisted: initialWishlisted }) {
     const { auth } = usePage().props;
     const [selectedImage, setSelectedImage] = useState(0);
     const [selectedColor, setSelectedColor] = useState(product.colors?.[0] || null);
@@ -10,6 +10,7 @@ export default function ProductDetail({ product, relatedProducts }) {
     const [quantity, setQuantity] = useState(1);
     const [activeTab, setActiveTab] = useState('details');
     const [addedToCart, setAddedToCart] = useState(false);
+    const [wishlisted, setWishlisted] = useState(initialWishlisted || false);
 
     const images = product.images || [];
     const variants = product.variants || [];
@@ -37,6 +38,20 @@ export default function ProductDetail({ product, relatedProducts }) {
                 setAddedToCart(true);
                 setTimeout(() => setAddedToCart(false), 2000);
             }
+        });
+    };
+
+    const handleWishlist = () => {
+        if (!auth?.user) {
+            router.get('/ph/en/login');
+            return;
+        }
+
+        router.post('/ph/en/wishlist/toggle', {
+            product_id: product.id,
+        }, {
+            preserveScroll: true,
+            onSuccess: () => setWishlisted(!wishlisted),
         });
     };
 
@@ -230,11 +245,18 @@ export default function ProductDetail({ product, relatedProducts }) {
                                 )}
                             </button>
 
-                            <button className="w-full py-4 border border-gray-200 text-[11px] font-black tracking-[0.3em] uppercase text-black hover:bg-gray-50 transition-all duration-300 flex items-center justify-center gap-2 active:scale-[0.98]">
-                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+                            <button 
+                                onClick={handleWishlist}
+                                className={`w-full py-4 border text-[11px] font-black tracking-[0.3em] uppercase transition-all duration-300 flex items-center justify-center gap-2 active:scale-[0.98]
+                                    ${wishlisted 
+                                        ? 'border-[#E60012] text-[#E60012] bg-red-50 hover:bg-red-100'
+                                        : 'border-gray-200 text-black hover:bg-gray-50'
+                                    }`}
+                            >
+                                <svg className="w-4 h-4" fill={wishlisted ? 'currentColor' : 'none'} viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                                 </svg>
-                                ADD TO WISHLIST
+                                {wishlisted ? 'IN YOUR WISHLIST' : 'ADD TO WISHLIST'}
                             </button>
                         </div>
 

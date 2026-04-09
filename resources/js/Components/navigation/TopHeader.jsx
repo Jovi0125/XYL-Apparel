@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, usePage } from '@inertiajs/react';
 
 export default function TopHeader({ activeSection }) {
-    const { auth, cartCount = 0 } = usePage().props;
+    const { auth, cartCount = 0, wishlistCount = 0 } = usePage().props;
 
     const tabs = [
         { id: 'women', label: 'WOMEN' },
@@ -13,25 +13,30 @@ export default function TopHeader({ activeSection }) {
     return (
         <header className="fixed top-0 inset-x-0 h-24 bg-white z-[300] border-b border-gray-100 flex items-center px-8 md:px-12">
             {/* Left: Logo */}
-            <div className="w-1/4 flex justify-start">
+            <div className="w-1/4 flex items-center">
                 <Link href="/ph/en" className="transition-transform active:scale-95">
-                    <img src="/images/xylo-logo.png" alt="XYLO" className="h-10 w-auto" />
+                    <img 
+                        src="/images/xylo-logo.png" 
+                        alt="XYLO" 
+                        className="h-8 w-auto"
+                        onError={(e) => {
+                            e.target.style.display = 'none';
+                            e.target.parentElement.innerHTML = '<span class="text-lg font-black tracking-[0.3em] italic">XYLO</span>';
+                        }}
+                    />
                 </Link>
             </div>
 
-            {/* Center: Parent Tabs */}
-            <div className="w-2/4 flex justify-center space-x-12">
+            {/* Center: Section Tabs */}
+            <div className="flex-1 flex justify-center items-center space-x-10 md:space-x-16">
                 {tabs.map((tab) => (
                     <Link
                         key={tab.id}
                         href={`/ph/en/${tab.id}-navi`}
-                        className={`text-[11px] font-black tracking-[0.35em] uppercase relative pb-2 transition-all duration-300
-                            ${activeSection === tab.id ? 'text-black opacity-100' : 'text-black opacity-20 hover:opacity-100'}`}
+                        className={`text-[9px] md:text-[10px] font-black tracking-[0.35em] uppercase transition-colors
+                            ${activeSection === tab.id ? 'text-black' : 'text-black/25 hover:text-black/60'}`}
                     >
                         {tab.label}
-                        {activeSection === tab.id && (
-                            <div className="absolute bottom-0 left-0 w-full h-[2.5px] bg-[#E60012] animate-in fade-in zoom-in-50" />
-                        )}
                     </Link>
                 ))}
             </div>
@@ -41,8 +46,13 @@ export default function TopHeader({ activeSection }) {
                 <button aria-label="Region" className="text-black opacity-30 hover:opacity-100 transition-opacity hidden sm:block">
                     <GlobeIcon />
                 </button>
-                <Link href="/ph/en/wishlist" className="text-black opacity-30 hover:opacity-100 transition-opacity">
+                <Link href="/ph/en/wishlist" className="text-black opacity-30 hover:opacity-100 transition-opacity relative">
                     <HeartIcon />
+                    {wishlistCount > 0 && (
+                        <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#E60012] text-white text-[8px] font-bold flex items-center justify-center rounded-full">
+                            {wishlistCount > 99 ? '99+' : wishlistCount}
+                        </span>
+                    )}
                 </Link>
                 <Link href={auth?.user ? '/ph/en/cart' : '/ph/en/login'} className="text-black opacity-30 hover:opacity-100 transition-opacity relative">
                     <CartIcon />
