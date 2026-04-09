@@ -86,8 +86,21 @@ export default function MyOrders({ orders }) {
                                         </div>
                                     </div>
 
-                                    {/* Status Badge + Receipt */}
-                                    <div className="flex items-center gap-3">
+                                    {/* Status Badge + Actions */}
+                                    <div className="flex items-center gap-2">
+                                        {order.shipment?.status === 'delivered' && !order.has_reviewed && (
+                                            <Link
+                                                href={`/ph/en/profile/orders/${order.id}`}
+                                                className="px-3 py-1 text-[9px] font-bold tracking-[0.15em] uppercase border border-yellow-400 text-yellow-700 hover:bg-yellow-50 transition-colors"
+                                            >
+                                                ★ Review
+                                            </Link>
+                                        )}
+                                        {order.shipment?.status === 'delivered' && order.has_reviewed && (
+                                            <span className="px-3 py-1 text-[9px] font-bold tracking-[0.15em] uppercase bg-green-50 border border-green-200 text-green-700">
+                                                ✓ Reviewed
+                                            </span>
+                                        )}
                                         {order.shipment?.status === 'delivered' && (
                                             <Link
                                                 href={`/ph/en/profile/orders/${order.id}/receipt`}

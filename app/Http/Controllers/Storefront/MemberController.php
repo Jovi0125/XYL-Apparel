@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Storefront;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\Review;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -35,6 +36,16 @@ class MemberController extends Controller
             ->latest()
             ->get();
 
+        // Get product IDs the buyer has reviewed
+        $reviewedProductIds = Review::where('buyer_id', Auth::id())
+            ->pluck('product_id')
+            ->toArray();
+
+        // Attach has_reviewed flag to each order
+        $orders->each(function ($order) use ($reviewedProductIds) {
+            $order->has_reviewed = in_array($order->product_id, $reviewedProductIds);
+        });
+
         return Inertia::render('Storefront/MyOrders', [
             'orders' => $orders,
         ]);
@@ -51,8 +62,13 @@ class MemberController extends Controller
 
         $order->load(['product.mainImage', 'product.images', 'shipment']);
 
+        $hasReviewed = Review::where('buyer_id', Auth::id())
+            ->where('product_id', $order->product_id)
+            ->exists();
+
         return Inertia::render('Storefront/OrderDetail', [
             'order' => $order,
+            'hasReviewed' => $hasReviewed,
         ]);
     }
 

@@ -23,6 +23,7 @@ use App\Http\Controllers\Storefront\CartController;
 use App\Http\Controllers\Storefront\CheckoutController;
 use App\Http\Controllers\Storefront\MemberController;
 use App\Http\Controllers\Storefront\WishlistController;
+use App\Http\Controllers\Storefront\ReviewController as StorefrontReviewController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -103,6 +104,7 @@ Route::prefix('ph/en')->group(function () {
         Route::get('/profile/orders', [MemberController::class, 'orders'])->name('store.profile.orders');
         Route::get('/profile/orders/{order}', [MemberController::class, 'orderDetail'])->name('store.profile.order');
         Route::get('/profile/orders/{order}/receipt', [MemberController::class, 'receipt'])->name('store.profile.order.receipt');
+        Route::post('/profile/orders/{order}/review', [StorefrontReviewController::class, 'store'])->name('store.profile.order.review');
     });
 });
 

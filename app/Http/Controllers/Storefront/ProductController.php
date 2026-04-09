@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Wishlist;
+use App\Models\Review;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -63,10 +64,27 @@ class ProductController extends Controller
             ? Wishlist::where('user_id', Auth::id())->where('product_id', $product->id)->exists()
             : false;
 
+        $reviews = Review::with('buyer')
+            ->where('product_id', $product->id)
+            ->where('is_approved', true)
+            ->latest()
+            ->get()
+            ->map(fn ($r) => [
+                'id' => $r->id,
+                'rating' => $r->rating,
+                'comment' => $r->comment,
+                'buyer_name' => $r->buyer?->name ?? 'Anonymous',
+                'created_at' => $r->created_at->format('M d, Y'),
+            ]);
+
+        $avgRating = $reviews->count() > 0 ? round($reviews->avg('rating'), 1) : null;
+
         return Inertia::render('Storefront/ProductDetail', [
             'product' => $product,
             'relatedProducts' => $relatedProducts,
             'isWishlisted' => $isWishlisted,
+            'reviews' => $reviews,
+            'avgRating' => $avgRating,
         ]);
     }
 }

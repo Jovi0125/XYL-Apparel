@@ -1,11 +1,28 @@
-import React from 'react';
-import { Head, Link } from '@inertiajs/react';
+import React, { useState } from 'react';
+import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import BuyerNav from '@/Components/storefront/BuyerNav';
 
-export default function OrderDetail({ order }) {
+export default function OrderDetail({ order, hasReviewed }) {
+    const { flash } = usePage().props;
     const product = order.product;
     const shipment = order.shipment;
     const imageUrl = product?.main_image?.image_url || product?.images?.[0]?.image_url;
+    const [showReviewForm, setShowReviewForm] = useState(false);
+    const [hoverRating, setHoverRating] = useState(0);
+
+    const reviewForm = useForm({
+        rating: 0,
+        comment: '',
+    });
+
+    const handleSubmitReview = (e) => {
+        e.preventDefault();
+        reviewForm.post(`/ph/en/profile/orders/${order.id}/review`, {
+            onSuccess: () => {
+                setShowReviewForm(false);
+            },
+        });
+    };
 
     const getStatusColor = (status) => {
         const colors = {
@@ -25,6 +42,18 @@ export default function OrderDetail({ order }) {
             <BuyerNav />
 
             <main className="max-w-4xl mx-auto px-6 md:px-12 py-8 md:py-12">
+                {/* Flash */}
+                {flash?.success && (
+                    <div className="mb-6 px-4 py-3 bg-green-50 border border-green-200 text-green-700 text-[12px] font-medium">
+                        {flash.success}
+                    </div>
+                )}
+                {flash?.error && (
+                    <div className="mb-6 px-4 py-3 bg-red-50 border border-red-200 text-red-700 text-[12px] font-medium">
+                        {flash.error}
+                    </div>
+                )}
+
                 {/* Back + Title */}
                 <div className="flex items-center justify-between mb-8">
                     <div className="flex items-center gap-4">
@@ -38,18 +67,115 @@ export default function OrderDetail({ order }) {
                             <p className="text-[11px] text-gray-400 font-mono">{order.order_number}</p>
                         </div>
                     </div>
-                    {shipment?.status === 'delivered' && (
-                        <Link
-                            href={`/ph/en/profile/orders/${order.id}/receipt`}
-                            className="flex items-center gap-2 px-4 py-2 bg-black text-white text-[10px] font-bold tracking-[0.15em] uppercase hover:bg-gray-800 transition-colors"
-                        >
-                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-                            </svg>
-                            View Receipt
-                        </Link>
-                    )}
+                    <div className="flex items-center gap-2">
+                        {shipment?.status === 'delivered' && !hasReviewed && (
+                            <button
+                                onClick={() => setShowReviewForm(!showReviewForm)}
+                                className="flex items-center gap-2 px-4 py-2 border border-yellow-400 text-yellow-700 text-[10px] font-bold tracking-[0.15em] uppercase hover:bg-yellow-50 transition-colors"
+                            >
+                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
+                                </svg>
+                                Write Review
+                            </button>
+                        )}
+                        {shipment?.status === 'delivered' && hasReviewed && (
+                            <span className="flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-200 text-green-700 text-[10px] font-bold tracking-[0.15em] uppercase">
+                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                </svg>
+                                Reviewed
+                            </span>
+                        )}
+                        {shipment?.status === 'delivered' && (
+                            <Link
+                                href={`/ph/en/profile/orders/${order.id}/receipt`}
+                                className="flex items-center gap-2 px-4 py-2 bg-black text-white text-[10px] font-bold tracking-[0.15em] uppercase hover:bg-gray-800 transition-colors"
+                            >
+                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                                </svg>
+                                View Receipt
+                            </Link>
+                        )}
+                    </div>
                 </div>
+
+                {/* Review Form (Inline) */}
+                {showReviewForm && (
+                    <div className="mb-8 border border-gray-100 p-6">
+                        <h2 className="text-[11px] font-black tracking-[0.3em] uppercase text-gray-400 mb-5">WRITE A REVIEW</h2>
+
+                        <form onSubmit={handleSubmitReview} className="space-y-5">
+                            {/* Star Rating */}
+                            <div>
+                                <label className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-500 block mb-3">RATING</label>
+                                <div className="flex gap-1">
+                                    {[1,2,3,4,5].map((star) => (
+                                        <button
+                                            key={star}
+                                            type="button"
+                                            onMouseEnter={() => setHoverRating(star)}
+                                            onMouseLeave={() => setHoverRating(0)}
+                                            onClick={() => reviewForm.setData('rating', star)}
+                                            className="p-0.5 transition-transform hover:scale-110"
+                                        >
+                                            <svg
+                                                className={`w-7 h-7 transition-colors ${
+                                                    star <= (hoverRating || reviewForm.data.rating)
+                                                        ? 'text-yellow-400'
+                                                        : 'text-gray-200'
+                                                }`}
+                                                fill="currentColor"
+                                                viewBox="0 0 20 20"
+                                            >
+                                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                            </svg>
+                                        </button>
+                                    ))}
+                                    {reviewForm.data.rating > 0 && (
+                                        <span className="ml-2 text-[11px] text-gray-400 self-center">
+                                            {['', 'Poor', 'Fair', 'Good', 'Very Good', 'Excellent'][reviewForm.data.rating]}
+                                        </span>
+                                    )}
+                                </div>
+                                {reviewForm.errors.rating && (
+                                    <p className="mt-1 text-[10px] text-[#E60012] font-bold">{reviewForm.errors.rating}</p>
+                                )}
+                            </div>
+
+                            {/* Comment */}
+                            <div>
+                                <label className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-500 block mb-2">COMMENT (OPTIONAL)</label>
+                                <textarea
+                                    value={reviewForm.data.comment}
+                                    onChange={(e) => reviewForm.setData('comment', e.target.value)}
+                                    rows="3"
+                                    className="w-full border border-gray-200 bg-white px-4 py-3 text-[13px] focus:outline-none focus:border-black transition-colors resize-none"
+                                    placeholder="Share your thoughts about this product..."
+                                    maxLength={1000}
+                                />
+                            </div>
+
+                            <div className="flex gap-3">
+                                <button
+                                    type="submit"
+                                    disabled={reviewForm.processing || reviewForm.data.rating === 0}
+                                    className="px-8 py-3 bg-black text-white text-[10px] font-black tracking-[0.3em] uppercase hover:bg-gray-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                                >
+                                    {reviewForm.processing ? 'SUBMITTING...' : 'SUBMIT REVIEW'}
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setShowReviewForm(false)}
+                                    className="px-8 py-3 border border-gray-200 text-[10px] font-black tracking-[0.3em] uppercase text-gray-500 hover:border-black hover:text-black transition-all"
+                                >
+                                    CANCEL
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                )}
 
                 <div className="space-y-8">
                     {/* Vertical Order Progress */}
