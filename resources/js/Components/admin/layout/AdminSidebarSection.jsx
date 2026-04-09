@@ -41,15 +41,15 @@ export default function AdminSidebarSection({
                     text-sm font-medium transition-all duration-200 ease-out
                     group
                     ${isOpen 
-                        ? 'text-slate-200 bg-slate-800/30' 
-                        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                        ? 'text-black bg-gray-50' 
+                        : 'text-gray-500 hover:text-black hover:bg-gray-50'
                     }
                 `}
             >
                 <div className="flex items-center gap-3">
                     {section.icon && (
                         <span className={`w-5 h-5 flex-shrink-0 transition-colors duration-200 ${
-                            isOpen ? 'text-teal-400' : 'text-slate-500 group-hover:text-slate-400'
+                            isOpen ? 'text-[#E60012]' : 'text-gray-400 group-hover:text-gray-600'
                         }`}>
                             {section.icon}
                         </span>
@@ -59,7 +59,7 @@ export default function AdminSidebarSection({
                 
                 {/* Chevron */}
                 <svg
-                    className={`w-4 h-4 text-slate-500 transition-transform duration-300 ease-out ${
+                    className={`w-4 h-4 text-gray-400 transition-transform duration-300 ease-out ${
                         isOpen ? 'rotate-180' : ''
                     }`}
                     fill="none"

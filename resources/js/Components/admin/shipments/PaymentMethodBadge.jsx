@@ -22,7 +22,7 @@ const methodConfig = {
             </svg>
         ),
         bg: 'bg-blue-500/10',
-        text: 'text-blue-400',
+        text: 'text-[#E60012]',
         border: 'border-blue-500/20',
     },
 };

@@ -7,7 +7,7 @@ const EmptyState = ({
 }) => {
     const defaultIcon = (
         <svg 
-            className="w-12 h-12 text-slate-600" 
+            className="w-12 h-12 text-gray-300" 
             fill="none" 
             viewBox="0 0 24 24" 
             stroke="currentColor"
@@ -26,7 +26,7 @@ const EmptyState = ({
             <div className="mb-4 opacity-50">
                 {icon || defaultIcon}
             </div>
-            <p className="text-slate-500 text-sm font-medium text-center">
+            <p className="text-gray-400 text-sm font-medium text-center">
                 {message}
             </p>
         </div>

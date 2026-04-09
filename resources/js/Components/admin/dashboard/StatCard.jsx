@@ -7,13 +7,13 @@ const StatCard = ({
     trend = null, 
     trendLabel = "",
     emptyMessage = "No data at the moment",
-    gradient = "from-blue-500/10 to-cyan-500/10"
+    gradient = "from-transparent to-transparent"
 }) => {
     const hasData = value !== null && value !== undefined;
     
     const getTrendColor = () => {
         if (!trend) return '';
-        return trend > 0 ? 'text-emerald-400' : 'text-rose-400';
+        return trend > 0 ? 'text-emerald-600' : 'text-rose-500';
     };
 
     const getTrendIcon = () => {
@@ -30,20 +30,14 @@ const StatCard = ({
     };
 
     return (
-        <div className="relative overflow-hidden rounded-2xl bg-slate-900/80 border border-slate-800/50 p-6 backdrop-blur-sm transition-all duration-300 hover:border-slate-700/50 hover:shadow-lg hover:shadow-blue-500/5 group">
-            {/* Gradient overlay */}
-            <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
-            
-            {/* Subtle glow effect */}
-            <div className="absolute -top-24 -right-24 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            
+        <div className="relative overflow-hidden rounded-xl bg-white border border-gray-100 p-6 transition-all duration-300 hover:border-gray-200 hover:shadow-md group">
             <div className="relative z-10">
                 {/* Header */}
                 <div className="flex items-center justify-between mb-4">
-                    <span className="text-slate-400 text-sm font-medium tracking-wide uppercase">
+                    <span className="text-gray-400 text-[10px] font-bold tracking-[0.15em] uppercase">
                         {title}
                     </span>
-                    <div className="p-2.5 rounded-xl bg-slate-800/50 text-slate-400 group-hover:text-blue-400 transition-colors">
+                    <div className="p-2 rounded-lg bg-gray-50 text-gray-400 group-hover:text-black transition-colors">
                         {icon}
                     </div>
                 </div>
@@ -51,24 +45,24 @@ const StatCard = ({
                 {/* Value */}
                 {hasData ? (
                     <>
-                        <div className="text-3xl font-bold text-white mb-2 tracking-tight">
+                        <div className="text-3xl font-black text-black mb-2 tracking-tight">
                             {value}
                         </div>
                         
-                        {/* Trend indicator */}
+                        {/* Trend indicator — keeping green/red as requested */}
                         {trend !== null && (
                             <div className={`flex items-center gap-1.5 text-sm ${getTrendColor()}`}>
                                 {getTrendIcon()}
                                 <span className="font-semibold">{Math.abs(trend)}%</span>
                                 {trendLabel && (
-                                    <span className="text-slate-500 ml-1">{trendLabel}</span>
+                                    <span className="text-gray-400 ml-1">{trendLabel}</span>
                                 )}
                             </div>
                         )}
                     </>
                 ) : (
                     <div className="flex items-center h-14">
-                        <span className="text-slate-500 text-sm">
+                        <span className="text-gray-400 text-sm">
                             {emptyMessage}
                         </span>
                     </div>

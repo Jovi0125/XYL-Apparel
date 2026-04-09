@@ -39,25 +39,20 @@ export default function ProductOptions({ data, setData, errors }) {
     };
 
     return (
-        <div className="relative overflow-hidden rounded-2xl bg-slate-900/80 border border-slate-800/50 backdrop-blur-sm">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-teal-500/5 pointer-events-none" />
+        <div className="relative overflow-hidden rounded-2xl bg-white border border-gray-100 ">
+            <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-transparent pointer-events-none" />
             
             <div className="relative p-6 space-y-5">
-                <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center">
-                        <svg className="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-                        </svg>
-                    </div>
+                <h3 className="text-lg font-semibold text-black">
                     Product Options
                 </h3>
 
                 <div>
-                    <label className="block text-sm font-medium text-slate-300 mb-2">Warranty</label>
+                    <label className="block text-sm font-medium text-gray-600 mb-2">Warranty</label>
                     <select
                         value={data.warranty}
                         onChange={(e) => setData('warranty', e.target.value)}
-                        className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-black focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
                     >
                         {warrantyOptions.map(option => (
                             <option key={option} value={option}>{option}</option>
@@ -66,7 +61,7 @@ export default function ProductOptions({ data, setData, errors }) {
                 </div>
 
                 <div>
-                    <label className="block text-sm font-medium text-slate-300 mb-3">Colors</label>
+                    <label className="block text-sm font-medium text-gray-600 mb-3">Colors</label>
                     <div className="flex flex-wrap gap-3">
                         {colorOptions.map(color => (
                             <button
@@ -76,7 +71,7 @@ export default function ProductOptions({ data, setData, errors }) {
                                 className={`group relative w-12 h-12 rounded-xl border-2 transition-all ${
                                     data.colors.includes(color.name)
                                         ? 'border-blue-500 scale-110'
-                                        : 'border-slate-700 hover:border-slate-600'
+                                        : 'border-gray-200 hover:border-gray-200'
                                 }`}
                                 title={color.name}
                             >
@@ -86,7 +81,7 @@ export default function ProductOptions({ data, setData, errors }) {
                                 />
                                 {data.colors.includes(color.name) && (
                                     <div className="absolute inset-0 flex items-center justify-center">
-                                        <svg className="w-6 h-6 text-white drop-shadow-lg" fill="currentColor" viewBox="0 0 20 20">
+                                        <svg className="w-6 h-6 text-black drop-shadow-lg" fill="currentColor" viewBox="0 0 20 20">
                                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                         </svg>
                                     </div>
@@ -99,25 +94,25 @@ export default function ProductOptions({ data, setData, errors }) {
 
 
                 <div>
-                    <label className="block text-sm font-medium text-slate-300 mb-2">Tags</label>
+                    <label className="block text-sm font-medium text-gray-600 mb-2">Tags</label>
                     <input
                         type="text"
                         onKeyDown={handleTagsInput}
                         placeholder="Type and press Enter to add tags"
-                        className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
                     />
                     {data.tags.length > 0 && (
                         <div className="mt-3 flex flex-wrap gap-2">
                             {data.tags.map((tag, index) => (
                                 <span
                                     key={index}
-                                    className="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-500/20 border border-blue-500/30 rounded-lg text-sm text-blue-400"
+                                    className="inline-flex items-center gap-1 px-3 py-1.5 bg-gray-100 border border-gray-200 rounded-lg text-sm text-black"
                                 >
                                     {tag}
                                     <button
                                         type="button"
                                         onClick={() => removeTag(tag)}
-                                        className="hover:text-blue-300"
+                                        className="hover:text-red-600"
                                     >
                                         <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

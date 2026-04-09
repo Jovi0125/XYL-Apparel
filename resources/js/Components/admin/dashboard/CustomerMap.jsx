@@ -46,7 +46,7 @@ const CustomerMap = ({ data = null }) => {
     const isEmpty = !data || Object.keys(data).length === 0;
 
     const mapIcon = (
-        <svg className="w-12 h-12 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg className="w-12 h-12 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
     );
@@ -59,12 +59,12 @@ const CustomerMap = ({ data = null }) => {
 
     const getCountryColor = (countryCode) => {
         const intensity = getCountryIntensity(countryCode);
-        if (intensity === 0) return '#1e293b';
+        if (intensity === 0) return '#e5e7eb';
         
-        // Gradient from dark blue to bright blue based on intensity
-        const r = Math.round(30 + (59 - 30) * intensity);
-        const g = Math.round(41 + (130 - 41) * intensity);
-        const b = Math.round(59 + (246 - 59) * intensity);
+        // Gradient from light gray to blue based on intensity
+        const r = Math.round(229 + (59 - 229) * intensity);
+        const g = Math.round(231 + (130 - 231) * intensity);
+        const b = Math.round(235 + (246 - 235) * intensity);
         return `rgb(${r}, ${g}, ${b})`;
     };
 
@@ -106,8 +106,8 @@ const CustomerMap = ({ data = null }) => {
                         <path
                             key={`continent-${index}`}
                             d={path}
-                            fill="#1e293b"
-                            stroke="#334155"
+                            fill="#f3f4f6"
+                            stroke="#d1d5db"
                             strokeWidth="0.5"
                             opacity="0.5"
                         />
@@ -123,7 +123,7 @@ const CustomerMap = ({ data = null }) => {
                                 key={code}
                                 d={path}
                                 fill={getCountryColor(code)}
-                                stroke={hasData ? '#60a5fa' : '#334155'}
+                                stroke={hasData ? '#60a5fa' : '#d1d5db'}
                                 strokeWidth={isHovered ? 2 : 0.5}
                                 opacity={isHovered ? 1 : 0.9}
                                 className="transition-all duration-200 cursor-pointer"
@@ -180,9 +180,9 @@ const CustomerMap = ({ data = null }) => {
 
                 {/* Tooltip */}
                 {hoveredCountry && data && data[hoveredCountry] && (
-                    <div className="absolute top-4 right-4 bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 shadow-xl">
-                        <p className="text-slate-400 text-xs mb-1">{hoveredCountry}</p>
-                        <p className="text-white font-semibold">
+                    <div className="absolute top-4 right-4 bg-white border border-gray-200 rounded-lg px-4 py-3 shadow-xl">
+                        <p className="text-gray-400 text-xs mb-1">{hoveredCountry}</p>
+                        <p className="text-black font-semibold">
                             {data[hoveredCountry].toLocaleString()} customers
                         </p>
                     </div>
@@ -190,18 +190,18 @@ const CustomerMap = ({ data = null }) => {
 
                 {/* Legend */}
                 {data && Object.keys(data).length > 0 && (
-                    <div className="flex items-center justify-center gap-6 mt-4 pt-4 border-t border-slate-800/50">
+                    <div className="flex items-center justify-center gap-6 mt-4 pt-4 border-t border-gray-100">
                         <div className="flex items-center gap-2">
-                            <div className="w-3 h-3 rounded-full bg-blue-900"></div>
-                            <span className="text-slate-500 text-xs">Low</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <div className="w-3 h-3 rounded-full bg-blue-600"></div>
-                            <span className="text-slate-500 text-xs">Medium</span>
+                            <div className="w-3 h-3 rounded-full bg-blue-200"></div>
+                            <span className="text-gray-400 text-xs">Low</span>
                         </div>
                         <div className="flex items-center gap-2">
                             <div className="w-3 h-3 rounded-full bg-blue-400"></div>
-                            <span className="text-slate-500 text-xs">High</span>
+                            <span className="text-gray-400 text-xs">Medium</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <div className="w-3 h-3 rounded-full bg-blue-600"></div>
+                            <span className="text-gray-400 text-xs">High</span>
                         </div>
                     </div>
                 )}

@@ -5,33 +5,33 @@ import PaymentMethodBadge from './PaymentMethodBadge';
 
 export default function ShipmentTable({ orders, onView, onUpdate }) {
     return (
-        <div className="relative overflow-hidden rounded-2xl bg-slate-900/80 border border-slate-800/50 backdrop-blur-sm">
-            <div className="absolute inset-0 bg-gradient-to-br from-teal-500/3 via-transparent to-cyan-500/3 pointer-events-none" />
+        <div className="relative overflow-hidden rounded-2xl bg-white border border-gray-100 ">
+            <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-transparent pointer-events-none" />
 
             <div className="relative overflow-x-auto">
                 <table className="w-full">
                     <thead>
-                        <tr className="border-b border-slate-800/60">
-                            <th className="px-5 py-4 text-left text-[10px] font-bold text-slate-500 uppercase tracking-widest">Order ID</th>
-                            <th className="px-5 py-4 text-left text-[10px] font-bold text-slate-500 uppercase tracking-widest">Product</th>
-                            <th className="px-5 py-4 text-left text-[10px] font-bold text-slate-500 uppercase tracking-widest">Buyer</th>
-                            <th className="px-5 py-4 text-right text-[10px] font-bold text-slate-500 uppercase tracking-widest">Earnings</th>
-                            <th className="px-5 py-4 text-center text-[10px] font-bold text-slate-500 uppercase tracking-widest">Payment</th>
-                            <th className="px-5 py-4 text-center text-[10px] font-bold text-slate-500 uppercase tracking-widest">Pay Status</th>
-                            <th className="px-5 py-4 text-center text-[10px] font-bold text-slate-500 uppercase tracking-widest">Shipment</th>
-                            <th className="px-5 py-4 text-left text-[10px] font-bold text-slate-500 uppercase tracking-widest">Date</th>
-                            <th className="px-5 py-4 text-right text-[10px] font-bold text-slate-500 uppercase tracking-widest">Actions</th>
+                        <tr className="border-b border-gray-200/60">
+                            <th className="px-5 py-4 text-left text-[10px] font-bold text-gray-400 uppercase tracking-widest">Order ID</th>
+                            <th className="px-5 py-4 text-left text-[10px] font-bold text-gray-400 uppercase tracking-widest">Product</th>
+                            <th className="px-5 py-4 text-left text-[10px] font-bold text-gray-400 uppercase tracking-widest">Buyer</th>
+                            <th className="px-5 py-4 text-right text-[10px] font-bold text-gray-400 uppercase tracking-widest">Earnings</th>
+                            <th className="px-5 py-4 text-center text-[10px] font-bold text-gray-400 uppercase tracking-widest">Payment</th>
+                            <th className="px-5 py-4 text-center text-[10px] font-bold text-gray-400 uppercase tracking-widest">Pay Status</th>
+                            <th className="px-5 py-4 text-center text-[10px] font-bold text-gray-400 uppercase tracking-widest">Shipment</th>
+                            <th className="px-5 py-4 text-left text-[10px] font-bold text-gray-400 uppercase tracking-widest">Date</th>
+                            <th className="px-5 py-4 text-right text-[10px] font-bold text-gray-400 uppercase tracking-widest">Actions</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-800/40">
+                    <tbody className="divide-y divide-gray-100/40">
                         {orders.map((order) => (
                             <tr
                                 key={order.id}
-                                className="group hover:bg-slate-800/20 transition-colors duration-150"
+                                className="group hover:bg-gray-100/20 transition-colors duration-150"
                             >
                                 {/* Order ID */}
                                 <td className="px-5 py-4">
-                                    <span className="text-xs font-mono text-teal-400 bg-teal-500/10 px-2 py-1 rounded-md">
+                                    <span className="text-xs font-mono text-[#E60012] bg-red-50 px-2 py-1 rounded-md">
                                         {order.order_number}
                                     </span>
                                 </td>
@@ -39,8 +39,8 @@ export default function ShipmentTable({ orders, onView, onUpdate }) {
                                 {/* Product */}
                                 <td className="px-5 py-4">
                                     <div className="max-w-[160px]">
-                                        <p className="text-sm font-medium text-white truncate">{order.product_title}</p>
-                                        <p className="text-[11px] text-slate-500 mt-0.5">
+                                        <p className="text-sm font-medium text-black truncate">{order.product_title}</p>
+                                        <p className="text-[11px] text-gray-400 mt-0.5">
                                             ID: {order.product_id}
                                             {order.product_variant_label && ` · ${order.product_variant_label}`}
                                         </p>
@@ -50,15 +50,15 @@ export default function ShipmentTable({ orders, onView, onUpdate }) {
                                 {/* Buyer */}
                                 <td className="px-5 py-4">
                                     <div>
-                                        <p className="text-sm text-white">{order.buyer_name}</p>
-                                        <p className="text-[11px] text-slate-500">{order.buyer_email}</p>
+                                        <p className="text-sm text-black">{order.buyer_name}</p>
+                                        <p className="text-[11px] text-gray-400">{order.buyer_email}</p>
                                     </div>
                                 </td>
 
                                 {/* Earnings */}
                                 <td className="px-5 py-4 text-right">
                                     <span className="text-sm font-semibold text-emerald-400">{order.formatted_earnings}</span>
-                                    <p className="text-[11px] text-slate-500 mt-0.5">Qty: {order.quantity}</p>
+                                    <p className="text-[11px] text-gray-400 mt-0.5">Qty: {order.quantity}</p>
                                 </td>
 
                                 {/* Payment Method */}
@@ -78,7 +78,7 @@ export default function ShipmentTable({ orders, onView, onUpdate }) {
 
                                 {/* Date */}
                                 <td className="px-5 py-4">
-                                    <span className="text-sm text-slate-400">{order.date}</span>
+                                    <span className="text-sm text-gray-400">{order.date}</span>
                                 </td>
 
                                 {/* Actions */}
@@ -86,7 +86,7 @@ export default function ShipmentTable({ orders, onView, onUpdate }) {
                                     <div className="flex items-center justify-end gap-1.5 opacity-60 group-hover:opacity-100 transition-opacity">
                                         <button
                                             onClick={() => onView(order)}
-                                            className="p-2 rounded-lg text-slate-400 hover:text-teal-400 hover:bg-teal-500/10 transition-all"
+                                            className="p-2 rounded-lg text-gray-400 hover:text-[#E60012] hover:bg-red-50 transition-all"
                                             title="View Details"
                                         >
                                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -96,7 +96,7 @@ export default function ShipmentTable({ orders, onView, onUpdate }) {
                                         </button>
                                         <button
                                             onClick={() => onUpdate(order)}
-                                            className="p-2 rounded-lg text-slate-400 hover:text-blue-400 hover:bg-blue-500/10 transition-all"
+                                            className="p-2 rounded-lg text-gray-400 hover:text-[#E60012] hover:bg-blue-500/10 transition-all"
                                             title="Update Status"
                                         >
                                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

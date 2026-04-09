@@ -23,28 +23,23 @@ export default function ProductClassification({ data, setData, categories, error
     };
 
     return (
-        <div className="relative overflow-hidden rounded-2xl bg-slate-900/80 border border-slate-800/50 backdrop-blur-sm">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-teal-500/5 pointer-events-none" />
+        <div className="relative overflow-hidden rounded-2xl bg-white border border-gray-100 ">
+            <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-transparent pointer-events-none" />
             
             <div className="relative p-6 space-y-5">
-                <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-teal-500/20 flex items-center justify-center">
-                        <svg className="w-4 h-4 text-teal-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                        </svg>
-                    </div>
+                <h3 className="text-lg font-semibold text-black">
                     Classification
                 </h3>
 
                 <div className="grid grid-cols-2 gap-4">
                     <div>
-                        <label className="block text-sm font-medium text-slate-300 mb-2">
+                        <label className="block text-sm font-medium text-gray-600 mb-2">
                             Parent Category <span className="text-rose-400">*</span>
                         </label>
                         <select
                             value={data.parent_category}
                             onChange={handleParentChange}
-                            className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
+                            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-black focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
                         >
                             <option value="">Select parent</option>
                             {parentCategories.map(cat => (
@@ -55,14 +50,14 @@ export default function ProductClassification({ data, setData, categories, error
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-slate-300 mb-2">
+                        <label className="block text-sm font-medium text-gray-600 mb-2">
                             Category <span className="text-rose-400">*</span>
                         </label>
                         <select
                             value={data.category_id}
                             onChange={(e) => setData('category_id', e.target.value)}
                             disabled={!data.parent_category}
-                            className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-black focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                         >
                             <option value="">{data.parent_category ? 'Select category' : 'Select parent first'}</option>
                             {filteredCategories.map(cat => (

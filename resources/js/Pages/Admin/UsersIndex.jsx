@@ -47,16 +47,16 @@ export default function UsersIndex({ users, filters }) {
     };
 
     const statusBadge = (condition, trueText, falseText) => (
-        <span className={`px-2 py-1 rounded-full text-[10px] font-medium ${condition ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-500 border border-rose-500/20'}`}>
+        <span className={`px-2 py-1 rounded-full text-[10px] font-medium ${condition ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-200' : 'bg-rose-500/10 text-rose-500 border border-rose-500/20'}`}>
             {condition ? trueText : falseText}
         </span>
     );
 
     const userStatusBadge = (status) => {
         const styles = {
-            active: 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20',
+            active: 'bg-emerald-500/10 text-emerald-500 border border-emerald-200',
             suspended: 'bg-rose-500/10 text-rose-500 border border-rose-500/20',
-            inactive: 'bg-slate-500/10 text-slate-500 border border-slate-500/20',
+            inactive: 'bg-gray-100 text-gray-400 border border-gray-200',
         };
         return (
             <span className={`px-2 py-1 rounded-full text-[10px] font-medium capitalize ${styles[status]}`}>
@@ -67,12 +67,12 @@ export default function UsersIndex({ users, filters }) {
 
     const roleBadge = (role) => {
         const styles = {
-            admin: 'bg-teal-500/10 text-teal-500 border border-teal-500/20',
+            admin: 'bg-red-50 text-[#E60012] border border-gray-200',
             buyer: 'bg-blue-500/10 text-blue-500 border border-blue-500/20',
             logistics: 'bg-amber-500/10 text-amber-500 border border-amber-500/20',
         };
         return (
-            <span className={`px-2 py-1 rounded-full text-[10px] font-medium capitalize ${styles[role] || 'bg-slate-500/10 text-slate-500 border border-slate-500/20'}`}>
+            <span className={`px-2 py-1 rounded-full text-[10px] font-medium capitalize ${styles[role] || 'bg-gray-100 text-gray-400 border border-gray-200'}`}>
                 {role}
             </span>
         );
@@ -84,20 +84,15 @@ export default function UsersIndex({ users, filters }) {
 
             <div className="relative min-h-screen">
                 {/* Background effects */}
-                <div className="fixed inset-0 pointer-events-none">
-                    <div className="absolute top-0 right-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl" />
-                    <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-teal-500/5 rounded-full blur-3xl" />
-                </div>
-
                 <div className="relative z-10 space-y-6">
                     {/* Header/Filters Section */}
-                    <div className="bg-slate-900/80 border border-slate-800/50 backdrop-blur-md rounded-2xl p-6 shadow-2xl">
+                    <div className="bg-white border border-gray-100 backdrop-blur-md rounded-2xl p-6 shadow-2xl">
                         <div className="flex flex-col md:flex-row md:items-center justify-end gap-3">
                             
                             <div className="flex flex-col sm:flex-row gap-3">
                                 <div className="relative group">
                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <svg className="w-4 h-4 text-slate-500 group-focus-within:text-teal-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <svg className="w-4 h-4 text-gray-400 group-focus-within:text-[#E60012] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                         </svg>
                                     </div>
@@ -106,14 +101,14 @@ export default function UsersIndex({ users, filters }) {
                                         placeholder="Search users..."
                                         value={data.search}
                                         onChange={e => setData('search', e.target.value)}
-                                        className="w-full sm:w-64 pl-10 pr-4 py-2 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500/50 transition-all font-medium"
+                                        className="w-full sm:w-64 pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black/10 focus:border-gray-300 transition-all font-medium"
                                     />
                                 </div>
 
                                 <select
                                     value={data.role}
                                     onChange={e => handleRoleChange(e.target.value)}
-                                    className="px-4 py-2 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500/50 transition-all font-medium"
+                                    className="px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl text-black focus:outline-none focus:ring-2 focus:ring-black/10 focus:border-gray-300 transition-all font-medium"
                                 >
                                     <option value="">All Roles</option>
                                     <option value="admin">Admin</option>
@@ -125,35 +120,35 @@ export default function UsersIndex({ users, filters }) {
                     </div>
 
                     {/* Users Table */}
-                    <div className="bg-slate-900/80 border border-slate-800/50 backdrop-blur-md rounded-2xl overflow-hidden shadow-2xl">
+                    <div className="bg-white border border-gray-100 backdrop-blur-md rounded-2xl overflow-hidden shadow-2xl">
                         <div className="overflow-x-auto">
                             <table className="w-full text-left border-collapse">
                                 <thead>
-                                    <tr className="bg-slate-800/30 border-b border-slate-800/50">
-                                        <th className="px-6 py-4 text-xs font-semibold text-slate-400 uppercase tracking-widest">Identity</th>
-                                        <th className="px-6 py-4 text-xs font-semibold text-slate-400 uppercase tracking-widest">Level</th>
-                                        <th className="px-6 py-4 text-xs font-semibold text-slate-400 uppercase tracking-widest">Attributes</th>
-                                        <th className="px-6 py-4 text-xs font-semibold text-slate-400 uppercase tracking-widest">Security</th>
-                                        <th className="px-6 py-4 text-xs font-semibold text-slate-400 uppercase tracking-widest">Timeline</th>
-                                        <th className="px-6 py-4 text-xs font-semibold text-slate-400 uppercase tracking-widest text-right">Operations</th>
+                                    <tr className="bg-gray-100/30 border-b border-gray-100">
+                                        <th className="px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-widest">Identity</th>
+                                        <th className="px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-widest">Level</th>
+                                        <th className="px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-widest">Attributes</th>
+                                        <th className="px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-widest">Security</th>
+                                        <th className="px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-widest">Timeline</th>
+                                        <th className="px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-widest text-right">Operations</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-slate-800/50">
+                                <tbody className="divide-y divide-gray-100/50">
                                     {users.data.length > 0 ? (
                                         users.data.map((user) => (
-                                            <tr key={user.id} className="hover:bg-slate-800/20 transition-colors group">
+                                            <tr key={user.id} className="hover:bg-gray-100/20 transition-colors group">
                                                 <td className="px-6 py-4">
                                                     <div className="flex items-center gap-4">
                                                         <div className="relative">
-                                                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-slate-600 to-slate-700 flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-slate-500/10">
+                                                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center text-gray-600 font-bold text-lg shadow-lg shadow-gray-200">
                                                                 {user.name ? user.name.charAt(0).toUpperCase() : user.email.charAt(0).toUpperCase()}
                                                             </div>
-                                                            <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-slate-900 ${user.status === 'active' ? 'bg-emerald-500' : 'bg-rose-500'}`} />
+                                                            <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white ${user.status === 'active' ? 'bg-emerald-500' : 'bg-rose-500'}`} />
                                                         </div>
                                                         <div>
-                                                            <div className="text-sm font-bold text-white">{user.name || 'N/A'}</div>
-                                                            <div className="text-xs text-slate-400 font-medium">{user.email}</div>
-                                                            <div className="text-[10px] text-slate-600 font-mono mt-1 opacity-60">REF: {user.id}</div>
+                                                            <div className="text-sm font-bold text-black">{user.name || 'N/A'}</div>
+                                                            <div className="text-xs text-gray-400 font-medium">{user.email}</div>
+                                                            <div className="text-[10px] text-gray-300 font-mono mt-1 opacity-60">REF: {user.id}</div>
                                                         </div>
                                                     </div>
                                                 </td>
@@ -163,14 +158,14 @@ export default function UsersIndex({ users, filters }) {
                                                 <td className="px-6 py-4">
                                                     <div className="text-[11px] space-y-1 font-medium">
                                                         <div className="flex gap-2">
-                                                            <span className="text-slate-500">Zip:</span>
-                                                            <span className="text-slate-300">{user.postal_code || '--'}</span>
+                                                            <span className="text-gray-400">Zip:</span>
+                                                            <span className="text-gray-600">{user.postal_code || '--'}</span>
                                                         </div>
                                                         <div className="flex gap-2">
-                                                            <span className="text-slate-500">BD:</span>
-                                                            <span className="text-slate-300">{user.birthday ? new Date(user.birthday).toLocaleDateString() : '--'}</span>
+                                                            <span className="text-gray-400">BD:</span>
+                                                            <span className="text-gray-600">{user.birthday ? new Date(user.birthday).toLocaleDateString() : '--'}</span>
                                                         </div>
-                                                        <div className="flex gap-2 text-slate-400 capitalize">
+                                                        <div className="flex gap-2 text-gray-400 capitalize">
                                                             <span>{user.gender || 'Unknown'}</span>
                                                         </div>
                                                     </div>
@@ -178,21 +173,21 @@ export default function UsersIndex({ users, filters }) {
                                                 <td className="px-6 py-4">
                                                     <div className="flex flex-col gap-2">
                                                         <div className="flex items-center gap-3">
-                                                            <span className="text-[10px] text-slate-500 w-12 uppercase tracking-wide">Terms:</span>
+                                                            <span className="text-[10px] text-gray-400 w-12 uppercase tracking-wide">Terms:</span>
                                                             {statusBadge(user.terms_accepted, 'Accepted', 'Pending')}
                                                         </div>
                                                         <div className="flex items-center gap-3">
-                                                            <span className="text-[10px] text-slate-500 w-12 uppercase tracking-wide">Auth:</span>
+                                                            <span className="text-[10px] text-gray-400 w-12 uppercase tracking-wide">Auth:</span>
                                                             {statusBadge(!!user.email_verified_at, 'Verified', 'Unverified')}
                                                         </div>
                                                         <div className="flex items-center gap-3">
-                                                            <span className="text-[10px] text-slate-500 w-12 uppercase tracking-wide">Access:</span>
+                                                            <span className="text-[10px] text-gray-400 w-12 uppercase tracking-wide">Access:</span>
                                                             {userStatusBadge(user.status)}
                                                         </div>
                                                     </div>
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    <div className="text-xs text-slate-400 font-medium">
+                                                    <div className="text-xs text-gray-400 font-medium">
                                                         {new Date(user.created_at).toLocaleDateString()}
                                                     </div>
                                                 </td>
@@ -219,7 +214,7 @@ export default function UsersIndex({ users, filters }) {
                                                         </button>
                                                         <button 
                                                             onClick={() => deleteUser(user.id)}
-                                                            className="p-2 bg-slate-800 text-slate-400 rounded-lg hover:bg-rose-600 hover:text-white transition-colors" 
+                                                            className="p-2 bg-gray-100 text-gray-400 rounded-lg hover:bg-rose-600 hover:text-white transition-colors" 
                                                             title="Purge Account"
                                                         >
                                                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -234,16 +229,16 @@ export default function UsersIndex({ users, filters }) {
                                         <tr>
                                             <td colSpan="6" className="px-6 py-12 text-center">
                                                 <div className="flex flex-col items-center gap-3">
-                                                    <div className="w-16 h-16 bg-slate-800/50 rounded-full flex items-center justify-center text-slate-600">
+                                                    <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center text-gray-300">
                                                         <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 01-9-3.47M20 7v10m0 0l-3-3m3 3l3-3" />
                                                         </svg>
                                                     </div>
-                                                    <h3 className="text-lg font-medium text-slate-300">No users found</h3>
-                                                    <p className="text-slate-500 max-w-xs mx-auto">We couldn't find any user matching your current search or filter criteria.</p>
+                                                    <h3 className="text-lg font-medium text-gray-600">No users found</h3>
+                                                    <p className="text-gray-400 max-w-xs mx-auto">We couldn't find any user matching your current search or filter criteria.</p>
                                                     <button 
                                                         onClick={() => router.get(route('admin.users.index'), {}, { replace: true })}
-                                                        className="mt-2 text-blue-500 hover:text-blue-400 font-medium transition-colors"
+                                                        className="mt-2 text-blue-500 hover:text-[#E60012] font-medium transition-colors"
                                                     >
                                                         Clear all filters
                                                     </button>
@@ -257,9 +252,9 @@ export default function UsersIndex({ users, filters }) {
 
                         {/* Pagination */}
                         {users.links && users.data.length > 0 && (
-                            <div className="px-6 py-4 border-t border-slate-800/50 bg-slate-800/20 flex items-center justify-between">
-                                <div className="text-sm text-slate-500">
-                                    Showing <span className="font-medium text-white">{users.from}</span> to <span className="font-medium text-white">{users.to}</span> of <span className="font-medium text-white">{users.total}</span> results
+                            <div className="px-6 py-4 border-t border-gray-100 bg-gray-100/20 flex items-center justify-between">
+                                <div className="text-sm text-gray-400">
+                                    Showing <span className="font-medium text-black">{users.from}</span> to <span className="font-medium text-black">{users.to}</span> of <span className="font-medium text-black">{users.total}</span> results
                                 </div>
                                 <div className="flex gap-2">
                                     {users.links.map((link, i) => (
@@ -272,8 +267,8 @@ export default function UsersIndex({ users, filters }) {
                                                 link.active 
                                                 ? 'bg-blue-500 text-white font-bold' 
                                                 : link.url 
-                                                    ? 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white' 
-                                                    : 'bg-slate-900/50 text-slate-700 cursor-not-allowed'
+                                                    ? 'bg-gray-100 text-gray-400 hover:bg-gray-100 hover:text-black' 
+                                                    : 'bg-white/50 text-gray-500 cursor-not-allowed'
                                             }`}
                                         />
                                     ))}

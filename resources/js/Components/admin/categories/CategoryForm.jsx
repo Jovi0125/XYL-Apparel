@@ -105,18 +105,18 @@ export default function CategoryForm({ editingCategory, onCancelEdit }) {
 
     return (
         <div className="sticky top-6">
-            <div className="relative overflow-hidden rounded-2xl bg-slate-900/80 border border-slate-800/50 backdrop-blur-sm">
+            <div className="relative overflow-hidden rounded-2xl bg-white border border-gray-100 ">
                 {/* Gradient Background */}
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-teal-500/5 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-transparent pointer-events-none" />
                 
                 {/* Form Header */}
-                <div className="relative z-10 px-6 pt-6 pb-4 border-b border-slate-800/30">
+                <div className="relative z-10 px-6 pt-6 pb-4 border-b border-gray-100">
                     <div className="flex items-center justify-between">
                         <div>
-                            <h3 className="text-lg font-semibold text-white tracking-tight">
+                            <h3 className="text-lg font-semibold text-black tracking-tight">
                                 {editingCategory ? 'Edit Category' : 'Create Category'}
                             </h3>
-                            <p className="text-slate-500 text-sm mt-1">
+                            <p className="text-gray-400 text-sm mt-1">
                                 {editingCategory ? 'Update existing category details.' : 'Add a new category to organize your products.'}
                             </p>
                         </div>
@@ -124,7 +124,7 @@ export default function CategoryForm({ editingCategory, onCancelEdit }) {
                             <button
                                 type="button"
                                 onClick={onCancelEdit}
-                                className="p-2 text-slate-400 hover:text-white bg-slate-800/50 rounded-lg transition-all"
+                                className="p-2 text-gray-400 hover:text-black bg-gray-50 rounded-lg transition-all"
                                 title="Cancel Edit"
                             >
                                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -139,7 +139,7 @@ export default function CategoryForm({ editingCategory, onCancelEdit }) {
                 <form onSubmit={handleSubmit} className="relative z-10 p-6 space-y-5">
                     {/* Name Field */}
                     <div>
-                        <label className="block text-sm font-medium text-slate-300 mb-2">
+                        <label className="block text-sm font-medium text-gray-600 mb-2">
                             Name <span className="text-rose-400">*</span>
                         </label>
                         <input
@@ -147,26 +147,26 @@ export default function CategoryForm({ editingCategory, onCancelEdit }) {
                             value={data.name}
                             onChange={(e) => setData('name', e.target.value)}
                             placeholder="Enter category name"
-                            className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
+                            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
                             required
                         />
                         {errors.name && (
                             <p className="mt-1.5 text-sm text-rose-400">{errors.name}</p>
                         )}
-                        <p className="mt-1.5 text-xs text-slate-500">
+                        <p className="mt-1.5 text-xs text-gray-400">
                             Choose a clear and descriptive name.
                         </p>
                     </div>
 
                     {/* Parent Category Field */}
                     <div>
-                        <label className="block text-sm font-medium text-slate-300 mb-2">
+                        <label className="block text-sm font-medium text-gray-600 mb-2">
                             Parent Category <span className="text-rose-400">*</span>
                         </label>
                         <select
                             value={data.parent_category}
                             onChange={(e) => setData('parent_category', e.target.value)}
-                            className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
+                            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-black focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
                             required
                         >
                             <option value="Men">Men</option>
@@ -180,7 +180,7 @@ export default function CategoryForm({ editingCategory, onCancelEdit }) {
 
                     {/* Description Field */}
                     <div>
-                        <label className="block text-sm font-medium text-slate-300 mb-2">
+                        <label className="block text-sm font-medium text-gray-600 mb-2">
                             Description
                         </label>
                         <textarea
@@ -188,19 +188,19 @@ export default function CategoryForm({ editingCategory, onCancelEdit }) {
                             onChange={(e) => setData('description', e.target.value)}
                             placeholder="Enter description..."
                             rows={4}
-                            className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all resize-none"
+                            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all resize-none"
                         />
                         {errors.description && (
                             <p className="mt-1.5 text-sm text-rose-400">{errors.description}</p>
                         )}
-                        <p className="mt-1.5 text-xs text-slate-500">
+                        <p className="mt-1.5 text-xs text-gray-400">
                             Briefly describe this category.
                         </p>
                     </div>
 
                     {/* Image Upload Field */}
                     <div>
-                        <label className="block text-sm font-medium text-slate-300 mb-2">
+                        <label className="block text-sm font-medium text-gray-600 mb-2">
                             Image (Optional)
                         </label>
                         
@@ -212,7 +212,7 @@ export default function CategoryForm({ editingCategory, onCancelEdit }) {
                                 className={`relative border-2 border-dashed rounded-xl transition-all ${
                                     isDragging
                                         ? 'border-blue-500 bg-blue-500/10'
-                                        : 'border-slate-700/50 bg-slate-800/30'
+                                        : 'border-gray-200 bg-gray-100/30'
                                 }`}
                             >
                                 <input
@@ -223,7 +223,7 @@ export default function CategoryForm({ editingCategory, onCancelEdit }) {
                                 />
                                 <div className="flex flex-col items-center justify-center py-10 px-4">
                                     <svg
-                                        className="w-12 h-12 text-slate-600 mb-3"
+                                        className="w-12 h-12 text-gray-300 mb-3"
                                         fill="none"
                                         viewBox="0 0 24 24"
                                         stroke="currentColor"
@@ -235,16 +235,16 @@ export default function CategoryForm({ editingCategory, onCancelEdit }) {
                                             d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                                         />
                                     </svg>
-                                    <p className="text-sm text-slate-400 mb-1">
+                                    <p className="text-sm text-gray-400 mb-1">
                                         Upload Image
                                     </p>
-                                    <p className="text-xs text-slate-500">
+                                    <p className="text-xs text-gray-400">
                                         PNG, JPG, up to 5MB
                                     </p>
                                 </div>
                             </div>
                         ) : (
-                            <div className="relative rounded-xl overflow-hidden border border-slate-700/50">
+                            <div className="relative rounded-xl overflow-hidden border border-gray-200">
                                 <img
                                     src={imagePreview}
                                     alt="Preview"
@@ -253,9 +253,9 @@ export default function CategoryForm({ editingCategory, onCancelEdit }) {
                                 <button
                                     type="button"
                                     onClick={removeImage}
-                                    className="absolute top-2 right-2 p-2 bg-slate-900/90 hover:bg-rose-500 rounded-lg transition-colors"
+                                    className="absolute top-2 right-2 p-2 bg-white/90 hover:bg-rose-500 rounded-lg transition-colors"
                                 >
-                                    <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <svg className="w-4 h-4 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                                     </svg>
                                 </button>
@@ -268,7 +268,7 @@ export default function CategoryForm({ editingCategory, onCancelEdit }) {
 
                     {/* Status Field */}
                     <div>
-                        <label className="block text-sm font-medium text-slate-300 mb-2">
+                        <label className="block text-sm font-medium text-gray-600 mb-2">
                             Status
                         </label>
                         <div className="flex gap-3">
@@ -278,11 +278,11 @@ export default function CategoryForm({ editingCategory, onCancelEdit }) {
                                 className={`flex-1 px-4 py-3 rounded-xl font-medium transition-all ${
                                     data.status === 'active'
                                         ? 'bg-emerald-500/20 text-emerald-400 border-2 border-emerald-500/50'
-                                        : 'bg-slate-800/50 text-slate-400 border border-slate-700/50 hover:border-slate-600'
+                                        : 'bg-gray-50 text-gray-400 border border-gray-200 hover:border-gray-200'
                                 }`}
                             >
                                 <div className="flex items-center justify-center gap-2">
-                                    <div className={`w-2 h-2 rounded-full ${data.status === 'active' ? 'bg-emerald-400' : 'bg-slate-500'}`} />
+                                    <div className={`w-2 h-2 rounded-full ${data.status === 'active' ? 'bg-emerald-400' : 'bg-gray-400'}`} />
                                     Active
                                 </div>
                             </button>
@@ -291,12 +291,12 @@ export default function CategoryForm({ editingCategory, onCancelEdit }) {
                                 onClick={() => setData('status', 'inactive')}
                                 className={`flex-1 px-4 py-3 rounded-xl font-medium transition-all ${
                                     data.status === 'inactive'
-                                        ? 'bg-slate-500/20 text-slate-300 border-2 border-slate-500/50'
-                                        : 'bg-slate-800/50 text-slate-400 border border-slate-700/50 hover:border-slate-600'
+                                        ? 'bg-gray-100 text-gray-600 border-2 border-gray-300'
+                                        : 'bg-gray-50 text-gray-400 border border-gray-200 hover:border-gray-200'
                                 }`}
                             >
                                 <div className="flex items-center justify-center gap-2">
-                                    <div className={`w-2 h-2 rounded-full ${data.status === 'inactive' ? 'bg-slate-400' : 'bg-slate-500'}`} />
+                                    <div className={`w-2 h-2 rounded-full ${data.status === 'inactive' ? 'bg-gray-400' : 'bg-gray-400'}`} />
                                     Inactive
                                 </div>
                             </button>
@@ -304,7 +304,7 @@ export default function CategoryForm({ editingCategory, onCancelEdit }) {
                         {errors.status && (
                             <p className="mt-1.5 text-sm text-rose-400">{errors.status}</p>
                         )}
-                        <p className="mt-1.5 text-xs text-slate-500">
+                        <p className="mt-1.5 text-xs text-gray-400">
                             Inactive categories won't be visible.
                         </p>
                     </div>
@@ -313,7 +313,7 @@ export default function CategoryForm({ editingCategory, onCancelEdit }) {
                     <button
                         type="submit"
                         disabled={processing}
-                        className="w-full px-6 py-3.5 bg-gradient-to-r from-blue-500 to-teal-500 hover:from-blue-600 hover:to-teal-600 text-white font-semibold rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20"
+                        className="w-full px-6 py-3.5 bg-black hover:bg-gray-800 text-white font-semibold rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-md"
                     >
                         {processing ? (
                             <>
@@ -337,7 +337,7 @@ export default function CategoryForm({ editingCategory, onCancelEdit }) {
                             type="button"
                             onClick={onCancelEdit}
                             disabled={processing}
-                            className="w-full px-6 py-2 bg-slate-800/50 border border-slate-700/50 text-slate-400 hover:text-white rounded-xl transition-all"
+                            className="w-full px-6 py-2 bg-gray-50 border border-gray-200 text-gray-400 hover:text-black rounded-xl transition-all"
                         >
                             Cancel Editing
                         </button>

@@ -75,7 +75,7 @@ class Order extends Model
 
     public function getPaymentMethodLabelAttribute(): string
     {
-        return self::PAYMENT_METHODS[$this->payment_method] ?? $this->payment_method;
+        return self::PAYMENT_METHODS[$this->payment_method] ?? $this->payment_method ?? 'N/A';
     }
 
     public function getFormattedTotalAttribute(): string

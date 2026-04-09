@@ -39,21 +39,125 @@ export default function OrderDetail({ order }) {
                 </div>
 
                 <div className="space-y-8">
-                    {/* Order Status */}
-                    <div className="bg-gray-50 p-6 flex items-center justify-between">
-                        <div>
-                            <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400 block mb-1">CURRENT STATUS</span>
-                            <span className={`inline-block px-3 py-1 text-[10px] font-black tracking-[0.2em] uppercase border ${getStatusColor(shipment?.status || 'pending')}`}>
-                                {shipment?.status_label || 'Pending'}
-                            </span>
-                        </div>
-                        <div className="text-right">
-                            <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400 block mb-1">ORDER DATE</span>
-                            <span className="text-[13px] font-bold">
-                                {new Date(order.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
-                            </span>
-                        </div>
-                    </div>
+                    {/* Vertical Order Progress */}
+                    {(() => {
+                        const currentStatus = shipment?.status || 'pending';
+                        const isCancelled = currentStatus === 'cancelled';
+                        
+                        const steps = [
+                            { key: 'pending', label: 'Order Placed', icon: (
+                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                            )},
+                            { key: 'preparing', label: 'Preparing', icon: (
+                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                                </svg>
+                            )},
+                            { key: 'shipped', label: 'Shipped', icon: (
+                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+                                </svg>
+                            )},
+                            { key: 'in_transit', label: 'In Transit', icon: (
+                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                                </svg>
+                            )},
+                            { key: 'delivered', label: 'Delivered', icon: (
+                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            )},
+                        ];
+
+                        const statusOrder = ['pending', 'preparing', 'shipped', 'in_transit', 'delivered'];
+                        const currentIndex = statusOrder.indexOf(currentStatus);
+
+                        const getTimestamp = (stepKey) => {
+                            if (stepKey === 'pending') return order.created_at;
+                            if (stepKey === 'shipped' && shipment?.shipped_at) return shipment.shipped_at;
+                            if (stepKey === 'delivered' && shipment?.delivered_at) return shipment.delivered_at;
+                            return null;
+                        };
+
+                        return (
+                            <div className="border border-gray-100 p-6">
+                                <div className="flex items-center justify-between mb-6">
+                                    <h2 className="text-[11px] font-black tracking-[0.3em] uppercase text-gray-400">ORDER PROGRESS</h2>
+                                    <span className="text-[11px] text-gray-400">
+                                        {new Date(order.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                                    </span>
+                                </div>
+
+                                {isCancelled ? (
+                                    <div className="flex items-center gap-3 p-4 bg-red-50 rounded-lg">
+                                        <div className="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center flex-shrink-0">
+                                            <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <p className="text-sm font-bold text-red-700">Order Cancelled</p>
+                                            <p className="text-xs text-red-500">This order has been cancelled.</p>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="relative">
+                                        {steps.map((step, idx) => {
+                                            const isCompleted = idx < currentIndex;
+                                            const isCurrent = idx === currentIndex;
+                                            const isFuture = idx > currentIndex;
+                                            const timestamp = getTimestamp(step.key);
+                                            const isLast = idx === steps.length - 1;
+
+                                            return (
+                                                <div key={step.key} className="flex gap-4">
+                                                    {/* Timeline column */}
+                                                    <div className="flex flex-col items-center">
+                                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 transition-all ${
+                                                            isCompleted ? 'bg-black text-white' :
+                                                            isCurrent ? 'bg-black text-white ring-4 ring-gray-100' :
+                                                            'bg-gray-100 text-gray-300'
+                                                        }`}>
+                                                            {isCompleted ? (
+                                                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                                                </svg>
+                                                            ) : step.icon}
+                                                        </div>
+                                                        {!isLast && (
+                                                            <div className={`w-0.5 h-10 ${
+                                                                isCompleted ? 'bg-black' : 'bg-gray-100'
+                                                            }`} />
+                                                        )}
+                                                    </div>
+
+                                                    {/* Label column */}
+                                                    <div className={`pt-1 pb-6 ${isLast ? 'pb-0' : ''}`}>
+                                                        <p className={`text-sm font-semibold ${
+                                                            isFuture ? 'text-gray-300' : 'text-black'
+                                                        }`}>
+                                                            {step.label}
+                                                        </p>
+                                                        {timestamp && (isCompleted || isCurrent) && (
+                                                            <p className="text-[11px] text-gray-400 mt-0.5">
+                                                                {new Date(timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                                                                {' · '}
+                                                                {new Date(timestamp).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}
+                                                            </p>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    })()}
 
                     {/* Product */}
                     <div className="border border-gray-100 p-6">

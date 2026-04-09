@@ -118,25 +118,79 @@ export default function MyOrders({ orders }) {
                                     <span className="text-[14px] font-black flex-shrink-0">₱{Number(order.unit_price).toLocaleString()}</span>
                                 </div>
 
-                                {/* Status History */}
-                                <div className="px-6 py-3 border-t border-gray-50">
-                                    <p className="text-[9px] font-bold tracking-[0.2em] uppercase text-gray-400 mb-2">STATUS HISTORY</p>
-                                    <div className="flex items-center gap-2">
-                                        <span className={`w-2 h-2 rounded-full ${
-                                            order.shipment?.status === 'delivered' ? 'bg-green-500' :
-                                            order.shipment?.status === 'cancelled' ? 'bg-red-500' :
-                                            'bg-yellow-500'
-                                        }`} />
-                                        <span className="text-[11px] text-gray-500 font-medium">
-                                            {order.shipment?.status_label || order.payment_status}
-                                        </span>
-                                        <span className="text-[10px] text-gray-300">
-                                            {new Date(order.updated_at).toLocaleDateString('en-US', { month: 'numeric', day: 'numeric', year: 'numeric' })}
-                                            {', '}
-                                            {new Date(order.updated_at).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}
-                                        </span>
+                                {/* Tracking Info (only shows when logistics fills it in) */}
+                                {(order.shipment?.tracking_number || order.shipment?.carrier) && (
+                                    <div className="px-6 py-3 border-t border-gray-50 flex items-center gap-4">
+                                        <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+                                        </svg>
+                                        <div className="flex items-center gap-4 text-[11px]">
+                                            {order.shipment?.carrier && (
+                                                <span className="text-gray-500">
+                                                    Carrier: <span className="font-semibold text-black">{order.shipment.carrier}</span>
+                                                </span>
+                                            )}
+                                            {order.shipment?.tracking_number && (
+                                                <span className="text-gray-500">
+                                                    Tracking: <span className="font-semibold text-black font-mono">{order.shipment.tracking_number}</span>
+                                                </span>
+                                            )}
+                                        </div>
                                     </div>
-                                </div>
+                                )}
+
+                                {/* Mini Progress Stepper */}
+                                {(() => {
+                                    const currentStatus = order.shipment?.status || 'pending';
+                                    const isCancelled = currentStatus === 'cancelled';
+                                    const statusOrder = ['pending', 'preparing', 'shipped', 'in_transit', 'delivered'];
+                                    const currentIndex = statusOrder.indexOf(currentStatus);
+                                    const stepLabels = ['Placed', 'Preparing', 'Shipped', 'In Transit', 'Delivered'];
+
+                                    if (isCancelled) {
+                                        return (
+                                            <div className="px-6 py-3 border-t border-gray-50">
+                                                <div className="flex items-center gap-2">
+                                                    <span className="w-2 h-2 rounded-full bg-red-500" />
+                                                    <span className="text-[11px] text-red-500 font-medium">Order Cancelled</span>
+                                                </div>
+                                            </div>
+                                        );
+                                    }
+
+                                    return (
+                                        <div className="px-6 py-3 border-t border-gray-50">
+                                            <div className="flex items-center gap-1">
+                                                {stepLabels.map((label, idx) => {
+                                                    const isCompleted = idx < currentIndex;
+                                                    const isCurrent = idx === currentIndex;
+                                                    const isLast = idx === stepLabels.length - 1;
+                                                    return (
+                                                        <React.Fragment key={label}>
+                                                            <div className="flex items-center gap-1.5">
+                                                                <div className={`w-2 h-2 rounded-full ${
+                                                                    isCompleted ? 'bg-black' :
+                                                                    isCurrent ? 'bg-black ring-2 ring-gray-200' :
+                                                                    'bg-gray-200'
+                                                                }`} />
+                                                                <span className={`text-[10px] ${
+                                                                    isCompleted || isCurrent ? 'text-black font-semibold' : 'text-gray-300'
+                                                                }`}>
+                                                                    {label}
+                                                                </span>
+                                                            </div>
+                                                            {!isLast && (
+                                                                <div className={`flex-1 h-px min-w-[12px] ${
+                                                                    isCompleted ? 'bg-black' : 'bg-gray-200'
+                                                                }`} />
+                                                            )}
+                                                        </React.Fragment>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+                                    );
+                                })()}
                             </div>
                         ))}
                     </div>

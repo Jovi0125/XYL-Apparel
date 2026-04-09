@@ -59,16 +59,9 @@ const Icons = {
 
 // Sidebar menu configuration
 const sidebarConfig = [
+    { id: 'dashboard', label: 'Dashboard', href: '/admin/dashboard', icon: <Icons.Dashboard /> },
     {
-        id: 'dashboard',
-        label: 'Dashboard',
-        href: '/admin/dashboard',
-        icon: <Icons.Dashboard />,
-    },
-    {
-        id: 'commerce',
-        label: 'Commerce',
-        icon: <Icons.Commerce />,
+        id: 'commerce', label: 'Commerce', icon: <Icons.Commerce />,
         children: [
             { id: 'orders', label: 'Orders', href: '/admin/orders' },
             { id: 'payments', label: 'Payments', href: '/admin/payments' },
@@ -78,59 +71,36 @@ const sidebarConfig = [
         ],
     },
     {
-        id: 'catalog',
-        label: 'Catalog',
-        icon: <Icons.Catalog />,
+        id: 'catalog', label: 'Catalog', icon: <Icons.Catalog />,
         children: [
             { id: 'create-product', label: 'Create Product', href: '/admin/products/create' },
             { id: 'all-products', label: 'All Products', href: '/admin/products' },
             { id: 'categories', label: 'Categories', href: '/admin/categories' },
-            { id: 'events', label: 'Events', href: '#' },
         ],
     },
     {
-        id: 'inventory',
-        label: 'Inventory',
-        icon: <Icons.Inventory />,
+        id: 'inventory', label: 'Inventory', icon: <Icons.Inventory />,
         children: [
             { id: 'inventory-overview', label: 'Inventory Overview', href: '/admin/inventory' },
         ],
     },
     {
-        id: 'marketing',
-        label: 'Marketing',
-        icon: <Icons.Marketing />,
+        id: 'marketing', label: 'Marketing', icon: <Icons.Marketing />,
         children: [
-            { id: 'promotions', label: 'Promotions', href: '#' },
             { id: 'discount-codes', label: 'Discount Codes', href: '/admin/discounts' },
-            { id: 'banners', label: 'Banners', href: '#' },
         ],
     },
+
     {
-        id: 'communication',
-        label: 'Communication',
-        icon: <Icons.Communication />,
-        children: [
-            { id: 'messages', label: 'Messages', href: '#', badge: '5' },
-        ],
-    },
-    {
-        id: 'reports',
-        label: 'Reports',
-        icon: <Icons.Reports />,
+        id: 'reports', label: 'Reports', icon: <Icons.Reports />,
         children: [
             { id: 'sales-analytics', label: 'Analytics & Reports', href: '/admin/reports' },
         ],
     },
     {
-        id: 'system',
-        label: 'System',
-        icon: <Icons.System />,
+        id: 'system', label: 'System', icon: <Icons.System />,
         children: [
-            { id: 'settings', label: 'Settings', href: '#' },
             { id: 'archive', label: 'Archive', href: '/admin/archive' },
-            { id: 'logs', label: 'Logs', href: '#' },
-            { id: 'site-customization', label: 'Site Customization', href: '#' },
         ],
     },
 ];
@@ -152,22 +122,21 @@ export default function AdminSidebar({ activeItem = 'dashboard' }) {
     };
 
     return (
-        <aside className="fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 border-r border-slate-800/50 flex flex-col">
+        <aside className="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-100 flex flex-col">
             {/* Brand Header */}
-            <div className="flex items-center h-16 px-6 border-b border-slate-800/50">
+            <div className="flex items-center h-16 px-6 border-b border-gray-100">
                 <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center shadow-lg shadow-teal-500/20">
-                        <span className="text-white font-bold text-sm">X</span>
-                    </div>
                     <div>
-                        <h1 className="text-lg font-bold text-white tracking-tight">XYLO</h1>
-                        <p className="text-[10px] uppercase tracking-widest text-slate-500 -mt-0.5">Apparel Admin</p>
+                        <h1 className="text-lg font-black text-black tracking-[0.15em] uppercase">
+                            XYLO<span className="text-[#E60012]">.</span>
+                        </h1>
+                        <p className="text-[9px] uppercase tracking-[0.2em] text-gray-400 font-bold -mt-0.5">Apparel Admin</p>
                     </div>
                 </div>
             </div>
 
             {/* Navigation */}
-            <nav className="flex-1 overflow-y-auto py-4 space-y-1 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
+            <nav className="flex-1 overflow-y-auto py-4 space-y-1">
                 {sidebarConfig.map((section) => (
                     <AdminSidebarSection
                         key={section.id}
@@ -180,24 +149,19 @@ export default function AdminSidebar({ activeItem = 'dashboard' }) {
             </nav>
 
             {/* User Profile */}
-            <div className="p-4 border-t border-slate-800/50">
+            <div className="p-4 border-t border-gray-100">
                 <div className="flex items-center gap-3 px-2">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center ring-2 ring-slate-700/50">
-                        <span className="text-sm font-semibold text-slate-300">
-                            {auth?.user?.name?.charAt(0) || 'A'}
-                        </span>
-                    </div>
                     <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-slate-200 truncate">
+                        <p className="text-[12px] font-bold text-black truncate">
                             {auth?.user?.name || 'Admin User'}
                         </p>
-                        <p className="text-xs text-slate-500 truncate">
+                        <p className="text-[10px] text-gray-400 truncate">
                             {auth?.user?.email || 'admin@xylo.com'}
                         </p>
                     </div>
                     <button 
                         onClick={handleLogout}
-                        className="p-2 rounded-lg text-slate-400 hover:text-red-400 hover:bg-slate-800/50 transition-colors"
+                        className="p-2 rounded-lg text-gray-400 hover:text-[#E60012] hover:bg-red-50 transition-colors"
                         title="Logout"
                     >
                         <Icons.Logout className="w-4 h-4" />

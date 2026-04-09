@@ -30,12 +30,6 @@ export default function Dashboard({ user, stats = {} }) {
         <AdminLayout title="Dashboard" activeItem="dashboard">
             <Head title="Admin Dashboard" />
 
-            {/* Page Background Gradient */}
-            <div className="fixed inset-0 pointer-events-none">
-                <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl" />
-                <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-teal-500/5 rounded-full blur-3xl" />
-            </div>
-
             <div className="relative z-10">
                 {/* Top Metrics Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
@@ -45,7 +39,7 @@ export default function Dashboard({ user, stats = {} }) {
                         trend={revenue?.trend}
                         trendLabel="vs last month"
                         emptyMessage="No revenue data yet"
-                        gradient="from-emerald-500/10 to-cyan-500/10"
+                        gradient="from-transparent to-transparent"
                         icon={<RevenueIcon />}
                     />
                     <StatCard
@@ -63,7 +57,7 @@ export default function Dashboard({ user, stats = {} }) {
                         trend={products?.trend}
                         trendLabel="vs last month"
                         emptyMessage="No products yet"
-                        gradient="from-teal-500/10 to-cyan-500/10"
+                        gradient="from-transparent to-transparent"
                         icon={<ProductsIcon />}
                     />
                     <StatCard
@@ -98,15 +92,14 @@ export default function Dashboard({ user, stats = {} }) {
                     </div>
 
                     {/* Quick Actions Panel */}
-                    <div className="relative overflow-hidden rounded-2xl bg-slate-900/80 border border-slate-800/50 backdrop-blur-sm">
-                        <div className="absolute inset-0 bg-gradient-to-br from-teal-500/5 via-transparent to-blue-500/5 pointer-events-none" />
+                    <div className="relative overflow-hidden rounded-xl bg-white border border-gray-100">
                         <div className="relative z-10 p-6">
-                            <h3 className="text-lg font-semibold text-white mb-5">Quick Actions</h3>
+                            <h3 className="text-sm font-bold text-black uppercase tracking-tight mb-5">Quick Actions</h3>
                             <div className="space-y-3">
-                                <QuickAction icon={<PlusIcon />} label="Add New Product" color="blue" />
-                                <QuickAction icon={<TagIcon />} label="Create Discount" color="teal" />
-                                <QuickAction icon={<TruckIcon />} label="Process Shipments" color="cyan" />
-                                <QuickAction icon={<ChartIcon />} label="View Analytics" color="emerald" />
+                                <QuickAction icon={<PlusIcon />} label="Add New Product" />
+                                <QuickAction icon={<TagIcon />} label="Create Discount" />
+                                <QuickAction icon={<TruckIcon />} label="Process Shipments" />
+                                <QuickAction icon={<ChartIcon />} label="View Analytics" />
                             </div>
                         </div>
                     </div>
@@ -115,64 +108,64 @@ export default function Dashboard({ user, stats = {} }) {
                 {/* Products and Alerts Row */}
                 <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-8">
                     {/* Active Products List */}
-                    <div className="relative overflow-hidden rounded-2xl bg-slate-900/80 border border-slate-800/50 backdrop-blur-sm p-6">
+                    <div className="relative overflow-hidden rounded-xl bg-white border border-gray-100 p-6">
                         <div className="flex items-center justify-between mb-6">
-                            <h3 className="text-lg font-semibold text-white">Active Products</h3>
-                            <button onClick={() => router.visit('/admin/products')} className="text-xs text-blue-400 hover:text-blue-300 transition-colors">View All</button>
+                            <h3 className="text-sm font-bold text-black uppercase tracking-tight">Active Products</h3>
+                            <button onClick={() => router.visit('/admin/products')} className="text-xs text-[#E60012] hover:text-red-600 transition-colors font-bold">View All</button>
                         </div>
                         <div className="space-y-4">
                             {stats.activeProducts?.length > 0 ? (
                                 stats.activeProducts.map(product => (
-                                    <div key={product.id} className="flex items-center gap-4 p-3 rounded-xl bg-slate-800/30 border border-slate-700/30">
-                                        <div className="w-12 h-12 rounded-lg bg-slate-800 overflow-hidden flex-shrink-0">
+                                    <div key={product.id} className="flex items-center gap-4 p-3 rounded-lg bg-gray-50 border border-gray-100">
+                                        <div className="w-12 h-12 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0">
                                             {product.main_image ? (
                                                 <img src={product.main_image.image_url} alt={product.title} className="w-full h-full object-cover" />
                                             ) : (
-                                                <div className="w-full h-full flex items-center justify-center text-slate-600">
+                                                <div className="w-full h-full flex items-center justify-center text-gray-300">
                                                     <ProductsIcon />
                                                 </div>
                                             )}
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <h4 className="text-sm font-medium text-white truncate">{product.title}</h4>
-                                            <p className="text-xs text-slate-500">{product.category?.name || 'Uncategorized'}</p>
+                                            <h4 className="text-sm font-medium text-black truncate">{product.title}</h4>
+                                            <p className="text-xs text-gray-400">{product.category?.name || 'Uncategorized'}</p>
                                         </div>
                                         <div className="text-right">
-                                            <span className="text-sm font-semibold text-white">₱{parseFloat(product.final_price).toLocaleString()}</span>
+                                            <span className="text-sm font-bold text-black">₱{parseFloat(product.final_price).toLocaleString()}</span>
                                         </div>
                                     </div>
                                 ))
                             ) : (
-                                <div className="py-10 text-center text-slate-500 text-sm italic">No active products yet</div>
+                                <div className="py-10 text-center text-gray-400 text-sm">No active products yet</div>
                             )}
                         </div>
                     </div>
 
                     {/* Low Stock Alerts List */}
-                    <div className="relative overflow-hidden rounded-2xl bg-slate-900/80 border border-slate-800/50 backdrop-blur-sm p-6">
+                    <div className="relative overflow-hidden rounded-xl bg-white border border-gray-100 p-6">
                         <div className="flex items-center justify-between mb-6">
-                            <h3 className="text-lg font-semibold text-white text-orange-400">Low Stock Alerts</h3>
-                            <button onClick={() => router.visit('/admin/inventory')} className="text-xs text-slate-500 hover:text-slate-400 transition-colors">Manage Stock</button>
+                            <h3 className="text-sm font-bold text-orange-500 uppercase tracking-tight">Low Stock Alerts</h3>
+                            <button onClick={() => router.visit('/admin/inventory')} className="text-xs text-gray-400 hover:text-black transition-colors font-bold">Manage Stock</button>
                         </div>
                         <div className="space-y-4">
                             {stats.lowStockProducts?.length > 0 ? (
                                 stats.lowStockProducts.map(product => (
-                                    <div key={product.id} className="flex items-center gap-4 p-3 rounded-xl bg-orange-500/5 border border-orange-500/10 transition-colors hover:bg-orange-500/10">
-                                        <div className="w-12 h-12 rounded-lg bg-slate-800 overflow-hidden flex-shrink-0 border border-orange-500/20">
+                                    <div key={product.id} className="flex items-center gap-4 p-3 rounded-lg bg-orange-50 border border-orange-100 transition-colors hover:bg-orange-100/50">
+                                        <div className="w-12 h-12 rounded-lg bg-white overflow-hidden flex-shrink-0 border border-orange-200">
                                             {product.main_image ? (
                                                 <img src={product.main_image.image_url} alt={product.title} className="w-full h-full object-cover" />
                                             ) : (
-                                                <div className="w-full h-full flex items-center justify-center text-orange-500/50">
+                                                <div className="w-full h-full flex items-center justify-center text-orange-300">
                                                     <AlertIcon />
                                                 </div>
                                             )}
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <h4 className="text-sm font-medium text-white truncate">{product.title}</h4>
-                                            <p className="text-xs text-orange-500/70 font-medium">Only {product.total_stock} items left!</p>
+                                            <h4 className="text-sm font-medium text-black truncate">{product.title}</h4>
+                                            <p className="text-xs text-orange-600 font-medium">Only {product.total_stock} items left!</p>
                                         </div>
                                         <div className="text-right">
-                                            <div className="w-16 h-1.5 rounded-full bg-slate-800 overflow-hidden">
+                                            <div className="w-16 h-1.5 rounded-full bg-gray-200 overflow-hidden">
                                                 <div 
                                                     className="h-full bg-orange-500 rounded-full" 
                                                     style={{ width: `${Math.max(10, product.stock_percentage)}%` }}
@@ -182,7 +175,7 @@ export default function Dashboard({ user, stats = {} }) {
                                     </div>
                                 ))
                             ) : (
-                                <div className="py-10 text-center text-slate-500 text-sm italic">Excellent! No low stock alerts.</div>
+                                <div className="py-10 text-center text-gray-400 text-sm">Excellent! No low stock alerts.</div>
                             )}
                         </div>
                     </div>
@@ -198,21 +191,14 @@ export default function Dashboard({ user, stats = {} }) {
 }
 
 // Quick Action Button with gradient
-function QuickAction({ icon, label, color = 'blue' }) {
-    const colorClasses = {
-        blue: 'group-hover:text-blue-400 group-hover:border-blue-500/30',
-        teal: 'group-hover:text-teal-400 group-hover:border-teal-500/30',
-        cyan: 'group-hover:text-cyan-400 group-hover:border-cyan-500/30',
-        emerald: 'group-hover:text-emerald-400 group-hover:border-emerald-500/30',
-    };
-
+function QuickAction({ icon, label }) {
     return (
-        <button className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl bg-slate-800/30 border border-slate-700/30 hover:bg-slate-800/50 text-slate-300 hover:text-white transition-all duration-200 group">
-            <span className={`p-2.5 rounded-xl bg-slate-700/50 border border-slate-600/30 text-slate-400 transition-all duration-200 ${colorClasses[color]}`}>
+        <button className="w-full flex items-center gap-3 px-4 py-3.5 rounded-lg bg-gray-50 border border-gray-100 hover:bg-gray-100 text-gray-600 hover:text-black transition-all duration-200 group">
+            <span className="p-2 rounded-lg bg-white border border-gray-200 text-gray-400 group-hover:text-black transition-all duration-200">
                 {icon}
             </span>
             <span className="text-sm font-medium">{label}</span>
-            <svg className="w-4 h-4 ml-auto text-slate-600 group-hover:text-slate-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="w-4 h-4 ml-auto text-gray-300 group-hover:text-gray-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
         </button>

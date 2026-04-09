@@ -3,12 +3,12 @@ import TableCard from './TableCard';
 
 const StatusBadge = ({ status }) => {
     const statusStyles = {
-        'completed': 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
-        'processing': 'bg-blue-500/20 text-blue-400 border-blue-500/30',
-        'pending': 'bg-amber-500/20 text-amber-400 border-amber-500/30',
-        'shipped': 'bg-teal-500/20 text-teal-400 border-teal-500/30',
-        'cancelled': 'bg-rose-500/20 text-rose-400 border-rose-500/30',
-        'refunded': 'bg-slate-500/20 text-slate-400 border-slate-500/30',
+        'completed': 'bg-green-100 text-green-700 border-green-200',
+        'processing': 'bg-blue-100 text-blue-700 border-blue-200',
+        'pending': 'bg-yellow-100 text-yellow-700 border-yellow-200',
+        'shipped': 'bg-purple-100 text-purple-700 border-purple-200',
+        'cancelled': 'bg-red-100 text-red-700 border-red-200',
+        'refunded': 'bg-gray-100 text-gray-600 border-gray-200',
     };
 
     const style = statusStyles[status.toLowerCase()] || statusStyles['pending'];
@@ -26,7 +26,7 @@ const RecentOrdersTable = ({ orders = [] }) => {
             header: 'Order ID',
             accessor: 'id',
             render: (value) => (
-                <span className="text-white font-medium">#{value}</span>
+                <span className="text-black font-medium">#{value}</span>
             )
         },
         {
@@ -34,13 +34,13 @@ const RecentOrdersTable = ({ orders = [] }) => {
             accessor: 'customer',
             render: (value, row) => (
                 <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-teal-500 flex items-center justify-center text-white text-xs font-semibold">
+                    <div className="w-8 h-8 rounded-full bg-black flex items-center justify-center text-white text-xs font-semibold">
                         {value.charAt(0).toUpperCase()}
                     </div>
                     <div>
-                        <p className="text-white text-sm font-medium">{value}</p>
+                        <p className="text-black text-sm font-medium">{value}</p>
                         {row.email && (
-                            <p className="text-slate-500 text-xs">{row.email}</p>
+                            <p className="text-gray-400 text-xs">{row.email}</p>
                         )}
                     </div>
                 </div>
@@ -50,7 +50,7 @@ const RecentOrdersTable = ({ orders = [] }) => {
             header: 'Amount',
             accessor: 'amount',
             render: (value) => (
-                <span className="text-white font-semibold">
+                <span className="text-black font-semibold">
                     ${typeof value === 'number' ? value.toLocaleString('en-US', { minimumFractionDigits: 2 }) : value}
                 </span>
             )
@@ -63,13 +63,13 @@ const RecentOrdersTable = ({ orders = [] }) => {
     ];
 
     const orderIcon = (
-        <svg className="w-12 h-12 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg className="w-12 h-12 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
         </svg>
     );
 
     const viewAllButton = orders.length > 0 ? (
-        <button className="text-blue-400 hover:text-blue-300 text-sm font-medium transition-colors flex items-center gap-1">
+        <button className="text-[#E60012] hover:text-red-600 text-xs font-bold transition-colors flex items-center gap-1">
             View all
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

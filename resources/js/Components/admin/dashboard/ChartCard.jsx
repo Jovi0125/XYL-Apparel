@@ -12,19 +12,16 @@ const ChartCard = ({
     headerAction = null
 }) => {
     return (
-        <div className={`relative overflow-hidden rounded-2xl bg-slate-900/80 border border-slate-800/50 backdrop-blur-sm ${className}`}>
-            {/* Subtle gradient background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-teal-500/5 pointer-events-none" />
-            
+        <div className={`relative overflow-hidden rounded-xl bg-white border border-gray-100 ${className}`}>
             {/* Header */}
-            <div className="relative z-10 px-6 pt-6 pb-4 border-b border-slate-800/30">
+            <div className="relative z-10 px-6 pt-6 pb-4 border-b border-gray-100">
                 <div className="flex items-center justify-between">
                     <div>
-                        <h3 className="text-lg font-semibold text-white tracking-tight">
+                        <h3 className="text-sm font-bold text-black tracking-tight uppercase">
                             {title}
                         </h3>
                         {subtitle && (
-                            <p className="text-slate-500 text-sm mt-0.5">
+                            <p className="text-gray-400 text-xs mt-0.5">
                                 {subtitle}
                             </p>
                         )}

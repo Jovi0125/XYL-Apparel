@@ -15,9 +15,9 @@ import ChartCard from './ChartCard';
 const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
         return (
-            <div className="bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 shadow-xl">
-                <p className="text-slate-400 text-xs mb-1">{label}</p>
-                <p className="text-white font-semibold text-lg">
+            <div className="bg-white border border-gray-200 rounded-lg px-4 py-3 shadow-xl">
+                <p className="text-gray-400 text-xs mb-1">{label}</p>
+                <p className="text-black font-semibold text-lg">
                     ${payload[0].value.toLocaleString()}
                 </p>
             </div>
@@ -30,7 +30,7 @@ const SalesChart = ({ data = null }) => {
     const isEmpty = !data || data.length === 0;
 
     const chartIcon = (
-        <svg className="w-12 h-12 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg className="w-12 h-12 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
         </svg>
     );
@@ -58,20 +58,20 @@ const SalesChart = ({ data = null }) => {
                         </defs>
                         <CartesianGrid 
                             strokeDasharray="3 3" 
-                            stroke="#334155" 
+                            stroke="#e5e7eb" 
                             vertical={false}
                         />
                         <XAxis 
                             dataKey="month" 
                             axisLine={false}
                             tickLine={false}
-                            tick={{ fill: '#64748b', fontSize: 12 }}
+                            tick={{ fill: '#9ca3af', fontSize: 12 }}
                             dy={10}
                         />
                         <YAxis 
                             axisLine={false}
                             tickLine={false}
-                            tick={{ fill: '#64748b', fontSize: 12 }}
+                            tick={{ fill: '#9ca3af', fontSize: 12 }}
                             tickFormatter={(value) => `$${value / 1000}k`}
                             dx={-10}
                         />
@@ -86,7 +86,7 @@ const SalesChart = ({ data = null }) => {
                             activeDot={{
                                 r: 6,
                                 fill: '#3b82f6',
-                                stroke: '#1e293b',
+                                stroke: '#ffffff',
                                 strokeWidth: 3
                             }}
                         />

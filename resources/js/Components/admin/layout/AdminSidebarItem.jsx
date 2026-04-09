@@ -21,27 +21,27 @@ export default function AdminSidebarItem({ item, isActive = false }) {
     `;
 
     const activeClasses = isActive
-        ? 'bg-teal-500/10 text-teal-400'
-        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50';
+        ? 'bg-black text-white'
+        : 'text-gray-500 hover:text-black hover:bg-gray-50';
 
     const content = (
         <>
             {item.icon && (
                 <span className={`w-5 h-5 flex-shrink-0 transition-colors duration-200 ${
-                    isActive ? 'text-teal-400' : 'text-slate-500 group-hover:text-slate-400'
+                    isActive ? 'text-white' : 'text-gray-400 group-hover:text-gray-600'
                 }`}>
                     {item.icon}
                 </span>
             )}
             <span className="truncate">{item.label}</span>
             {item.badge && (
-                <span className="ml-auto px-2 py-0.5 text-xs font-semibold rounded-full bg-teal-500/20 text-teal-400">
+                <span className="ml-auto px-2 py-0.5 text-xs font-semibold rounded-full bg-[#E60012] text-white">
                     {item.badge}
                 </span>
             )}
             {hasChildren && (
                 <svg
-                    className={`ml-auto w-4 h-4 text-slate-500 transition-transform duration-300 ease-out ${
+                    className={`ml-auto w-4 h-4 text-gray-400 transition-transform duration-300 ease-out ${
                         isOpen ? 'rotate-180' : ''
                     }`}
                     fill="none"

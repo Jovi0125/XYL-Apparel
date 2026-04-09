@@ -15,7 +15,7 @@ const TableCard = ({
 
     const emptyTableIcon = (
         <svg 
-            className="w-12 h-12 text-slate-600" 
+            className="w-12 h-12 text-gray-300" 
             fill="none" 
             viewBox="0 0 24 24" 
             stroke="currentColor"
@@ -30,19 +30,16 @@ const TableCard = ({
     );
 
     return (
-        <div className={`relative overflow-hidden rounded-2xl bg-slate-900/80 border border-slate-800/50 backdrop-blur-sm ${className}`}>
-            {/* Gradient background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-teal-500/5 via-transparent to-blue-500/5 pointer-events-none" />
-            
+        <div className={`relative overflow-hidden rounded-xl bg-white border border-gray-100 ${className}`}>
             {/* Header */}
-            <div className="relative z-10 px-6 pt-6 pb-4 border-b border-slate-800/30">
+            <div className="relative z-10 px-6 pt-6 pb-4 border-b border-gray-100">
                 <div className="flex items-center justify-between">
                     <div>
-                        <h3 className="text-lg font-semibold text-white tracking-tight">
+                        <h3 className="text-sm font-bold text-black tracking-tight uppercase">
                             {title}
                         </h3>
                         {subtitle && (
-                            <p className="text-slate-500 text-sm mt-0.5">
+                            <p className="text-gray-400 text-xs mt-0.5">
                                 {subtitle}
                             </p>
                         )}
@@ -67,22 +64,22 @@ const TableCard = ({
                     <div className="overflow-x-auto">
                         <table className="w-full">
                             <thead>
-                                <tr className="border-b border-slate-800/30">
+                                <tr className="border-b border-gray-100">
                                     {columns.map((col, index) => (
                                         <th 
                                             key={index}
-                                            className="px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider"
+                                            className="px-6 py-4 text-left text-[10px] font-bold text-gray-400 uppercase tracking-[0.15em]"
                                         >
                                             {col.header}
                                         </th>
                                     ))}
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-slate-800/30">
+                            <tbody className="divide-y divide-gray-50">
                                 {data.map((row, rowIndex) => (
                                     <tr 
                                         key={rowIndex}
-                                        className="hover:bg-slate-800/30 transition-colors duration-150"
+                                        className="hover:bg-gray-50 transition-colors duration-150"
                                     >
                                         {columns.map((col, colIndex) => (
                                             <td 

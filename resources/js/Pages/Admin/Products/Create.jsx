@@ -40,11 +40,6 @@ export default function CreateProduct({ categories = [], discounts = [] }) {
         <AdminLayout title="Create Product" activeItem="catalog">
             <Head title="Create Product" />
 
-            <div className="fixed inset-0 pointer-events-none">
-                <div className="absolute top-0 right-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl" />
-                <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-teal-500/5 rounded-full blur-3xl" />
-            </div>
-
             <div className="relative z-10">
                 {errors.error && (
                     <div className="mb-6 p-4 bg-rose-500/10 border border-rose-500/20 rounded-2xl text-rose-400 text-sm flex items-center gap-3">
@@ -113,14 +108,14 @@ export default function CreateProduct({ categories = [], discounts = [] }) {
                                 <button
                                     type="button"
                                     onClick={() => window.history.back()}
-                                    className="px-6 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white hover:border-slate-600/50 transition-all"
+                                    className="px-6 py-3 bg-gray-50 border border-gray-200 rounded-xl text-black hover:border-gray-200/50 transition-all"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
                                     disabled={processing}
-                                    className="px-8 py-3 bg-gradient-to-r from-blue-500 to-teal-600 rounded-xl font-semibold text-white shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all disabled:opacity-50"
+                                    className="px-8 py-3 bg-black rounded-xl font-semibold text-white shadow-md hover:shadow-lg transition-all disabled:opacity-50"
                                 >
                                     {processing ? 'Creating...' : 'Create Product'}
                                 </button>

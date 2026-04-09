@@ -14,8 +14,8 @@ export default function Inventory({ overview, lowStockProducts, allProducts }) {
             <div className="space-y-6">
                 <div className="flex items-center justify-between">
                     <div>
-                        <h1 className="text-2xl font-bold text-white tracking-tight">Inventory Management</h1>
-                        <p className="text-slate-400 text-sm">Real-time stock analytics and reorder tracking</p>
+                        <h1 className="text-2xl font-bold text-black tracking-tight">Inventory Management</h1>
+                        <p className="text-gray-400 text-sm">Real-time stock analytics and reorder tracking</p>
                     </div>
                 </div>
 
