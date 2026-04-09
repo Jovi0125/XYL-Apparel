@@ -32,6 +32,8 @@ class User extends Authenticatable
         'status',
         'suspended_at',
         'postal_code',
+        'address',
+        'contact_number',
         'birthday',
         'gender',
         'terms_accepted',

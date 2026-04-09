@@ -6,8 +6,8 @@ export default function Checkout({ cartItems, summary, user }) {
     const { flash } = usePage().props;
 
     const { data, setData, post, processing, errors } = useForm({
-        shipping_address: '',
-        contact_number: '',
+        shipping_address: user?.address || '',
+        contact_number: user?.contact_number || '',
         payment_method: 'cod',
         notes: '',
     });

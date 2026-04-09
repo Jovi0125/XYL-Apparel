@@ -36,10 +36,13 @@ class LogisticsDashboardController extends Controller
                     'order_number' => $order->order_number,
                     'buyer_name' => $order->buyer?->name ?? 'Unknown',
                     'buyer_email' => $order->buyer?->email ?? '',
+                    'buyer_contact' => $order->buyer?->contact_number ?? '',
+                    'buyer_address' => $order->buyer?->address ?? '',
                     'product_title' => $order->product?->title ?? 'Unknown Product',
                     'product_image' => $order->product?->mainImage?->image_url ?? $order->product?->images?->first()?->image_url,
                     'variant_label' => $order->product_variant_label,
                     'quantity' => $order->quantity,
+                    'unit_price' => $order->unit_price,
                     'total_amount' => $order->total_amount,
                     'payment_method' => $order->payment_method_label,
                     'payment_status' => $order->payment_status,
@@ -54,6 +57,7 @@ class LogisticsDashboardController extends Controller
                     'shipped_at' => $order->shipment?->shipped_at?->format('M d, Y H:i'),
                     'delivered_at' => $order->shipment?->delivered_at?->format('M d, Y H:i'),
                     'created_at' => $order->created_at->format('M d, Y H:i'),
+                    'order_date' => $order->created_at->format('F d, Y'),
                 ];
             });
 

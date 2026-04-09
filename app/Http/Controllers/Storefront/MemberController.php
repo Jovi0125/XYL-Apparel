@@ -86,12 +86,34 @@ class MemberController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'postal_code' => ['nullable', 'string', 'max:20'],
+            'address' => ['nullable', 'string', 'max:500'],
+            'contact_number' => ['nullable', 'string', 'max:20'],
             'birthday' => ['nullable', 'date'],
             'gender' => ['nullable', 'in:male,female,other'],
         ]);
 
-        Auth::user()->update($request->only(['name', 'postal_code', 'birthday', 'gender']));
+        Auth::user()->update($request->only(['name', 'postal_code', 'address', 'contact_number', 'birthday', 'gender']));
 
         return back()->with('success', 'Profile updated successfully.');
+    }
+
+    /**
+     * Change password.
+     */
+    public function changePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', 'string', 'min:8', 'max:16', 'confirmed', 'regex:/[A-Z]/', 'regex:/[0-9]/'],
+        ], [
+            'current_password.current_password' => 'The current password is incorrect.',
+            'password.regex' => 'Password must contain at least one uppercase letter and one number.',
+        ]);
+
+        Auth::user()->update([
+            'password' => $request->password,
+        ]);
+
+        return back()->with('success', 'Password changed successfully.');
     }
 }

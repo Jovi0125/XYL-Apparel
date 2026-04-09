@@ -95,6 +95,7 @@ Route::prefix('ph/en')->group(function () {
         // Member Profile (UNIQLO-style)
         Route::get('/profile', [MemberController::class, 'index'])->name('store.profile');
         Route::put('/profile', [MemberController::class, 'updateProfile'])->name('store.profile.update');
+        Route::put('/profile/password', [MemberController::class, 'changePassword'])->name('store.profile.password');
         Route::get('/profile/orders', [MemberController::class, 'orders'])->name('store.profile.orders');
         Route::get('/profile/orders/{order}', [MemberController::class, 'orderDetail'])->name('store.profile.order');
         Route::get('/profile/orders/{order}/receipt', [MemberController::class, 'receipt'])->name('store.profile.order.receipt');

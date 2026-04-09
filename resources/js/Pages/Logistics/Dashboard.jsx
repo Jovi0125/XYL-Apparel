@@ -202,27 +202,56 @@ function ShipmentCard({ shipment, index, isExpanded, onToggle }) {
             {/* Expanded Content */}
             {isExpanded && (
                 <div className="px-5 pb-5 border-t border-gray-100 pt-4 space-y-5">
-                    {/* Order Details Grid */}
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div>
-                            <span className="text-[10px] font-medium uppercase text-gray-400 block mb-1">Buyer</span>
-                            <p className="text-sm font-semibold text-black">{shipment.buyer_name}</p>
-                            <p className="text-xs text-gray-400">{shipment.buyer_email}</p>
+                    {/* Buyer Information */}
+                    <div>
+                        <h4 className="text-[10px] font-semibold uppercase text-gray-400 tracking-wider mb-3">Buyer Information</h4>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div>
+                                <span className="text-[10px] font-medium uppercase text-gray-400 block mb-1">Name</span>
+                                <p className="text-sm font-semibold text-black">{shipment.buyer_name}</p>
+                            </div>
+                            <div>
+                                <span className="text-[10px] font-medium uppercase text-gray-400 block mb-1">Email</span>
+                                <p className="text-sm text-black">{shipment.buyer_email || '—'}</p>
+                            </div>
+                            <div>
+                                <span className="text-[10px] font-medium uppercase text-gray-400 block mb-1">Contact</span>
+                                <p className="text-sm font-semibold text-black">{shipment.contact_number || '—'}</p>
+                            </div>
+                            <div>
+                                <span className="text-[10px] font-medium uppercase text-gray-400 block mb-1">Shipping Address</span>
+                                <p className="text-sm font-semibold text-black leading-tight">{shipment.shipping_address || '—'}</p>
+                            </div>
                         </div>
-                        <div>
-                            <span className="text-[10px] font-medium uppercase text-gray-400 block mb-1">Payment</span>
-                            <p className="text-sm font-semibold text-black">{shipment.payment_method}</p>
-                            <p className={`text-xs capitalize ${shipment.payment_status === 'paid' ? 'text-emerald-600' : 'text-yellow-600'}`}>
-                                {shipment.payment_status}
-                            </p>
-                        </div>
-                        <div>
-                            <span className="text-[10px] font-medium uppercase text-gray-400 block mb-1">Address</span>
-                            <p className="text-sm font-semibold text-black leading-tight">{shipment.shipping_address || '—'}</p>
-                        </div>
-                        <div>
-                            <span className="text-[10px] font-medium uppercase text-gray-400 block mb-1">Contact</span>
-                            <p className="text-sm font-semibold text-black">{shipment.contact_number || '—'}</p>
+                    </div>
+
+                    {/* Order Details */}
+                    <div>
+                        <h4 className="text-[10px] font-semibold uppercase text-gray-400 tracking-wider mb-3">Order Details</h4>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div>
+                                <span className="text-[10px] font-medium uppercase text-gray-400 block mb-1">Order Date</span>
+                                <p className="text-sm font-semibold text-black">{shipment.order_date}</p>
+                            </div>
+                            <div>
+                                <span className="text-[10px] font-medium uppercase text-gray-400 block mb-1">Item</span>
+                                <p className="text-sm font-semibold text-black">
+                                    {shipment.product_title}
+                                    {shipment.variant_label ? ` (${shipment.variant_label})` : ''}
+                                </p>
+                                <p className="text-xs text-gray-400">Qty: {shipment.quantity} × ₱{Number(shipment.unit_price).toLocaleString()}</p>
+                            </div>
+                            <div>
+                                <span className="text-[10px] font-medium uppercase text-gray-400 block mb-1">Payment</span>
+                                <p className="text-sm font-semibold text-black">{shipment.payment_method}</p>
+                                <p className={`text-xs font-semibold capitalize ${shipment.payment_status === 'paid' ? 'text-emerald-600' : 'text-yellow-600'}`}>
+                                    {shipment.payment_status}
+                                </p>
+                            </div>
+                            <div>
+                                <span className="text-[10px] font-medium uppercase text-gray-400 block mb-1">Total</span>
+                                <p className="text-lg font-bold text-black">₱{Number(shipment.total_amount).toLocaleString(undefined, {minimumFractionDigits: 2})}</p>
+                            </div>
                         </div>
                     </div>
 
