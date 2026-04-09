@@ -97,6 +97,7 @@ Route::prefix('ph/en')->group(function () {
         Route::put('/profile', [MemberController::class, 'updateProfile'])->name('store.profile.update');
         Route::get('/profile/orders', [MemberController::class, 'orders'])->name('store.profile.orders');
         Route::get('/profile/orders/{order}', [MemberController::class, 'orderDetail'])->name('store.profile.order');
+        Route::get('/profile/orders/{order}/receipt', [MemberController::class, 'receipt'])->name('store.profile.order.receipt');
     });
 });
 

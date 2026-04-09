@@ -97,7 +97,7 @@ class AuthController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'password' => ['required', 'string', 'min:8', 'max:16', 'confirmed', 'regex:/[A-Z]/', 'regex:/[0-9]/'],
             'postal_code' => ['nullable', 'string', 'max:20'],
             'birthday' => ['nullable', 'date'],
             'gender' => ['nullable', 'in:male,female,other'],

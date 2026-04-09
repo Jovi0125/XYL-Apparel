@@ -86,10 +86,20 @@ export default function MyOrders({ orders }) {
                                         </div>
                                     </div>
 
-                                    {/* Status Badge */}
-                                    <span className={`px-3 py-1 text-[9px] font-black tracking-[0.2em] uppercase border ${getStatusColor(order.shipment?.status || order.payment_status)}`}>
-                                        {order.shipment?.status_label || order.payment_status}
-                                    </span>
+                                    {/* Status Badge + Receipt */}
+                                    <div className="flex items-center gap-3">
+                                        {order.shipment?.status === 'delivered' && (
+                                            <Link
+                                                href={`/ph/en/profile/orders/${order.id}/receipt`}
+                                                className="px-3 py-1 text-[9px] font-bold tracking-[0.15em] uppercase border border-black text-black hover:bg-black hover:text-white transition-colors"
+                                            >
+                                                View Receipt
+                                            </Link>
+                                        )}
+                                        <span className={`px-3 py-1 text-[9px] font-black tracking-[0.2em] uppercase border ${getStatusColor(order.shipment?.status || order.payment_status)}`}>
+                                            {order.shipment?.status_label || order.payment_status}
+                                        </span>
+                                    </div>
                                 </div>
 
                                 {/* Order Item */}

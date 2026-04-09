@@ -115,6 +115,7 @@ export default function Register() {
                                     className="w-full bg-gray-50 border-b border-gray-200 px-1 py-4 text-[13px] text-black placeholder-gray-400 focus:outline-none focus:border-black transition-all italic font-medium"
                                     placeholder="PASSWORD"
                                     required
+                                    maxLength={16}
                                 />
                             </div>
                             <div>
@@ -125,10 +126,75 @@ export default function Register() {
                                     className="w-full bg-gray-50 border-b border-gray-200 px-1 py-4 text-[13px] text-black placeholder-gray-400 focus:outline-none focus:border-black transition-all italic font-medium"
                                     placeholder="CONFIRM PASSWORD"
                                     required
+                                    maxLength={16}
                                 />
                                 {errors.password && <p className="mt-2 text-[10px] font-bold text-red-500 uppercase tracking-widest">{errors.password}</p>}
                             </div>
                         </div>
+
+                        {/* Password Strength Indicator */}
+                        {data.password.length > 0 && (() => {
+                            const pw = data.password;
+                            const hasLength = pw.length >= 8 && pw.length <= 16;
+                            const hasNumber = /\d/.test(pw);
+                            const hasUpper = /[A-Z]/.test(pw);
+                            const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(pw);
+                            const hasLower = /[a-z]/.test(pw);
+
+                            let score = 0;
+                            if (pw.length >= 8) score++;
+                            if (hasNumber) score++;
+                            if (hasUpper) score++;
+                            if (hasSpecial) score++;
+                            if (hasLower && hasUpper) score++;
+
+                            let label, color, barWidth;
+                            if (pw.length < 8) {
+                                label = 'Too Short'; color = 'bg-red-400'; barWidth = '15%';
+                            } else if (score <= 2) {
+                                label = 'Weak'; color = 'bg-red-400'; barWidth = '30%';
+                            } else if (score === 3) {
+                                label = 'Fair'; color = 'bg-yellow-400'; barWidth = '55%';
+                            } else if (score === 4) {
+                                label = 'Good'; color = 'bg-emerald-400'; barWidth = '80%';
+                            } else {
+                                label = 'Strong'; color = 'bg-emerald-500'; barWidth = '100%';
+                            }
+
+                            return (
+                                <div className="space-y-3 mt-1">
+                                    {/* Strength Bar */}
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex-1 h-1 bg-gray-100 rounded-full overflow-hidden">
+                                            <div
+                                                className={`h-full ${color} rounded-full transition-all duration-300`}
+                                                style={{ width: barWidth }}
+                                            />
+                                        </div>
+                                        <span className={`text-[10px] font-bold uppercase tracking-wider ${
+                                            pw.length < 8 || score <= 2 ? 'text-red-400' :
+                                            score === 3 ? 'text-yellow-500' :
+                                            'text-emerald-500'
+                                        }`}>
+                                            {label}
+                                        </span>
+                                    </div>
+
+                                    {/* Requirements */}
+                                    <div className="flex flex-wrap gap-x-5 gap-y-1">
+                                        <span className={`text-[10px] flex items-center gap-1 ${hasLength ? 'text-emerald-500' : 'text-gray-300'}`}>
+                                            {hasLength ? '✓' : '○'} 8–16 characters
+                                        </span>
+                                        <span className={`text-[10px] flex items-center gap-1 ${hasNumber ? 'text-emerald-500' : 'text-gray-300'}`}>
+                                            {hasNumber ? '✓' : '○'} Number
+                                        </span>
+                                        <span className={`text-[10px] flex items-center gap-1 ${hasUpper ? 'text-emerald-500' : 'text-gray-300'}`}>
+                                            {hasUpper ? '✓' : '○'} Uppercase letter
+                                        </span>
+                                    </div>
+                                </div>
+                            );
+                        })()}
                     </div>
 
                     {/* Terms Section */}

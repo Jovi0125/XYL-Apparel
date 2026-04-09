@@ -57,6 +57,28 @@ class MemberController extends Controller
     }
 
     /**
+     * Order receipt (only for delivered orders).
+     */
+    public function receipt(Order $order)
+    {
+        if ($order->buyer_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $order->load(['product.mainImage', 'product.images', 'shipment']);
+
+        // Only show receipt for delivered orders
+        if (!$order->shipment || $order->shipment->status !== 'delivered') {
+            return redirect()->route('store.profile.order', $order->id)
+                ->with('error', 'Receipt is only available for delivered orders.');
+        }
+
+        return Inertia::render('Storefront/Receipt', [
+            'order' => $order,
+        ]);
+    }
+
+    /**
      * Update profile information.
      */
     public function updateProfile(Request $request)
