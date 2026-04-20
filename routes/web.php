@@ -159,10 +159,13 @@ Route::prefix('admin')
         Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
         Route::post('/inventory/update-thresholds', [InventoryController::class, 'updateThresholds'])->name('inventory.updateThresholds');
 
-        // Shipments / Order Fulfillment
+        // Orders Management (Approve / Reject)
+        Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+        Route::post('/orders/{order}/approve', [OrderController::class, 'approveOrder'])->name('orders.approve');
+        Route::post('/orders/{order}/reject', [OrderController::class, 'rejectOrder'])->name('orders.reject');
+
+        // Shipment Tracking (Read-only monitoring)
         Route::get('/shipments', [ShipmentController::class, 'index'])->name('shipments.index');
-        Route::post('/shipments/{order}/update-status', [ShipmentController::class, 'updateStatus'])->name('shipments.updateStatus');
-        Route::post('/shipments/{order}/update-payment', [ShipmentController::class, 'updatePaymentStatus'])->name('shipments.updatePayment');
 
         // Search
         Route::get('/search', [SearchController::class, 'globalSearch'])->name('search');
@@ -179,8 +182,6 @@ Route::prefix('admin')
         Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
         Route::post('users/{user}/toggle-status', [\App\Http\Controllers\Admin\UserController::class, 'toggleStatus'])->name('users.toggleStatus');
 
-        // Orders Management
-        Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
 
         // Payments Management
         Route::get('/payments', [PaymentController::class, 'index'])->name('payments.index');

@@ -14,11 +14,9 @@ class Order extends Model
      * Payment method constants
      */
     public const PAYMENT_COD = 'cod';
-    public const PAYMENT_GCASH = 'gcash';
 
     public const PAYMENT_METHODS = [
         self::PAYMENT_COD => 'Cash on Delivery',
-        self::PAYMENT_GCASH => 'GCash',
     ];
 
     /**
@@ -26,6 +24,19 @@ class Order extends Model
      */
     public const STATUS_PENDING = 'pending';
     public const STATUS_PAID = 'paid';
+
+    /**
+     * Order status constants
+     */
+    public const ORDER_PENDING = 'pending';
+    public const ORDER_APPROVED = 'approved';
+    public const ORDER_REJECTED = 'rejected';
+
+    public const ORDER_STATUS_LABELS = [
+        self::ORDER_PENDING  => 'Pending',
+        self::ORDER_APPROVED => 'Approved',
+        self::ORDER_REJECTED => 'Rejected',
+    ];
     public const STATUS_UNPAID = 'unpaid';
     public const STATUS_FAILED = 'failed';
 
@@ -40,6 +51,7 @@ class Order extends Model
         'earnings',
         'payment_method',
         'payment_status',
+        'order_status',
         'shipping_address',
         'contact_number',
         'notes',
@@ -52,7 +64,7 @@ class Order extends Model
         'quantity'      => 'integer',
     ];
 
-    protected $appends = ['payment_method_label', 'formatted_total', 'formatted_earnings'];
+    protected $appends = ['payment_method_label', 'formatted_total', 'formatted_earnings', 'order_status_label'];
 
     // ─── Relationships ───────────────────────────────────────
 
@@ -111,5 +123,27 @@ class Order extends Model
     public function scopePending($query)
     {
         return $query->where('payment_status', self::STATUS_PENDING);
+    }
+
+    public function scopeOrderPending($query)
+    {
+        return $query->where('order_status', self::ORDER_PENDING);
+    }
+
+    public function scopeApproved($query)
+    {
+        return $query->where('order_status', self::ORDER_APPROVED);
+    }
+
+    public function scopeRejected($query)
+    {
+        return $query->where('order_status', self::ORDER_REJECTED);
+    }
+
+    // ─── Order Status Accessor ──────────────────────────────
+
+    public function getOrderStatusLabelAttribute(): string
+    {
+        return self::ORDER_STATUS_LABELS[$this->order_status] ?? ucfirst($this->order_status ?? 'pending');
     }
 }

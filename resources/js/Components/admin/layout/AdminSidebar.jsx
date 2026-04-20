@@ -66,7 +66,7 @@ const sidebarConfig = [
             { id: 'orders', label: 'Orders', href: '/admin/orders' },
             { id: 'payments', label: 'Payments', href: '/admin/payments' },
             { id: 'users', label: 'Users', href: '/admin/users' },
-            { id: 'shipments', label: 'Shipments', href: '/admin/shipments' },
+            { id: 'shipments', label: 'Shipment Tracking', href: '/admin/shipments' },
             { id: 'reviews', label: 'Reviews', href: '/admin/reviews' },
         ],
     },

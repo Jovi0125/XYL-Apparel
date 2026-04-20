@@ -3,7 +3,6 @@ import React from 'react';
 export default function ProductPaymentMethods({ data, setData, errors }) {
     const paymentOptions = [
         { id: 'cod', name: 'Cash on Delivery' },
-        { id: 'gcash', name: 'GCash' },
     ];
 
     const togglePaymentMethod = (method) => {

@@ -13,18 +13,6 @@ const methodConfig = {
         text: 'text-amber-400',
         border: 'border-amber-500/20',
     },
-    gcash: {
-        label: 'GCash',
-        short: 'GCash',
-        icon: (
-            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-            </svg>
-        ),
-        bg: 'bg-blue-500/10',
-        text: 'text-[#E60012]',
-        border: 'border-blue-500/20',
-    },
 };
 
 export default function PaymentMethodBadge({ method }) {

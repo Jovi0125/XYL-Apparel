@@ -13,20 +13,23 @@ use Illuminate\Support\Facades\Auth;
 class LogisticsDashboardController extends Controller
 {
     /**
-     * Display the Logistics Dashboard with real delivery stats.
+     * Display the Fulfillment Center dashboard.
+     * Only shows orders that have been approved by admin.
      */
     public function index(Request $request): Response
     {
+        // Only count shipments for approved orders
+        $approvedOrderIds = Order::approved()->pluck('id');
+
         $stats = [
-            'pending' => Shipment::where('status', 'pending')->count(),
-            'preparing' => Shipment::where('status', 'preparing')->count(),
-            'in_transit' => Shipment::whereIn('status', ['shipped', 'in_transit'])->count(),
-            'delivered' => Shipment::where('status', 'delivered')->count(),
-            'cancelled' => Shipment::where('status', 'cancelled')->count(),
-            'total' => Order::count(),
+            'preparing'  => Shipment::whereIn('order_id', $approvedOrderIds)->where('status', 'preparing')->count(),
+            'in_transit' => Shipment::whereIn('order_id', $approvedOrderIds)->whereIn('status', ['shipped', 'in_transit'])->count(),
+            'delivered'  => Shipment::whereIn('order_id', $approvedOrderIds)->where('status', 'delivered')->count(),
+            'total'      => Shipment::whereIn('order_id', $approvedOrderIds)->count(),
         ];
 
         $shipments = Order::with(['product.mainImage', 'product.images', 'shipment', 'buyer'])
+            ->approved()
             ->whereHas('shipment')
             ->latest()
             ->get()
@@ -50,8 +53,8 @@ class LogisticsDashboardController extends Controller
                     'contact_number' => $order->contact_number,
                     'notes' => $order->notes,
                     'shipment_id' => $order->shipment?->id,
-                    'shipment_status' => $order->shipment?->status ?? 'pending',
-                    'shipment_status_label' => $order->shipment?->status_label ?? 'Pending',
+                    'shipment_status' => $order->shipment?->status ?? 'preparing',
+                    'shipment_status_label' => $order->shipment?->status_label ?? 'Preparing',
                     'tracking_number' => $order->shipment?->tracking_number,
                     'carrier' => $order->shipment?->carrier,
                     'shipped_at' => $order->shipment?->shipped_at?->format('M d, Y H:i'),
@@ -68,24 +71,27 @@ class LogisticsDashboardController extends Controller
     }
 
     /**
-     * Update shipment status — the core action for logistics.
+     * Update shipment status — logistics can only move forward:
+     * preparing → in_transit → delivered
      */
     public function updateStatus(Request $request, Order $order)
     {
         $request->validate([
-            'status' => ['required', 'in:pending,preparing,shipped,in_transit,delivered,cancelled'],
+            'status' => ['required', 'in:preparing,in_transit,delivered'],
             'tracking_number' => ['nullable', 'string', 'max:100'],
             'carrier' => ['nullable', 'string', 'max:100'],
             'notes' => ['nullable', 'string', 'max:500'],
         ]);
 
+        // Ensure order is approved
+        if ($order->order_status !== 'approved') {
+            return back()->withErrors(['error' => 'Only approved orders can be updated.']);
+        }
+
         $shipment = $order->shipment;
 
         if (!$shipment) {
-            $shipment = Shipment::create([
-                'order_id' => $order->id,
-                'status' => $request->status,
-            ]);
+            return back()->withErrors(['error' => 'No shipment found for this order.']);
         }
 
         $updateData = ['status' => $request->status];
@@ -101,7 +107,7 @@ class LogisticsDashboardController extends Controller
         }
 
         // Set timestamps based on status
-        if ($request->status === 'shipped' && !$shipment->shipped_at) {
+        if ($request->status === 'in_transit' && !$shipment->shipped_at) {
             $updateData['shipped_at'] = now();
         }
         if ($request->status === 'delivered') {

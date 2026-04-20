@@ -27,7 +27,7 @@ export default function LogisticsLayout({ children }) {
                         <h1 className="text-lg font-black text-black tracking-[0.15em] uppercase">
                             XYLO<span className="text-[#E60012]">.</span>
                         </h1>
-                        <p className="text-[9px] uppercase tracking-[0.2em] text-gray-400 font-bold -mt-0.5">Apparel Logistics</p>
+                        <p className="text-[9px] uppercase tracking-[0.2em] text-gray-400 font-bold -mt-0.5">Fulfillment Center</p>
                     </Link>
                 </div>
                 
@@ -78,7 +78,7 @@ export default function LogisticsLayout({ children }) {
                         {/* Mobile Logo */}
                         <span className="md:hidden text-sm font-black tracking-[0.15em]">XYLO<span className="text-[#E60012]">.</span></span>
                         <span className="hidden md:block text-xs font-semibold text-black uppercase tracking-wider">
-                            Logistics Management
+                            Fulfillment Center
                         </span>
                     </div>
                 </header>

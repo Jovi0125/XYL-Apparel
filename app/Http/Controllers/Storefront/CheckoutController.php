@@ -51,7 +51,7 @@ class CheckoutController extends Controller
         $request->validate([
             'shipping_address' => ['required', 'string', 'max:500'],
             'contact_number' => ['required', 'string', 'max:20'],
-            'payment_method' => ['required', 'in:cod,gcash'],
+            'payment_method' => ['required', 'in:cod'],
             'notes' => ['nullable', 'string', 'max:1000'],
         ]);
 
@@ -96,11 +96,7 @@ class CheckoutController extends Controller
                     'notes' => $request->notes,
                 ]);
 
-                // Create initial shipment record
-                Shipment::create([
-                    'order_id' => $order->id,
-                    'status' => 'pending',
-                ]);
+                // Order starts as 'pending' — no shipment until admin approves
 
                 // Decrement stock
                 if ($item->variant) {

@@ -3,7 +3,7 @@ import ShipmentStatusBadge from './ShipmentStatusBadge';
 import PaymentStatusBadge from './PaymentStatusBadge';
 import PaymentMethodBadge from './PaymentMethodBadge';
 
-export default function ShipmentTable({ orders, onView, onUpdate }) {
+export default function ShipmentTable({ orders, onView, onUpdate, readOnly = false }) {
     return (
         <div className="relative overflow-hidden rounded-2xl bg-white border border-gray-100 ">
             <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-transparent pointer-events-none" />
@@ -94,15 +94,17 @@ export default function ShipmentTable({ orders, onView, onUpdate }) {
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                             </svg>
                                         </button>
-                                        <button
-                                            onClick={() => onUpdate(order)}
-                                            className="p-2 rounded-lg text-gray-400 hover:text-[#E60012] hover:bg-blue-500/10 transition-all"
-                                            title="Update Status"
-                                        >
-                                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                            </svg>
-                                        </button>
+                                        {!readOnly && (
+                                            <button
+                                                onClick={() => onUpdate(order)}
+                                                className="p-2 rounded-lg text-gray-400 hover:text-[#E60012] hover:bg-blue-500/10 transition-all"
+                                                title="Update Status"
+                                            >
+                                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                                </svg>
+                                            </button>
+                                        )}
                                     </div>
                                 </td>
                             </tr>

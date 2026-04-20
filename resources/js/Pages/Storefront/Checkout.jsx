@@ -74,33 +74,15 @@ export default function Checkout({ cartItems, summary, user }) {
                             {/* Payment Method */}
                             <div>
                                 <h2 className="text-[11px] font-black tracking-[0.3em] uppercase text-gray-400 mb-4">PAYMENT METHOD</h2>
-                                <div className="grid grid-cols-2 gap-3">
+                                <div className="grid grid-cols-1 gap-3">
                                     <button
                                         type="button"
                                         onClick={() => setData('payment_method', 'cod')}
-                                        className={`p-4 border text-left transition-all duration-200
-                                            ${data.payment_method === 'cod' 
-                                                ? 'border-black bg-black text-white'
-                                                : 'border-gray-200 hover:border-gray-400'
-                                            }`}
+                                        className="p-4 border text-left border-black bg-black text-white"
                                     >
                                         <span className="text-[11px] font-black tracking-[0.2em] uppercase block">COD</span>
-                                        <span className={`text-[10px] mt-1 block ${data.payment_method === 'cod' ? 'text-white/60' : 'text-gray-400'}`}>
+                                        <span className="text-[10px] mt-1 block text-white/60">
                                             Cash on Delivery
-                                        </span>
-                                    </button>
-                                    <button
-                                        type="button"
-                                        onClick={() => setData('payment_method', 'gcash')}
-                                        className={`p-4 border text-left transition-all duration-200
-                                            ${data.payment_method === 'gcash'
-                                                ? 'border-black bg-black text-white'
-                                                : 'border-gray-200 hover:border-gray-400'
-                                            }`}
-                                    >
-                                        <span className="text-[11px] font-black tracking-[0.2em] uppercase block">GCASH</span>
-                                        <span className={`text-[10px] mt-1 block ${data.payment_method === 'gcash' ? 'text-white/60' : 'text-gray-400'}`}>
-                                            Digital Payment
                                         </span>
                                     </button>
                                 </div>
