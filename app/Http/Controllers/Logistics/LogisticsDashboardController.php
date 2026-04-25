@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Logistics;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\Payment;
 use App\Models\Shipment;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -23,7 +24,8 @@ class LogisticsDashboardController extends Controller
 
         $stats = [
             'preparing'  => Shipment::whereIn('order_id', $approvedOrderIds)->where('status', 'preparing')->count(),
-            'in_transit' => Shipment::whereIn('order_id', $approvedOrderIds)->whereIn('status', ['shipped', 'in_transit'])->count(),
+            'shipped'    => Shipment::whereIn('order_id', $approvedOrderIds)->where('status', 'shipped')->count(),
+            'in_transit' => Shipment::whereIn('order_id', $approvedOrderIds)->where('status', 'in_transit')->count(),
             'delivered'  => Shipment::whereIn('order_id', $approvedOrderIds)->where('status', 'delivered')->count(),
             'total'      => Shipment::whereIn('order_id', $approvedOrderIds)->count(),
         ];
@@ -72,15 +74,21 @@ class LogisticsDashboardController extends Controller
 
     /**
      * Update shipment status — logistics can only move forward:
-     * preparing → in_transit → delivered
+     * preparing → shipped → in_transit → delivered
      */
     public function updateStatus(Request $request, Order $order)
     {
         $request->validate([
-            'status' => ['required', 'in:preparing,in_transit,delivered'],
-            'tracking_number' => ['nullable', 'string', 'max:100'],
-            'carrier' => ['nullable', 'string', 'max:100'],
-            'notes' => ['nullable', 'string', 'max:500'],
+            'status'         => ['required', 'in:preparing,shipped,in_transit,delivered'],
+            'tracking_number'=> [
+                in_array($request->status, ['shipped', 'in_transit']) ? 'required' : 'nullable',
+                'string',
+                'max:100',
+            ],
+            'carrier'        => ['nullable', 'string', 'max:100'],
+            'notes'          => ['nullable', 'string', 'max:500'],
+        ], [
+            'tracking_number.required' => 'A tracking number is required when the status is Shipped or In Transit.',
         ]);
 
         // Ensure order is approved
@@ -107,7 +115,7 @@ class LogisticsDashboardController extends Controller
         }
 
         // Set timestamps based on status
-        if ($request->status === 'in_transit' && !$shipment->shipped_at) {
+        if (in_array($request->status, ['shipped', 'in_transit']) && !$shipment->shipped_at) {
             $updateData['shipped_at'] = now();
         }
         if ($request->status === 'delivered') {
@@ -115,6 +123,18 @@ class LogisticsDashboardController extends Controller
             // Auto-mark payment as paid on delivery (for COD)
             if ($order->payment_method === 'cod') {
                 $order->update(['payment_status' => 'paid']);
+
+                // Auto-create Financial Ledger entry
+                Payment::updateOrCreate(
+                    ['order_id' => $order->id],
+                    [
+                        'amount'           => $order->total_amount,
+                        'method'           => 'cod',
+                        'status'           => 'paid',
+                        'reference_number' => 'COD-' . strtoupper($order->order_number),
+                        'paid_at'          => now(),
+                    ]
+                );
             }
         }
 

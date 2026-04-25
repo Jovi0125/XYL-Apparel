@@ -18,7 +18,7 @@ export default function ReviewsIndex({ reviews = [] }) {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {reviews.length > 0 ? reviews.map(review => (
-                        <div key={review.id} className="bg-white border border-gray-100  rounded-2xl p-6 shadow-xl flex flex-col justify-between relative overflow-hidden">
+                        <div key={review.id} className="bg-white border border-gray-100  rounded-2xl p-6 flex flex-col justify-between relative overflow-hidden">
                             <div className="absolute inset-0 bg-gradient-to-br from-transparent to-transparent pointer-events-none" />
                             <div className="relative z-10">
                                 <div className="flex justify-between items-start mb-4">

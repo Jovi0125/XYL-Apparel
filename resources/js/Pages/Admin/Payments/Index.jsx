@@ -20,7 +20,7 @@ export default function PaymentsIndex({ payments = [] }) {
                     <p className="text-sm text-gray-400 mt-1">Granular payment transactions tied to user orders.</p>
                 </div>
 
-                <div className="relative overflow-hidden rounded-2xl bg-white border border-gray-100  shadow-xl">
+                <div className="relative overflow-hidden rounded-2xl bg-white border border-gray-100">
                     <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-transparent pointer-events-none" />
                     
                     <div className="p-4 border-b border-gray-200/60 flex items-center justify-between">

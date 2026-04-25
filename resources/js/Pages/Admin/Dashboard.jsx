@@ -1,4 +1,4 @@
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import AdminLayout from '../../Layouts/AdminLayout';
 import StatCard from '../../Components/admin/dashboard/StatCard';
 import SalesChart from '../../Components/admin/dashboard/SalesChart';
@@ -23,7 +23,7 @@ export default function Dashboard({ user, stats = {} }) {
     // Format currency
     const formatCurrency = (value) => {
         if (value === null || value === undefined) return null;
-        return `$${value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        return `₱${Number(value).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     };
 
     return (

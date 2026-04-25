@@ -46,7 +46,7 @@ export default function TopHeader({ activeSection }) {
                 <button aria-label="Region" className="text-black opacity-30 hover:opacity-100 transition-opacity hidden sm:block">
                     <GlobeIcon />
                 </button>
-                <Link href="/ph/en/wishlist" className="text-black opacity-30 hover:opacity-100 transition-opacity relative">
+                <Link href={auth?.user ? '/ph/en/wishlist' : '/ph/en/login'} className="text-black opacity-30 hover:opacity-100 transition-opacity relative">
                     <HeartIcon />
                     {wishlistCount > 0 && (
                         <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#E60012] text-white text-[8px] font-bold flex items-center justify-center rounded-full">

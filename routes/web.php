@@ -96,6 +96,7 @@ Route::prefix('ph/en')->group(function () {
         // Checkout
         Route::get('/checkout', [CheckoutController::class, 'index'])->name('store.checkout');
         Route::post('/checkout', [CheckoutController::class, 'store'])->name('store.checkout.process');
+        Route::post('/checkout/validate-discount', [CheckoutController::class, 'validateDiscount'])->name('store.checkout.discount');
 
         // Member Profile (UNIQLO-style)
         Route::get('/profile', [MemberController::class, 'index'])->name('store.profile');

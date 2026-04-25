@@ -86,7 +86,7 @@ export default function UsersIndex({ users, filters }) {
                 {/* Background effects */}
                 <div className="relative z-10 space-y-6">
                     {/* Header/Filters Section */}
-                    <div className="bg-white border border-gray-100 backdrop-blur-md rounded-2xl p-6 shadow-2xl">
+                    <div className="bg-white border border-gray-100 backdrop-blur-md rounded-2xl p-6">
                         <div className="flex flex-col md:flex-row md:items-center justify-end gap-3">
                             
                             <div className="flex flex-col sm:flex-row gap-3">
@@ -120,7 +120,7 @@ export default function UsersIndex({ users, filters }) {
                     </div>
 
                     {/* Users Table */}
-                    <div className="bg-white border border-gray-100 backdrop-blur-md rounded-2xl overflow-hidden shadow-2xl">
+                    <div className="bg-white border border-gray-100 backdrop-blur-md rounded-2xl overflow-hidden">
                         <div className="overflow-x-auto">
                             <table className="w-full text-left border-collapse">
                                 <thead>
@@ -140,7 +140,7 @@ export default function UsersIndex({ users, filters }) {
                                                 <td className="px-6 py-4">
                                                     <div className="flex items-center gap-4">
                                                         <div className="relative">
-                                                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center text-gray-600 font-bold text-lg shadow-lg shadow-gray-200">
+                                                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center text-gray-600 font-bold text-lg">
                                                                 {user.name ? user.name.charAt(0).toUpperCase() : user.email.charAt(0).toUpperCase()}
                                                             </div>
                                                             <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white ${user.status === 'active' ? 'bg-emerald-500' : 'bg-rose-500'}`} />

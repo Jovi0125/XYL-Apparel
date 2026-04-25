@@ -57,7 +57,7 @@ export default function BuyerNav({ title }) {
                         </svg>
                     </Link>
                     <Link 
-                        href="/ph/en/wishlist" 
+                        href={auth?.user ? '/ph/en/wishlist' : '/ph/en/login'} 
                         className="text-black/40 hover:text-black transition-colors relative"
                         aria-label="Wishlist"
                     >

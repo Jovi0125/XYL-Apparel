@@ -45,7 +45,7 @@ export default function StorefrontHeader({ categories }) {
                 <button aria-label="Region" className="opacity-30 hover:opacity-100 transition-opacity hidden sm:block">
                     <GlobeIcon />
                 </button>
-                <Link href="/ph/en/wishlist" aria-label="Favorites" className="opacity-30 hover:opacity-100 transition-opacity">
+                <Link href={auth?.user ? '/ph/en/wishlist' : '/ph/en/login'} aria-label="Favorites" className="opacity-30 hover:opacity-100 transition-opacity">
                     <HeartIcon />
                 </Link>
                 <Link href={auth?.user ? '/ph/en/cart' : '/ph/en/login'} aria-label="Cart" className="opacity-30 hover:opacity-100 transition-opacity relative">

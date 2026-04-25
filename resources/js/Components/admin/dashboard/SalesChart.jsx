@@ -18,7 +18,7 @@ const CustomTooltip = ({ active, payload, label }) => {
             <div className="bg-white border border-gray-200 rounded-lg px-4 py-3 shadow-xl">
                 <p className="text-gray-400 text-xs mb-1">{label}</p>
                 <p className="text-black font-semibold text-lg">
-                    ${payload[0].value.toLocaleString()}
+                    ₱{payload[0].value.toLocaleString()}
                 </p>
             </div>
         );
@@ -62,7 +62,7 @@ const SalesChart = ({ data = null }) => {
                             vertical={false}
                         />
                         <XAxis 
-                            dataKey="month" 
+                            dataKey="name" 
                             axisLine={false}
                             tickLine={false}
                             tick={{ fill: '#9ca3af', fontSize: 12 }}
@@ -72,13 +72,13 @@ const SalesChart = ({ data = null }) => {
                             axisLine={false}
                             tickLine={false}
                             tick={{ fill: '#9ca3af', fontSize: 12 }}
-                            tickFormatter={(value) => `$${value / 1000}k`}
+                            tickFormatter={(v) => v >= 1000 ? `₱${v / 1000}k` : `₱${v}`}
                             dx={-10}
                         />
                         <Tooltip content={<CustomTooltip />} />
                         <Area
                             type="monotone"
-                            dataKey="sales"
+                            dataKey="value"
                             stroke="#3b82f6"
                             strokeWidth={3}
                             fill="url(#salesGradient)"
