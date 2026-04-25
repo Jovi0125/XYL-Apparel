@@ -52,15 +52,11 @@ class Category extends Model
     ];
 
     /**
-     * Get products count for this category
-     * Placeholder for future products relationship
-     *
-     * @return int
+     * Get products belonging to this category.
      */
-    public function getProductsCountAttribute(): int
+    public function products()
     {
-        // Placeholder - will return actual count when products module is built
-        return 0;
+        return $this->hasMany(Product::class);
     }
 
     /**

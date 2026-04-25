@@ -18,7 +18,8 @@ class CategoryController extends Controller
      */
     public function index(): Response
     {
-        $categories = Category::latest()
+        $categories = Category::withCount('products')
+            ->latest()
             ->get()
             ->map(function ($category) {
                 return [
