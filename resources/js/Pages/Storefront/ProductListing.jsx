@@ -83,6 +83,44 @@ export default function ProductListing({ products, categories, parentCategory, a
                     from { opacity: 0; transform: translateY(16px); }
                     to { opacity: 1; transform: translateY(0); }
                 }
+                .product-card {
+                    transition: transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                                box-shadow 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                }
+                .product-card:hover {
+                    transform: translateY(-6px);
+                    box-shadow: 0 12px 40px -8px rgba(0, 0, 0, 0.1),
+                                0 4px 12px -2px rgba(0, 0, 0, 0.04);
+                }
+                .product-card .product-img-primary {
+                    transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                                opacity 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                }
+                .product-card:hover .product-img-primary {
+                    transform: scale(1.05);
+                }
+                .product-card .product-img-secondary {
+                    transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                                opacity 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                }
+                .product-card:hover .product-img-secondary {
+                    opacity: 1;
+                    transform: scale(1.05);
+                }
+
+                .product-title-underline {
+                    position: relative;
+                    display: inline;
+                    background-image: linear-gradient(currentColor, currentColor);
+                    background-position: 0% 100%;
+                    background-repeat: no-repeat;
+                    background-size: 0% 1px;
+                    transition: background-size 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                                color 0.3s ease;
+                }
+                .product-card:hover .product-title-underline {
+                    background-size: 100% 1px;
+                }
             `}} />
         </div>
     );
@@ -97,7 +135,7 @@ function ProductCard({ product, index, isHovered, onHover, onLeave }) {
     return (
         <Link
             href={`/ph/en/product/${product.id}`}
-            className="group block"
+            className="product-card group block"
             onMouseEnter={onHover}
             onMouseLeave={onLeave}
             style={{ animation: `productFadeIn 0.5s ease-out ${index * 0.05}s both` }}
@@ -109,16 +147,18 @@ function ProductCard({ product, index, isHovered, onHover, onLeave }) {
                         <img
                             src={mainImage}
                             alt={product.title}
-                            className={`absolute inset-0 w-full h-full object-cover object-center transition-all duration-700
+                            className={`product-img-primary absolute inset-0 w-full h-full object-cover object-center
                                 ${isHovered && secondImage ? 'opacity-0' : 'opacity-100'}`}
+                            style={isHovered && secondImage ? { transform: 'scale(1)' } : {}}
                             loading="lazy"
                         />
                         {secondImage && (
                             <img
                                 src={secondImage}
                                 alt={`${product.title} alternate`}
-                                className={`absolute inset-0 w-full h-full object-cover object-center transition-all duration-700
-                                    ${isHovered ? 'opacity-100 scale-105' : 'opacity-0'}`}
+                                className={`product-img-secondary absolute inset-0 w-full h-full object-cover object-center
+                                    ${isHovered ? '' : 'opacity-0'}`}
+                                style={!isHovered ? { transform: 'scale(1)' } : {}}
                                 loading="lazy"
                             />
                         )}
@@ -130,6 +170,8 @@ function ProductCard({ product, index, isHovered, onHover, onLeave }) {
                         </svg>
                     </div>
                 )}
+
+
 
                 {/* Sale Badge */}
                 {product.sale_price && (
@@ -146,8 +188,8 @@ function ProductCard({ product, index, isHovered, onHover, onLeave }) {
                         {categoryName}
                     </p>
                 )}
-                <h3 className="text-[12px] md:text-[13px] font-bold uppercase tracking-wide text-black group-hover:text-gray-600 transition-colors leading-tight">
-                    {product.title}
+                <h3 className="text-[12px] md:text-[13px] font-bold uppercase tracking-wide text-black group-hover:text-gray-600 leading-tight">
+                    <span className="product-title-underline">{product.title}</span>
                 </h3>
                 <div className="flex items-center gap-2">
                     {product.sale_price ? (

@@ -4,7 +4,7 @@ import StorefrontHeader from '@/Components/storefront/StorefrontHeader';
 import HeroMedia from '@/Components/storefront/HeroMedia';
 import HeroContent from '@/Components/storefront/HeroContent';
 import FloatingBottomNav from '@/Components/storefront/FloatingBottomNav';
-import ScrollProgressIndicator from '@/Components/storefront/ScrollProgressIndicator';
+
 import OpeningTransition from '@/Components/storefront/OpeningTransition';
 import StorefrontCategoryOverlay from '@/Components/storefront/StorefrontCategoryOverlay';
 import LoginRequiredModal from '@/Components/storefront/LoginRequiredModal';
@@ -19,7 +19,7 @@ export default function StorefrontIndex({ storefrontConfigs = [], initialActive,
 
     const [isSearchActive, setIsSearchActive] = useState(window.location.pathname.includes('-navi'));
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-    const [scrollOpacity, setScrollOpacity] = useState(1);
+
 
     const handleSplashComplete = () => {
         setIsSplashActive(false);
@@ -48,24 +48,17 @@ export default function StorefrontIndex({ storefrontConfigs = [], initialActive,
         setActiveCategory(initialActive);
     }, [initialActive]);
 
-    useEffect(() => {
-        const handleScroll = () => {
-            const opacity = Math.max(0, 1 - window.scrollY / 500);
-            setScrollOpacity(opacity);
-        };
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
+
 
     return (
-        <div className="relative min-h-[400vh] bg-[#050505] text-white font-sans overflow-x-hidden selection:bg-white/20">
+        <div className="relative h-screen bg-[#050505] text-white font-sans overflow-hidden selection:bg-white/20">
             <Head title={`XYLO | ${activeCategory.label}`} />
 
             <OpeningTransition isActive={isSplashActive} onComplete={handleSplashComplete} />
 
             <div className={`transition-opacity duration-1000 ease-out ${isSplashActive ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
                 <StorefrontHeader categories={storefrontConfigs} />
-                <ScrollProgressIndicator />
+
 
                 <LoginRequiredModal 
                     isOpen={isLoginModalOpen} 
@@ -85,9 +78,8 @@ export default function StorefrontIndex({ storefrontConfigs = [], initialActive,
                     <div 
                         className="absolute bottom-32 md:bottom-28 left-8 md:left-14 max-w-xl z-20 transition-all duration-1000"
                         style={{ 
-                            opacity: (isSearchActive || isLoginModalOpen) ? 0 : scrollOpacity, 
-                            pointerEvents: (isSearchActive || isLoginModalOpen) ? 'none' : 'auto',
-                            transform: `translateY(${(1 - scrollOpacity) * 30}px)` 
+                            opacity: (isSearchActive || isLoginModalOpen) ? 0 : 1, 
+                            pointerEvents: (isSearchActive || isLoginModalOpen) ? 'none' : 'auto'
                         }}
                     >
                         <HeroContent config={activeCategory} />
@@ -104,12 +96,7 @@ export default function StorefrontIndex({ storefrontConfigs = [], initialActive,
                 </div>
             </div>
 
-            <style dangerouslySetInnerHTML={{ __html: `
-                @media (min-width: 1024px) {
-                    html { scrollbar-width: none; }
-                    ::-webkit-scrollbar { display: none; }
-                }
-            `}} />
+
         </div>
     );
 }
