@@ -15,9 +15,10 @@ class User extends Authenticatable
     /**
      * User Roles
      */
-    public const ROLE_ADMIN = 'admin';
-    public const ROLE_BUYER = 'buyer';
+    public const ROLE_ADMIN     = 'admin';
+    public const ROLE_BUYER     = 'buyer';
     public const ROLE_LOGISTICS = 'logistics';
+    public const ROLE_RIDER     = 'rider';
 
     /**
      * The attributes that are mass assignable.
@@ -29,6 +30,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'rider_number',
         'status',
         'suspended_at',
         'postal_code',
@@ -92,6 +94,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Check if user is a delivery rider
+     */
+    public function isRider(): bool
+    {
+        return $this->role === self::ROLE_RIDER;
+    }
+
+    /**
      * Check if user is active
      */
     public function isActive(): bool
@@ -117,5 +127,10 @@ class User extends Authenticatable
     public function orders()
     {
         return $this->hasMany(Order::class, 'buyer_id');
+    }
+
+    public function assignedShipments()
+    {
+        return $this->hasMany(\App\Models\Shipment::class, 'rider_id');
     }
 }

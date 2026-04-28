@@ -25,6 +25,9 @@ class RoleMiddleware
             if ($request->is('logistics/*')) {
                 return redirect('/logistics/login');
             }
+            if ($request->is('rider/*')) {
+                return redirect('/rider/login');
+            }
             return redirect('/login');
         }
 
@@ -34,10 +37,11 @@ class RoleMiddleware
         if (!in_array($user->role, $roles)) {
             // Redirect to appropriate dashboard based on their current role
             return match ($user->role) {
-                'admin' => redirect('/admin/dashboard'),
-                'buyer' => redirect('/buyer/dashboard'),
+                'admin'     => redirect('/admin/dashboard'),
+                'buyer'     => redirect('/buyer/dashboard'),
                 'logistics' => redirect('/logistics/dashboard'),
-                default => redirect('/login'),
+                'rider'     => redirect('/rider/dashboard'),
+                default     => redirect('/login'),
             };
         }
 
@@ -51,6 +55,9 @@ class RoleMiddleware
             }
             if ($request->is('logistics/*')) {
                 return redirect('/logistics/login')->withErrors(['email' => 'Account inactive.']);
+            }
+            if ($request->is('rider/*')) {
+                return redirect('/rider/login')->withErrors(['email' => 'Account inactive.']);
             }
             return redirect('/login')->withErrors(['email' => 'Your account is not active.']);
         }

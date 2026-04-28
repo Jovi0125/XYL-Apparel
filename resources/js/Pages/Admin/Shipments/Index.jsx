@@ -41,7 +41,7 @@ export default function ShipmentsIndex({ orders = [] }) {
                         </div>
                         <div className="text-center px-4 border-r border-gray-200">
                             <div className="text-2xl font-bold text-blue-500">
-                                {orders.filter(o => ['preparing', 'shipped', 'in_transit'].includes(o.shipment?.status)).length}
+                                {orders.filter(o => ['preparing', 'packed', 'out_for_delivery'].includes(o.shipment?.status)).length}
                             </div>
                             <div className="text-[10px] uppercase tracking-wider text-gray-400">In Progress</div>
                         </div>
@@ -79,7 +79,8 @@ export default function ShipmentsIndex({ orders = [] }) {
                         >
                             <option value="all">All Shipments</option>
                             <option value="preparing">Preparing</option>
-                            <option value="in_transit">In Transit</option>
+                            <option value="packed">Ready for Pickup</option>
+                            <option value="out_for_delivery">Out for Delivery</option>
                             <option value="delivered">Delivered</option>
                         </select>
                     </div>

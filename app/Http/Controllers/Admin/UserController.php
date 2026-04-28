@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class UserController extends Controller
@@ -91,5 +92,42 @@ class UserController extends Controller
         }
 
         return back()->with('success', $message);
+    }
+
+    /**
+     * Create a new delivery rider account.
+     * Auto-generates a rider_number like RDR-001.
+     */
+    public function createRider(Request $request)
+    {
+        $request->validate([
+            'name'     => ['required', 'string', 'max:100'],
+            'email'    => ['required', 'email', 'unique:users,email'],
+            'password' => ['required', 'string', 'min:8'],
+        ]);
+
+        // Auto-generate next rider number: RDR-001, RDR-002 …
+        $lastRider = User::where('role', User::ROLE_RIDER)
+            ->whereNotNull('rider_number')
+            ->orderByDesc('id')
+            ->first();
+
+        $nextNum = 1;
+        if ($lastRider && preg_match('/RDR-(\d+)/', $lastRider->rider_number, $m)) {
+            $nextNum = (int) $m[1] + 1;
+        }
+        $riderNumber = 'RDR-' . str_pad($nextNum, 3, '0', STR_PAD_LEFT);
+
+        User::create([
+            'name'              => $request->name,
+            'email'             => $request->email,
+            'password'          => $request->password,
+            'role'              => User::ROLE_RIDER,
+            'rider_number'      => $riderNumber,
+            'status'            => 'active',
+            'email_verified_at' => now(),
+        ]);
+
+        return back()->with('success', "Rider account for {$request->name} created successfully ({$riderNumber}).");
     }
 }

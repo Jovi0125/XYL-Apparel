@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\DiscountController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Buyer\BuyerDashboardController;
 use App\Http\Controllers\Logistics\LogisticsDashboardController;
+use App\Http\Controllers\Rider\RiderDashboardController;
 use App\Http\Controllers\Admin\ArchiveController;
 use App\Http\Controllers\Admin\InventoryController;
 use App\Http\Controllers\Admin\SearchController;
@@ -16,6 +17,7 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Storefront\HomeController;
 use App\Http\Controllers\Storefront\NavigationController;
 use App\Http\Controllers\Storefront\ProductController as StorefrontProductController;
@@ -121,6 +123,9 @@ Route::middleware('guest')->group(function () {
     Route::get('/logistics/login', [AuthController::class, 'showLogisticsLogin'])->name('logistics.login');
     Route::post('/logistics/login', [AuthController::class, 'login']);
 
+    Route::get('/rider/login', [AuthController::class, 'showRiderLogin'])->name('rider.login');
+    Route::post('/rider/login', [AuthController::class, 'login']);
+
     // Social Authentication (Buyer ONLY)
     Route::get('/auth/google/redirect', [\App\Http\Controllers\Auth\GoogleAuthController::class, 'redirectToGoogle'])->name('google.redirect');
     Route::get('/auth/google/callback', [\App\Http\Controllers\Auth\GoogleAuthController::class, 'handleGoogleCallback'])->name('google.callback');
@@ -180,8 +185,9 @@ Route::prefix('admin')
         Route::post('/archive/restore/{type}/{id}', [ArchiveController::class, 'restore'])->name('archive.restore');
 
         // Users Management
-        Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
-        Route::post('users/{user}/toggle-status', [\App\Http\Controllers\Admin\UserController::class, 'toggleStatus'])->name('users.toggleStatus');
+        Route::resource('users', UserController::class);
+        Route::post('users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggleStatus');
+        Route::post('users/create-rider', [UserController::class, 'createRider'])->name('users.createRider');
 
 
         // Payments Management
@@ -218,6 +224,19 @@ Route::prefix('logistics')
     ->group(function () {
         Route::get('/dashboard', [LogisticsDashboardController::class, 'index'])->name('dashboard');
         Route::post('/shipments/{order}/update-status', [LogisticsDashboardController::class, 'updateStatus'])->name('shipments.updateStatus');
+    });
+
+/*
+|--------------------------------------------------------------------------
+| Rider Routes
+|--------------------------------------------------------------------------
+*/
+Route::prefix('rider')
+    ->middleware(['auth', 'role:rider'])
+    ->name('rider.')
+    ->group(function () {
+        Route::get('/dashboard', [RiderDashboardController::class, 'index'])->name('dashboard');
+        Route::post('/shipments/{shipment}/update-status', [RiderDashboardController::class, 'updateStatus'])->name('shipments.updateStatus');
     });
 
 /*

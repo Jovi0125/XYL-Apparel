@@ -31,7 +31,7 @@ class MemberController extends Controller
      */
     public function orders()
     {
-        $orders = Order::with(['product.mainImage', 'product.images', 'shipment'])
+        $orders = Order::with(['product.mainImage', 'product.images', 'shipment.rider'])
             ->where('buyer_id', Auth::id())
             ->latest()
             ->get();
@@ -60,7 +60,7 @@ class MemberController extends Controller
             abort(403);
         }
 
-        $order->load(['product.mainImage', 'product.images', 'shipment']);
+        $order->load(['product.mainImage', 'product.images', 'shipment.rider']);
 
         $hasReviewed = Review::where('buyer_id', Auth::id())
             ->where('product_id', $order->product_id)
@@ -81,7 +81,7 @@ class MemberController extends Controller
             abort(403);
         }
 
-        $order->load(['product.mainImage', 'product.images', 'shipment']);
+        $order->load(['product.mainImage', 'product.images', 'shipment.rider']);
 
         // Only show receipt for delivered orders
         if (!$order->shipment || $order->shipment->status !== 'delivered') {

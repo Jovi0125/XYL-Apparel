@@ -8,6 +8,20 @@ export default function UsersIndex({ users, filters }) {
         role: filters.role || '',
     });
 
+    const [showCreateRider, setShowCreateRider] = useState(false);
+    const riderForm = useForm({ name: '', email: '', password: '' });
+
+    const handleCreateRider = (e) => {
+        e.preventDefault();
+        riderForm.post('/admin/users/create-rider', {
+            preserveScroll: true,
+            onSuccess: () => {
+                setShowCreateRider(false);
+                riderForm.reset();
+            },
+        });
+    };
+
     // Handle search with debounce
     useEffect(() => {
         const timeoutId = setTimeout(() => {
@@ -82,13 +96,69 @@ export default function UsersIndex({ users, filters }) {
         <AdminLayout title="User Management" activeItem="users">
             <Head title="Users - XYLO Admin" />
 
+            {/* Create Rider Modal */}
+            {showCreateRider && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.4)' }}>
+                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6">
+                        <div className="flex items-center justify-between mb-5">
+                            <div>
+                                <h2 className="text-sm font-black text-black uppercase tracking-wider">Create Rider Account</h2>
+                                <p className="text-xs text-gray-400 mt-0.5">A Rider ID (e.g. RDR-001) will be auto-generated.</p>
+                            </div>
+                            <button onClick={() => setShowCreateRider(false)} className="p-2 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-black transition-colors">
+                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                            </button>
+                        </div>
+                        <form onSubmit={handleCreateRider} className="space-y-4">
+                            <div>
+                                <label className="text-[10px] font-bold uppercase text-gray-400 tracking-wider block mb-1.5">Full Name</label>
+                                <input type="text" value={riderForm.data.name} onChange={e => riderForm.setData('name', e.target.value)}
+                                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:border-black transition-colors"
+                                    placeholder="e.g. Juan dela Cruz" required />
+                                {riderForm.errors.name && <p className="text-xs text-red-500 mt-1">{riderForm.errors.name}</p>}
+                            </div>
+                            <div>
+                                <label className="text-[10px] font-bold uppercase text-gray-400 tracking-wider block mb-1.5">Email Address</label>
+                                <input type="email" value={riderForm.data.email} onChange={e => riderForm.setData('email', e.target.value)}
+                                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:border-black transition-colors"
+                                    placeholder="rider@xylo.com" required />
+                                {riderForm.errors.email && <p className="text-xs text-red-500 mt-1">{riderForm.errors.email}</p>}
+                            </div>
+                            <div>
+                                <label className="text-[10px] font-bold uppercase text-gray-400 tracking-wider block mb-1.5">Password</label>
+                                <input type="password" value={riderForm.data.password} onChange={e => riderForm.setData('password', e.target.value)}
+                                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-black placeholder-gray-400 focus:outline-none focus:border-black transition-colors"
+                                    placeholder="Min. 8 characters" required />
+                                {riderForm.errors.password && <p className="text-xs text-red-500 mt-1">{riderForm.errors.password}</p>}
+                            </div>
+                            <div className="flex gap-3 pt-2">
+                                <button type="button" onClick={() => setShowCreateRider(false)}
+                                    className="flex-1 py-3 border border-gray-200 text-gray-500 text-xs font-bold rounded-xl hover:bg-gray-50 transition-colors">
+                                    Cancel
+                                </button>
+                                <button type="submit" disabled={riderForm.processing}
+                                    className="flex-1 py-3 bg-black text-white text-xs font-bold rounded-xl hover:bg-gray-800 transition-colors disabled:opacity-50">
+                                    {riderForm.processing ? 'Creating...' : 'Create Rider'}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+
             <div className="relative min-h-screen">
                 {/* Background effects */}
                 <div className="relative z-10 space-y-6">
                     {/* Header/Filters Section */}
                     <div className="bg-white border border-gray-100 backdrop-blur-md rounded-2xl p-6">
-                        <div className="flex flex-col md:flex-row md:items-center justify-end gap-3">
-                            
+                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                            <button
+                                onClick={() => setShowCreateRider(true)}
+                                className="inline-flex items-center gap-2 px-4 py-2.5 bg-black text-white text-xs font-bold rounded-xl hover:bg-gray-800 transition-colors"
+                            >
+                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+                                Create Rider
+                            </button>
                             <div className="flex flex-col sm:flex-row gap-3">
                                 <div className="relative group">
                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -157,6 +227,13 @@ export default function UsersIndex({ users, filters }) {
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     <div className="text-[11px] space-y-1 font-medium">
+                                                        {user.rider_number && (
+                                                            <div className="mb-1">
+                                                                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-black tracking-widest bg-[#E60012]/10 text-[#E60012] border border-[#E60012]/20 uppercase">
+                                                                    {user.rider_number}
+                                                                </span>
+                                                            </div>
+                                                        )}
                                                         <div className="flex gap-2">
                                                             <span className="text-gray-400">Zip:</span>
                                                             <span className="text-gray-600">{user.postal_code || '--'}</span>

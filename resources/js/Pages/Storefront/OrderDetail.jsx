@@ -26,12 +26,12 @@ export default function OrderDetail({ order, hasReviewed }) {
 
     const getStatusColor = (status) => {
         const colors = {
-            pending: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-            preparing: 'bg-blue-100 text-blue-800 border-blue-200',
-            shipped: 'bg-purple-100 text-purple-800 border-purple-200',
-            in_transit: 'bg-indigo-100 text-indigo-800 border-indigo-200',
-            delivered: 'bg-green-100 text-green-800 border-green-200',
-            cancelled: 'bg-red-100 text-red-800 border-red-200',
+            pending:          'bg-yellow-100 text-yellow-800 border-yellow-200',
+            preparing:        'bg-blue-100 text-blue-800 border-blue-200',
+            packed:           'bg-orange-100 text-orange-800 border-orange-200',
+            out_for_delivery: 'bg-purple-100 text-purple-800 border-purple-200',
+            delivered:        'bg-green-100 text-green-800 border-green-200',
+            cancelled:        'bg-red-100 text-red-800 border-red-200',
         };
         return colors[status] || 'bg-gray-100 text-gray-800 border-gray-200';
     };
@@ -194,12 +194,12 @@ export default function OrderDetail({ order, hasReviewed }) {
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                                 </svg>
                             )},
-                            { key: 'shipped', label: 'Shipped', icon: (
+                            { key: 'packed', label: 'Ready for Pickup', icon: (
                                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m8.25 3v6.75m0 0l-3-3m3 3l3-3M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
                                 </svg>
                             )},
-                            { key: 'in_transit', label: 'In Transit', icon: (
+                            { key: 'out_for_delivery', label: 'Out for Delivery', icon: (
                                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
@@ -212,12 +212,12 @@ export default function OrderDetail({ order, hasReviewed }) {
                             )},
                         ];
 
-                        const statusOrder = ['pending', 'preparing', 'shipped', 'in_transit', 'delivered'];
+                        const statusOrder = ['pending', 'preparing', 'packed', 'out_for_delivery', 'delivered'];
                         const currentIndex = statusOrder.indexOf(currentStatus);
 
                         const getTimestamp = (stepKey) => {
                             if (stepKey === 'pending') return order.created_at;
-                            if (stepKey === 'shipped' && shipment?.shipped_at) return shipment.shipped_at;
+                            if (stepKey === 'out_for_delivery' && shipment?.out_for_delivery_at) return shipment.out_for_delivery_at;
                             if (stepKey === 'delivered' && shipment?.delivered_at) return shipment.delivered_at;
                             return null;
                         };
@@ -354,16 +354,13 @@ export default function OrderDetail({ order, hasReviewed }) {
                                 <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400 block mb-1">CONTACT</span>
                                 <p>{order.contact_number || '—'}</p>
                             </div>
-                            {shipment?.tracking_number && (
+                            {shipment?.rider && (
                                 <div>
-                                    <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400 block mb-1">TRACKING NUMBER</span>
-                                    <p className="font-mono">{shipment.tracking_number}</p>
-                                </div>
-                            )}
-                            {shipment?.carrier && (
-                                <div>
-                                    <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400 block mb-1">CARRIER</span>
-                                    <p>{shipment.carrier}</p>
+                                    <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400 block mb-1">DELIVERY RIDER</span>
+                                    <p className="font-semibold">{shipment.rider.name}</p>
+                                    {shipment.rider.rider_number && (
+                                        <span className="text-[9px] font-black tracking-widest text-[#E60012] uppercase">{shipment.rider.rider_number}</span>
+                                    )}
                                 </div>
                             )}
                         </div>

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Head, router, usePage } from '@inertiajs/react';
 import LogisticsLayout from '@/Layouts/LogisticsLayout';
 
-export default function Dashboard({ stats, shipments }) {
+export default function Dashboard({ stats, shipments, riders = [] }) {
     const { flash } = usePage().props;
     const [statusFilter, setStatusFilter] = useState('all');
     const [searchQuery, setSearchQuery] = useState('');
@@ -20,13 +20,13 @@ export default function Dashboard({ stats, shipments }) {
     });
 
     const statCards = [
-        { label: 'Preparing',  value: stats.preparing,  color: 'text-blue-600',    bg: 'bg-blue-50',    border: 'border-blue-200', filter: 'preparing',
+        { label: 'Preparing',       value: stats.preparing,        color: 'text-blue-600',    bg: 'bg-blue-50',    border: 'border-blue-200',   filter: 'preparing',
           icon: <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" /></svg> },
-        { label: 'Shipped',    value: stats.shipped,    color: 'text-orange-600',  bg: 'bg-orange-50',  border: 'border-orange-200', filter: 'shipped',
-          icon: <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" /></svg> },
-        { label: 'In Transit', value: stats.in_transit, color: 'text-purple-600',  bg: 'bg-purple-50',  border: 'border-purple-200', filter: 'in_transit',
+        { label: 'Ready for Pickup', value: stats.packed,           color: 'text-amber-600',   bg: 'bg-amber-50',   border: 'border-amber-200',  filter: 'packed',
+          icon: <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m8.25 3v6.75m0 0l-3-3m3 3l3-3M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" /></svg> },
+        { label: 'Out for Delivery', value: stats.out_for_delivery, color: 'text-purple-600',  bg: 'bg-purple-50',  border: 'border-purple-200', filter: 'out_for_delivery',
           icon: <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" /></svg> },
-        { label: 'Delivered',  value: stats.delivered,  color: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-200', filter: 'delivered',
+        { label: 'Delivered',        value: stats.delivered,        color: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-200', filter: 'delivered',
           icon: <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> },
     ];
 
@@ -131,6 +131,7 @@ export default function Dashboard({ stats, shipments }) {
                                 key={shipment.id}
                                 shipment={shipment}
                                 index={idx}
+                                riders={riders}
                                 isExpanded={expandedOrder === shipment.id}
                                 onToggle={() => setExpandedOrder(expandedOrder === shipment.id ? null : shipment.id)}
                             />
@@ -158,46 +159,33 @@ const CARRIERS = [
     'Borzo',
 ];
 
-function ShipmentCard({ shipment, index, isExpanded, onToggle }) {
+function ShipmentCard({ shipment, index, isExpanded, onToggle, riders }) {
     const [newStatus, setNewStatus] = useState(shipment.shipment_status);
-    const [trackingNumber, setTrackingNumber] = useState(shipment.tracking_number || '');
-    const [carrier, setCarrier] = useState(shipment.carrier || '');
-    const [trackingError, setTrackingError] = useState('');
+    const [selectedRiderId, setSelectedRiderId] = useState(shipment.rider_id ? String(shipment.rider_id) : '');
     const [updating, setUpdating] = useState(false);
 
-    // Only forward-moving statuses — logistics cannot go back or cancel
+    // Logistics can only move: preparing → packed
     const statusOptions = [
-        { value: 'preparing',  label: 'Preparing',  color: 'bg-blue-100 text-blue-800' },
-        { value: 'shipped',    label: 'Shipped',    color: 'bg-orange-100 text-orange-800' },
-        { value: 'in_transit', label: 'In Transit', color: 'bg-purple-100 text-purple-800' },
-        { value: 'delivered',  label: 'Delivered',  color: 'bg-emerald-100 text-emerald-800' },
+        { value: 'preparing', label: 'Preparing',        color: 'bg-blue-100 text-blue-800' },
+        { value: 'packed',    label: 'Ready for Pickup', color: 'bg-amber-100 text-amber-800' },
     ];
 
-    // Tracking number is required when moving to shipped or in_transit
-    const trackingRequired = ['shipped', 'in_transit'].includes(newStatus);
-    const isTrackingMissing = trackingRequired && !trackingNumber.trim();
-
-    const currentStatusStyle = statusOptions.find(o => o.value === shipment.shipment_status)?.color || 'bg-gray-100 text-gray-800';
+    const riderRequired = newStatus === 'packed';
+    const isRiderMissing = riderRequired && !selectedRiderId;
 
     const handleUpdateStatus = () => {
-        if (isTrackingMissing) {
-            setTrackingError('Tracking number is required when shipping an order.');
-            return;
-        }
-        setTrackingError('');
         setUpdating(true);
         router.post(`/logistics/shipments/${shipment.id}/update-status`, {
             status: newStatus,
-            tracking_number: trackingNumber || null,
-            carrier: carrier || null,
+            rider_id: selectedRiderId || null,
         }, {
             preserveScroll: true,
             onFinish: () => setUpdating(false),
         });
     };
 
-    // Determine if the order has been delivered (no more updates allowed)
-    const isDelivered = shipment.shipment_status === 'delivered';
+    // Logistics cannot update once rider has taken over (out_for_delivery or delivered)
+    const isHandedOff = ['out_for_delivery', 'delivered'].includes(shipment.shipment_status);
 
     return (
         <div className={`bg-white rounded-xl border overflow-hidden transition-all ${isExpanded ? 'border-gray-200' : 'border-gray-100 hover:border-gray-200'}`}>
@@ -323,15 +311,15 @@ function ShipmentCard({ shipment, index, isExpanded, onToggle }) {
                         </div>
                     )}
 
-                    {/* Status Update Form — only if not delivered */}
-                    {!isDelivered ? (
+                    {/* Status Update Form — locked once rider has taken over */}
+                    {!isHandedOff ? (
                         <div className="bg-gray-50 rounded-xl p-4 space-y-4">
                             <h4 className="text-[10px] font-bold uppercase text-gray-400 tracking-widest flex items-center gap-2">
                                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182M2.985 14.652" /></svg>
                                 Update Shipment
                             </h4>
-                            
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                 {/* Status Selector */}
                                 <div>
                                     <label className="text-[10px] font-medium uppercase text-gray-400 block mb-1.5">Status</label>
@@ -346,51 +334,40 @@ function ShipmentCard({ shipment, index, isExpanded, onToggle }) {
                                     </select>
                                 </div>
 
-                                {/* Tracking Number */}
+                                {/* Rider Assignment */}
                                 <div>
                                     <label className="text-[10px] font-medium uppercase text-gray-400 block mb-1.5">
-                                        Tracking #
-                                        {trackingRequired && (
-                                            <span className="text-[#E60012] ml-0.5">*</span>
-                                        )}
+                                        Assign Rider
+                                        {riderRequired && <span className="text-[#E60012] ml-0.5">*</span>}
                                     </label>
-                                    <input
-                                        type="text"
-                                        value={trackingNumber}
-                                        onChange={(e) => { setTrackingNumber(e.target.value); setTrackingError(''); }}
-                                        className={`w-full border bg-white px-3 py-2.5 text-sm rounded-lg focus:outline-none transition-colors
-                                            ${isTrackingMissing || trackingError
-                                                ? 'border-red-400 focus:border-red-500'
-                                                : 'border-gray-200 focus:border-black'}`}
-                                        placeholder={trackingRequired ? 'Required for this status' : 'Enter tracking number'}
-                                    />
-                                    {trackingError && (
-                                        <p className="text-[10px] text-red-500 mt-1">{trackingError}</p>
-                                    )}
-                                </div>
-
-                                {/* Carrier Dropdown */}
-                                <div>
-                                    <label className="text-[10px] font-medium uppercase text-gray-400 block mb-1.5">Courier</label>
                                     <select
-                                        value={carrier}
-                                        onChange={(e) => setCarrier(e.target.value)}
-                                        className="w-full border border-gray-200 bg-white px-3 py-2.5 text-sm rounded-lg focus:outline-none focus:border-black transition-colors"
+                                        value={selectedRiderId}
+                                        onChange={(e) => setSelectedRiderId(e.target.value)}
+                                        className={`w-full border bg-white px-3 py-2.5 text-sm rounded-lg focus:outline-none transition-colors ${
+                                            isRiderMissing ? 'border-red-400 focus:border-red-500' : 'border-gray-200 focus:border-black'
+                                        }`}
                                     >
-                                        <option value="">Select courier...</option>
-                                        {CARRIERS.map((c) => (
-                                            <option key={c} value={c}>{c}</option>
+                                        <option value="">— Select a rider —</option>
+                                        {riders.map((r) => (
+                                            <option key={r.id} value={String(r.id)}>
+                                                {r.rider_number} · {r.name}
+                                            </option>
                                         ))}
                                     </select>
+                                    {isRiderMissing && (
+                                        <p className="text-[10px] text-red-500 mt-1">A rider must be assigned to mark as Ready for Pickup.</p>
+                                    )}
+                                    {riders.length === 0 && (
+                                        <p className="text-[10px] text-amber-600 mt-1">No active riders. Ask admin to create rider accounts.</p>
+                                    )}
                                 </div>
                             </div>
 
                             <div className="flex items-center gap-3">
                                 <button
                                     onClick={handleUpdateStatus}
-                                    disabled={updating || newStatus === shipment.shipment_status || isTrackingMissing}
+                                    disabled={updating || newStatus === shipment.shipment_status || isRiderMissing}
                                     className="px-5 py-2.5 bg-black text-white text-xs font-bold rounded-xl hover:bg-gray-800 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-                                    title={isTrackingMissing ? 'Enter a tracking number to proceed' : ''}
                                 >
                                     {updating ? 'Updating...' : 'Update Status'}
                                 </button>
@@ -402,18 +379,25 @@ function ShipmentCard({ shipment, index, isExpanded, onToggle }) {
                             </div>
                         </div>
                     ) : (
-                        <div className="bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-4 flex items-center gap-3">
-                            <div className="p-1.5 bg-emerald-100 rounded-lg">
-                                <svg className="w-5 h-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        <div className="bg-purple-50 border border-purple-200 rounded-xl px-4 py-4 flex items-center gap-3">
+                            <div className="p-1.5 bg-purple-100 rounded-lg">
+                                <svg className="w-5 h-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
                                 </svg>
                             </div>
                             <div>
-                                <p className="text-sm text-emerald-800 font-bold">Delivered Successfully</p>
-                                <p className="text-xs text-emerald-600">This order has been completed and cash collected.</p>
+                                <p className="text-sm text-purple-800 font-bold">
+                                    {shipment.shipment_status === 'delivered' ? 'Delivered' : 'Out for Delivery'}
+                                </p>
+                                <p className="text-xs text-purple-600">
+                                    {shipment.rider_name
+                                        ? `Handed off to ${shipment.rider_number} · ${shipment.rider_name}`
+                                        : 'Rider is handling this delivery.'}
+                                </p>
                             </div>
                         </div>
                     )}
+
 
                     {/* Timestamps */}
                     {(shipment.shipped_at || shipment.delivered_at) && (

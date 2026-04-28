@@ -14,7 +14,7 @@ class ShipmentController extends Controller
      */
     public function index()
     {
-        $orders = Order::with(['buyer', 'product.mainImage', 'shipment'])
+        $orders = Order::with(['buyer', 'product.mainImage', 'shipment.rider'])
             ->approved()
             ->whereHas('shipment')
             ->latest()
@@ -43,14 +43,18 @@ class ShipmentController extends Controller
                     'date'                  => $order->created_at?->format('M d, Y'),
                     'date_time'             => $order->created_at?->format('M d, Y h:i A'),
                     'shipment'              => $order->shipment ? [
-                        'id'              => $order->shipment->id,
-                        'tracking_number' => $order->shipment->tracking_number,
-                        'status'          => $order->shipment->status,
-                        'status_label'    => $order->shipment->status_label,
-                        'carrier'         => $order->shipment->carrier,
-                        'shipped_at'      => $order->shipment->shipped_at?->format('M d, Y'),
-                        'delivered_at'    => $order->shipment->delivered_at?->format('M d, Y'),
-                        'notes'           => $order->shipment->notes,
+                        'id'                  => $order->shipment->id,
+                        'tracking_number'     => $order->shipment->tracking_number,
+                        'status'              => $order->shipment->status,
+                        'status_label'        => $order->shipment->status_label,
+                        'carrier'             => $order->shipment->carrier,
+                        'rider_id'            => $order->shipment->rider_id,
+                        'rider_name'          => $order->shipment->rider?->name,
+                        'rider_number'        => $order->shipment->rider?->rider_number,
+                        'shipped_at'          => $order->shipment->shipped_at?->format('M d, Y'),
+                        'out_for_delivery_at' => $order->shipment->out_for_delivery_at?->format('M d, Y'),
+                        'delivered_at'        => $order->shipment->delivered_at?->format('M d, Y'),
+                        'notes'               => $order->shipment->notes,
                     ] : null,
                 ];
             });

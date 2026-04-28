@@ -35,6 +35,14 @@ class AuthController extends Controller
     }
 
     /**
+     * Show the rider-specific login page
+     */
+    public function showRiderLogin(): Response
+    {
+        return Inertia::render('Auth/RiderLogin');
+    }
+
+    /**
      * Show the buyer registration page
      */
     public function showRegister(): Response
@@ -69,8 +77,14 @@ class AuthController extends Controller
                 return back()->withErrors(['email' => 'Access denied. Logistics accounts only.']);
             }
 
-            // Member login: block admin and logistics (they must use their own portals)
-            if ($request->is('ph/en/*') && ($user->isAdmin() || $user->isLogistics())) {
+            // Rider portal: rider accounts only
+            if ($request->is('rider/*') && !$user->isRider()) {
+                Auth::logout();
+                return back()->withErrors(['email' => 'Access denied. Rider accounts only.']);
+            }
+
+            // Member login: block all staff accounts
+            if ($request->is('ph/en/*') && ($user->isAdmin() || $user->isLogistics() || $user->isRider())) {
                 Auth::logout();
                 return back()->withErrors(['email' => 'Staff accounts must use their dedicated portals.']);
             }
@@ -139,9 +153,10 @@ class AuthController extends Controller
 
         // Redirect based on the logged-out user's role
         return match ($role) {
-            'admin' => redirect('/admin/login'),
+            'admin'     => redirect('/admin/login'),
             'logistics' => redirect('/logistics/login'),
-            default => redirect('/ph/en/login'),
+            'rider'     => redirect('/rider/login'),
+            default     => redirect('/ph/en/login'),
         };
     }
 
@@ -151,10 +166,11 @@ class AuthController extends Controller
     protected function redirectBasedOnRole($user)
     {
         return match ($user->role) {
-            'admin' => redirect()->intended('/admin/dashboard'),
-            'buyer' => redirect()->intended('/ph/en'),
+            'admin'     => redirect()->intended('/admin/dashboard'),
+            'buyer'     => redirect()->intended('/ph/en'),
             'logistics' => redirect()->intended('/logistics/dashboard'),
-            default => redirect('/ph/en/login'),
+            'rider'     => redirect()->intended('/rider/dashboard'),
+            default     => redirect('/ph/en/login'),
         };
     }
 }

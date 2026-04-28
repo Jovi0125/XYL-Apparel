@@ -19,6 +19,7 @@ export default function ShipmentTable({ orders, onView, onUpdate, readOnly = fal
                             <th className="px-5 py-4 text-center text-[10px] font-bold text-gray-400 uppercase tracking-widest">Payment</th>
                             <th className="px-5 py-4 text-center text-[10px] font-bold text-gray-400 uppercase tracking-widest">Pay Status</th>
                             <th className="px-5 py-4 text-center text-[10px] font-bold text-gray-400 uppercase tracking-widest">Shipment</th>
+                            <th className="px-5 py-4 text-left text-[10px] font-bold text-gray-400 uppercase tracking-widest">Rider</th>
                             <th className="px-5 py-4 text-left text-[10px] font-bold text-gray-400 uppercase tracking-widest">Date</th>
                             <th className="px-5 py-4 text-right text-[10px] font-bold text-gray-400 uppercase tracking-widest">Actions</th>
                         </tr>
@@ -74,6 +75,20 @@ export default function ShipmentTable({ orders, onView, onUpdate, readOnly = fal
                                 {/* Shipment Status */}
                                 <td className="px-5 py-4 text-center">
                                     <ShipmentStatusBadge status={order.shipment?.status || 'pending'} />
+                                </td>
+
+                                {/* Rider */}
+                                <td className="px-5 py-4">
+                                    {order.shipment?.rider_name ? (
+                                        <div>
+                                            <span className="inline-flex items-center px-1.5 py-0.5 rounded-md text-[9px] font-black tracking-widest bg-[#E60012]/10 text-[#E60012] border border-[#E60012]/20 uppercase">
+                                                {order.shipment.rider_number}
+                                            </span>
+                                            <p className="text-xs text-gray-600 mt-0.5">{order.shipment.rider_name}</p>
+                                        </div>
+                                    ) : (
+                                        <span className="text-xs text-gray-300 italic">Unassigned</span>
+                                    )}
                                 </td>
 
                                 {/* Date */}

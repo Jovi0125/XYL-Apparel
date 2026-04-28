@@ -7,15 +7,15 @@ export default function MyOrders({ orders }) {
 
     const getStatusColor = (status) => {
         const colors = {
-            pending: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-            preparing: 'bg-blue-100 text-blue-800 border-blue-200',
-            shipped: 'bg-purple-100 text-purple-800 border-purple-200',
-            in_transit: 'bg-indigo-100 text-indigo-800 border-indigo-200',
-            delivered: 'bg-green-100 text-green-800 border-green-200',
-            cancelled: 'bg-red-100 text-red-800 border-red-200',
-            paid: 'bg-green-100 text-green-800 border-green-200',
-            unpaid: 'bg-gray-100 text-gray-800 border-gray-200',
-            failed: 'bg-red-100 text-red-800 border-red-200',
+            pending:          'bg-yellow-100 text-yellow-800 border-yellow-200',
+            preparing:        'bg-blue-100 text-blue-800 border-blue-200',
+            packed:           'bg-orange-100 text-orange-800 border-orange-200',
+            out_for_delivery: 'bg-purple-100 text-purple-800 border-purple-200',
+            delivered:        'bg-green-100 text-green-800 border-green-200',
+            cancelled:        'bg-red-100 text-red-800 border-red-200',
+            paid:             'bg-green-100 text-green-800 border-green-200',
+            unpaid:           'bg-gray-100 text-gray-800 border-gray-200',
+            failed:           'bg-red-100 text-red-800 border-red-200',
         };
         return colors[status] || 'bg-gray-100 text-gray-800 border-gray-200';
     };
@@ -141,24 +141,18 @@ export default function MyOrders({ orders }) {
                                     <span className="text-[14px] font-black flex-shrink-0">₱{Number(order.unit_price).toLocaleString()}</span>
                                 </div>
 
-                                {/* Tracking Info (only shows when logistics fills it in) */}
-                                {(order.shipment?.tracking_number || order.shipment?.carrier) && (
-                                    <div className="px-6 py-3 border-t border-gray-50 flex items-center gap-4">
+                                {/* Rider info (shown when rider is assigned) */}
+                                {order.shipment?.rider && (
+                                    <div className="px-6 py-3 border-t border-gray-50 flex items-center gap-3">
                                         <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
                                         </svg>
-                                        <div className="flex items-center gap-4 text-[11px]">
-                                            {order.shipment?.carrier && (
-                                                <span className="text-gray-500">
-                                                    Carrier: <span className="font-semibold text-black">{order.shipment.carrier}</span>
-                                                </span>
+                                        <span className="text-[11px] text-gray-500">
+                                            Your rider: <span className="font-semibold text-black">{order.shipment.rider.name}</span>
+                                            {order.shipment.rider.rider_number && (
+                                                <span className="ml-2 text-[9px] font-black tracking-widest text-[#E60012] uppercase">{order.shipment.rider.rider_number}</span>
                                             )}
-                                            {order.shipment?.tracking_number && (
-                                                <span className="text-gray-500">
-                                                    Tracking: <span className="font-semibold text-black font-mono">{order.shipment.tracking_number}</span>
-                                                </span>
-                                            )}
-                                        </div>
+                                        </span>
                                     </div>
                                 )}
 
@@ -166,9 +160,9 @@ export default function MyOrders({ orders }) {
                                 {(() => {
                                     const currentStatus = order.shipment?.status || 'pending';
                                     const isCancelled = currentStatus === 'cancelled';
-                                    const statusOrder = ['pending', 'preparing', 'shipped', 'in_transit', 'delivered'];
+                                    const statusOrder = ['pending', 'preparing', 'packed', 'out_for_delivery', 'delivered'];
                                     const currentIndex = statusOrder.indexOf(currentStatus);
-                                    const stepLabels = ['Placed', 'Preparing', 'Shipped', 'In Transit', 'Delivered'];
+                                    const stepLabels = ['Placed', 'Preparing', 'Ready for Pickup', 'Out for Delivery', 'Delivered'];
 
                                     if (isCancelled) {
                                         return (

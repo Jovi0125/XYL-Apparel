@@ -23,11 +23,11 @@ class LogisticsDashboardController extends Controller
         $approvedOrderIds = Order::approved()->pluck('id');
 
         $stats = [
-            'preparing'  => Shipment::whereIn('order_id', $approvedOrderIds)->where('status', 'preparing')->count(),
-            'shipped'    => Shipment::whereIn('order_id', $approvedOrderIds)->where('status', 'shipped')->count(),
-            'in_transit' => Shipment::whereIn('order_id', $approvedOrderIds)->where('status', 'in_transit')->count(),
-            'delivered'  => Shipment::whereIn('order_id', $approvedOrderIds)->where('status', 'delivered')->count(),
-            'total'      => Shipment::whereIn('order_id', $approvedOrderIds)->count(),
+            'preparing'        => Shipment::whereIn('order_id', $approvedOrderIds)->where('status', 'preparing')->count(),
+            'packed'           => Shipment::whereIn('order_id', $approvedOrderIds)->where('status', 'packed')->count(),
+            'out_for_delivery' => Shipment::whereIn('order_id', $approvedOrderIds)->where('status', 'out_for_delivery')->count(),
+            'delivered'        => Shipment::whereIn('order_id', $approvedOrderIds)->where('status', 'delivered')->count(),
+            'total'            => Shipment::whereIn('order_id', $approvedOrderIds)->count(),
         ];
 
         $shipments = Order::with(['product.mainImage', 'product.images', 'shipment', 'buyer'])
@@ -54,21 +54,37 @@ class LogisticsDashboardController extends Controller
                     'shipping_address' => $order->shipping_address,
                     'contact_number' => $order->contact_number,
                     'notes' => $order->notes,
-                    'shipment_id' => $order->shipment?->id,
-                    'shipment_status' => $order->shipment?->status ?? 'preparing',
+                    'shipment_id'           => $order->shipment?->id,
+                    'shipment_status'       => $order->shipment?->status ?? 'preparing',
                     'shipment_status_label' => $order->shipment?->status_label ?? 'Preparing',
-                    'tracking_number' => $order->shipment?->tracking_number,
-                    'carrier' => $order->shipment?->carrier,
-                    'shipped_at' => $order->shipment?->shipped_at?->format('M d, Y H:i'),
-                    'delivered_at' => $order->shipment?->delivered_at?->format('M d, Y H:i'),
-                    'created_at' => $order->created_at->format('M d, Y H:i'),
-                    'order_date' => $order->created_at->format('F d, Y'),
+                    'tracking_number'       => $order->shipment?->tracking_number,
+                    'rider_id'              => $order->shipment?->rider_id,
+                    'rider_name'            => $order->shipment?->rider?->name,
+                    'rider_number'          => $order->shipment?->rider?->rider_number,
+                    'carrier'               => $order->shipment?->carrier,
+                    'shipped_at'            => $order->shipment?->shipped_at?->format('M d, Y H:i'),
+                    'out_for_delivery_at'   => $order->shipment?->out_for_delivery_at?->format('M d, Y H:i'),
+                    'delivered_at'          => $order->shipment?->delivered_at?->format('M d, Y H:i'),
+                    'created_at'            => $order->created_at->format('M d, Y H:i'),
+                    'order_date'            => $order->created_at->format('F d, Y'),
                 ];
             });
 
+        // Load available riders for the assignment dropdown
+        $riders = \App\Models\User::where('role', 'rider')
+            ->where('status', 'active')
+            ->orderBy('name')
+            ->get()
+            ->map(fn($r) => [
+                'id'           => $r->id,
+                'name'         => $r->name,
+                'rider_number' => $r->rider_number,
+            ]);
+
         return Inertia::render('Logistics/Dashboard', [
-            'stats' => $stats,
+            'stats'     => $stats,
             'shipments' => $shipments,
+            'riders'    => $riders,
         ]);
     }
 
@@ -79,16 +95,14 @@ class LogisticsDashboardController extends Controller
     public function updateStatus(Request $request, Order $order)
     {
         $request->validate([
-            'status'         => ['required', 'in:preparing,shipped,in_transit,delivered'],
-            'tracking_number'=> [
-                in_array($request->status, ['shipped', 'in_transit']) ? 'required' : 'nullable',
-                'string',
-                'max:100',
+            'status'   => ['required', 'in:preparing,packed'],
+            'rider_id' => [
+                $request->status === 'packed' ? 'required' : 'nullable',
+                'exists:users,id',
             ],
-            'carrier'        => ['nullable', 'string', 'max:100'],
-            'notes'          => ['nullable', 'string', 'max:500'],
+            'notes'    => ['nullable', 'string', 'max:500'],
         ], [
-            'tracking_number.required' => 'A tracking number is required when the status is Shipped or In Transit.',
+            'rider_id.required' => 'You must assign a rider before marking the order as Ready for Pickup.',
         ]);
 
         // Ensure order is approved
@@ -104,42 +118,20 @@ class LogisticsDashboardController extends Controller
 
         $updateData = ['status' => $request->status];
 
-        if ($request->filled('tracking_number')) {
-            $updateData['tracking_number'] = $request->tracking_number;
-        }
-        if ($request->filled('carrier')) {
-            $updateData['carrier'] = $request->carrier;
+        if ($request->filled('rider_id')) {
+            $updateData['rider_id'] = $request->rider_id;
         }
         if ($request->filled('notes')) {
             $updateData['notes'] = $request->notes;
         }
 
-        // Set timestamps based on status
-        if (in_array($request->status, ['shipped', 'in_transit']) && !$shipment->shipped_at) {
+        // Set packed_at timestamp (reuse shipped_at column) when marking as packed
+        if ($request->status === 'packed' && !$shipment->shipped_at) {
             $updateData['shipped_at'] = now();
-        }
-        if ($request->status === 'delivered') {
-            $updateData['delivered_at'] = now();
-            // Auto-mark payment as paid on delivery (for COD)
-            if ($order->payment_method === 'cod') {
-                $order->update(['payment_status' => 'paid']);
-
-                // Auto-create Financial Ledger entry
-                Payment::updateOrCreate(
-                    ['order_id' => $order->id],
-                    [
-                        'amount'           => $order->total_amount,
-                        'method'           => 'cod',
-                        'status'           => 'paid',
-                        'reference_number' => 'COD-' . strtoupper($order->order_number),
-                        'paid_at'          => now(),
-                    ]
-                );
-            }
         }
 
         $shipment->update($updateData);
 
-        return back()->with('success', "Order {$order->order_number} status updated to {$request->status}.");
+        return back()->with('success', "Order {$order->order_number} updated to: " . Shipment::STATUS_LABELS[$request->status] . '.');
     }
 }

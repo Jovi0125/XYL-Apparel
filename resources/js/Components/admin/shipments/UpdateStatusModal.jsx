@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { router } from '@inertiajs/react';
 
 const shipmentStatuses = [
-    { value: 'pending',    label: 'Pending',    color: 'text-amber-400'   },
-    { value: 'preparing',  label: 'Preparing',  color: 'text-[#E60012]'    },
-    { value: 'shipped',    label: 'Shipped',    color: 'text-indigo-400'  },
-    { value: 'in_transit', label: 'In Transit', color: 'text-[#E60012]'    },
-    { value: 'delivered',  label: 'Delivered',  color: 'text-emerald-400' },
-    { value: 'cancelled',  label: 'Cancelled',  color: 'text-rose-400'    },
+    { value: 'pending',          label: 'Pending',          color: 'text-amber-400'   },
+    { value: 'preparing',        label: 'Preparing',        color: 'text-blue-400'    },
+    { value: 'packed',           label: 'Ready for Pickup', color: 'text-orange-400'  },
+    { value: 'out_for_delivery', label: 'Out for Delivery', color: 'text-purple-400'  },
+    { value: 'delivered',        label: 'Delivered',        color: 'text-emerald-400' },
+    { value: 'cancelled',        label: 'Cancelled',        color: 'text-rose-400'    },
 ];
 
 const paymentStatuses = [
@@ -19,8 +19,6 @@ const paymentStatuses = [
 
 export default function UpdateStatusModal({ order, onClose }) {
     const [shipmentStatus, setShipmentStatus] = useState(order?.shipment?.status || 'pending');
-    const [trackingNumber, setTrackingNumber] = useState(order?.shipment?.tracking_number || '');
-    const [carrier, setCarrier] = useState(order?.shipment?.carrier || '');
     const [paymentStatus, setPaymentStatus] = useState(order?.payment_status || 'pending');
     const [processing, setProcessing] = useState(false);
 
@@ -31,8 +29,6 @@ export default function UpdateStatusModal({ order, onClose }) {
         setProcessing(true);
         router.post(`/admin/shipments/${order.id}/update-status`, {
             shipment_status: shipmentStatus,
-            tracking_number: trackingNumber || null,
-            carrier: carrier || null,
         }, {
             preserveScroll: true,
             onSuccess: () => { setProcessing(false); onClose(); },
@@ -96,29 +92,6 @@ export default function UpdateStatusModal({ order, onClose }) {
                                     <span className={shipmentStatus === s.value ? s.color : ''}>{s.label}</span>
                                 </button>
                             ))}
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-3">
-                            <div>
-                                <label className="block text-xs text-gray-400 mb-1.5">Tracking Number</label>
-                                <input
-                                    type="text"
-                                    value={trackingNumber}
-                                    onChange={(e) => setTrackingNumber(e.target.value)}
-                                    placeholder="e.g. TRK-123456"
-                                    className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black/10 focus:border-gray-300 transition-all"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-xs text-gray-400 mb-1.5">Carrier</label>
-                                <input
-                                    type="text"
-                                    value={carrier}
-                                    onChange={(e) => setCarrier(e.target.value)}
-                                    placeholder="e.g. J&T Express"
-                                    className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black/10 focus:border-gray-300 transition-all"
-                                />
-                            </div>
                         </div>
 
                         <button
