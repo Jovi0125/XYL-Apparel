@@ -81,9 +81,10 @@ export default function UsersIndex({ users, filters }) {
 
     const roleBadge = (role) => {
         const styles = {
-            admin: 'bg-red-50 text-[#E60012] border border-gray-200',
-            buyer: 'bg-blue-500/10 text-blue-500 border border-blue-500/20',
+            admin:     'bg-red-50 text-[#E60012] border border-gray-200',
+            buyer:     'bg-blue-500/10 text-blue-500 border border-blue-500/20',
             logistics: 'bg-amber-500/10 text-amber-500 border border-amber-500/20',
+            rider:     'bg-purple-500/10 text-purple-500 border border-purple-500/20',
         };
         return (
             <span className={`px-2 py-1 rounded-full text-[10px] font-medium capitalize ${styles[role] || 'bg-gray-100 text-gray-400 border border-gray-200'}`}>
@@ -91,6 +92,8 @@ export default function UsersIndex({ users, filters }) {
             </span>
         );
     };
+
+    const isStaff = (role) => ['admin', 'logistics', 'rider'].includes(role);
 
     return (
         <AdminLayout title="User Management" activeItem="users">
@@ -184,6 +187,7 @@ export default function UsersIndex({ users, filters }) {
                                     <option value="admin">Admin</option>
                                     <option value="buyer">Buyer</option>
                                     <option value="logistics">Logistics</option>
+                                    <option value="rider">Rider</option>
                                 </select>
                             </div>
                         </div>
@@ -226,37 +230,50 @@ export default function UsersIndex({ users, filters }) {
                                                     {roleBadge(user.role)}
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    <div className="text-[11px] space-y-1 font-medium">
-                                                        {user.rider_number && (
-                                                            <div className="mb-1">
-                                                                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-black tracking-widest bg-[#E60012]/10 text-[#E60012] border border-[#E60012]/20 uppercase">
-                                                                    {user.rider_number}
-                                                                </span>
+                                                    {user.role === 'buyer' ? (
+                                                        <div className="text-[11px] space-y-1 font-medium">
+                                                            <div className="flex gap-2">
+                                                                <span className="text-gray-400">Zip:</span>
+                                                                <span className="text-gray-600">{user.postal_code || '--'}</span>
                                                             </div>
-                                                        )}
-                                                        <div className="flex gap-2">
-                                                            <span className="text-gray-400">Zip:</span>
-                                                            <span className="text-gray-600">{user.postal_code || '--'}</span>
+                                                            <div className="flex gap-2">
+                                                                <span className="text-gray-400">BD:</span>
+                                                                <span className="text-gray-600">{user.birthday ? new Date(user.birthday).toLocaleDateString() : '--'}</span>
+                                                            </div>
+                                                            <div className="flex gap-2 text-gray-400 capitalize">
+                                                                <span>{user.gender || 'Unknown'}</span>
+                                                            </div>
                                                         </div>
-                                                        <div className="flex gap-2">
-                                                            <span className="text-gray-400">BD:</span>
-                                                            <span className="text-gray-600">{user.birthday ? new Date(user.birthday).toLocaleDateString() : '--'}</span>
+                                                    ) : user.role === 'rider' ? (
+                                                        <div className="space-y-1">
+                                                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-black tracking-widest bg-[#E60012]/10 text-[#E60012] border border-[#E60012]/20 uppercase">
+                                                                {user.rider_number || 'No ID'}
+                                                            </span>
+                                                            <p className="text-[11px] text-gray-400">Delivery Rider</p>
                                                         </div>
-                                                        <div className="flex gap-2 text-gray-400 capitalize">
-                                                            <span>{user.gender || 'Unknown'}</span>
-                                                        </div>
-                                                    </div>
+                                                    ) : (
+                                                        <span className="inline-flex items-center gap-1.5 text-[11px] text-gray-400 font-medium">
+                                                            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                                                            </svg>
+                                                            Staff Account
+                                                        </span>
+                                                    )}
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     <div className="flex flex-col gap-2">
-                                                        <div className="flex items-center gap-3">
-                                                            <span className="text-[10px] text-gray-400 w-12 uppercase tracking-wide">Terms:</span>
-                                                            {statusBadge(user.terms_accepted, 'Accepted', 'Pending')}
-                                                        </div>
-                                                        <div className="flex items-center gap-3">
-                                                            <span className="text-[10px] text-gray-400 w-12 uppercase tracking-wide">Auth:</span>
-                                                            {statusBadge(!!user.email_verified_at, 'Verified', 'Unverified')}
-                                                        </div>
+                                                        {!isStaff(user.role) && (
+                                                            <>
+                                                                <div className="flex items-center gap-3">
+                                                                    <span className="text-[10px] text-gray-400 w-12 uppercase tracking-wide">Terms:</span>
+                                                                    {statusBadge(user.terms_accepted, 'Accepted', 'Pending')}
+                                                                </div>
+                                                                <div className="flex items-center gap-3">
+                                                                    <span className="text-[10px] text-gray-400 w-12 uppercase tracking-wide">Auth:</span>
+                                                                    {statusBadge(!!user.email_verified_at, 'Verified', 'Unverified')}
+                                                                </div>
+                                                            </>
+                                                        )}
                                                         <div className="flex items-center gap-3">
                                                             <span className="text-[10px] text-gray-400 w-12 uppercase tracking-wide">Access:</span>
                                                             {userStatusBadge(user.status)}
