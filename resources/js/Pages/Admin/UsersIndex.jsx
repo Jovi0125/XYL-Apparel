@@ -26,7 +26,7 @@ export default function UsersIndex({ users, filters }) {
     useEffect(() => {
         const timeoutId = setTimeout(() => {
             if (data.search !== filters.search || data.role !== filters.role) {
-                router.get(route('admin.users.index'), {
+                router.get('/admin/users', {
                     search: data.search,
                     role: data.role
                 }, {
@@ -46,7 +46,7 @@ export default function UsersIndex({ users, filters }) {
     const toggleStatus = (id, currentStatus) => {
         const action = currentStatus === 'active' ? 'Ban/Suspend' : 'Reactivate';
         if (confirm(`Are you sure you want to ${action} this user?`)) {
-            router.post(route('admin.users.toggleStatus', id), {}, {
+            router.post(`/admin/users/${id}/toggle-status`, {}, {
                 preserveScroll: true,
             });
         }
@@ -54,7 +54,7 @@ export default function UsersIndex({ users, filters }) {
 
     const deleteUser = (id) => {
         if (confirm('Are you sure you want to PERMANENTLY delete this user? This action cannot be undone.')) {
-            router.delete(route('admin.users.destroy', id), {
+            router.delete(`/admin/users/${id}`, {
                 preserveScroll: true,
             });
         }
@@ -241,7 +241,8 @@ export default function UsersIndex({ users, filters }) {
                                                                 <span className="text-gray-600">{user.birthday ? new Date(user.birthday).toLocaleDateString() : '--'}</span>
                                                             </div>
                                                             <div className="flex gap-2 text-gray-400 capitalize">
-                                                                <span>{user.gender || 'Unknown'}</span>
+                                                                <span className="text-gray-400">Gender:</span>
+                                                                <span className="text-gray-600">{user.gender || 'Unknown'}</span>
                                                             </div>
                                                         </div>
                                                     ) : user.role === 'rider' ? (
@@ -267,10 +268,6 @@ export default function UsersIndex({ users, filters }) {
                                                                 <div className="flex items-center gap-3">
                                                                     <span className="text-[10px] text-gray-400 w-12 uppercase tracking-wide">Terms:</span>
                                                                     {statusBadge(user.terms_accepted, 'Accepted', 'Pending')}
-                                                                </div>
-                                                                <div className="flex items-center gap-3">
-                                                                    <span className="text-[10px] text-gray-400 w-12 uppercase tracking-wide">Auth:</span>
-                                                                    {statusBadge(!!user.email_verified_at, 'Verified', 'Unverified')}
                                                                 </div>
                                                             </>
                                                         )}
@@ -331,7 +328,7 @@ export default function UsersIndex({ users, filters }) {
                                                     <h3 className="text-lg font-medium text-gray-600">No users found</h3>
                                                     <p className="text-gray-400 max-w-xs mx-auto">We couldn't find any user matching your current search or filter criteria.</p>
                                                     <button 
-                                                        onClick={() => router.get(route('admin.users.index'), {}, { replace: true })}
+                                                        onClick={() => router.get('/admin/users', {}, { replace: true })}
                                                         className="mt-2 text-blue-500 hover:text-[#E60012] font-medium transition-colors"
                                                     >
                                                         Clear all filters
